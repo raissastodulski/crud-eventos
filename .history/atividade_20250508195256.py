@@ -33,26 +33,7 @@ def criar():
     atividades.append(atividade)
     print(f"\nA atividade {nome} foi cadastrada com sucesso!\n")
 
-def editar():
-    if atividades:
-            print("\n--- Editar Atividade ---")
-            for i, atividade in enumerate(atividades):
-                print(f"{i+1}. Nome: {atividade['nome']}")
-                print(f"   Responsável: {atividade['facilitador']}")
-                print(f"   Horário: {atividade['horario']}")
-                print(f"   Local: {atividade['local']}")
-                print(f"   Vagas: {atividade['vagas']}")
-            indice_editar = int(input("Digite o número da atividade que deseja excluir: ")) - 1 
-            if 0 <= indice_editar < len(atividades):
-                atividade = atividades[indice_editar]
-
-                print("\nCampos disponíveis para edição: nome, facilitador, horario, local, vagas\n")
-                campo_editar = input("Digite o campo que deseja editar: ").lower()
-
-                if campo_editar in atividade:
-                    novo_valor = input(f"Digite o novo valor para {campo_editar}: ")
-                atividade[campo_editar] = novo_valor
-                print(f"\nCampo {campo_editar} atualizado com sucesso!\n")
+def editar
 
 while True:
 
@@ -62,7 +43,7 @@ while True:
     if(opcao == 1):
         criar()    
     elif (opcao == 3):
-        editar()
+        
     elif (opcao == 5):
         print("Programa encerrado")
         break

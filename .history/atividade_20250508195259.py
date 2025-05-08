@@ -62,7 +62,7 @@ while True:
     if(opcao == 1):
         criar()    
     elif (opcao == 3):
-        editar()
+        
     elif (opcao == 5):
         print("Programa encerrado")
         break

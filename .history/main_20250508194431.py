@@ -194,7 +194,7 @@ while True:
                 print("\nOpção inválida! Tente novamento\n")
     elif(opcao ==2 ):
         import participantes
-        participantes.menu()
+        participantes.
     elif(opcao == 3):
         print("\nPrograma encerrado. Volte sempre!!")
         break
