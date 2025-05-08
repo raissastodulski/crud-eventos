@@ -64,7 +64,7 @@ def criar_evento():
             print("⚠️  Opção inválida. Informe Adulto, Juvenil ou Infantil.")
 
     while True:        
-        local = input("Informe se o evento será Presencial OU Online").strip().lower()
+        local = input("Informe se o evento será Presencial OU Online: ").strip().lower()
         if(local =="online"):
             print("Evento do tipo Online")
             local_presencial = "Não se Aplica"
@@ -73,7 +73,7 @@ def criar_evento():
 
         elif local == "presencial":
             print("Evento do tipo Presencial")
-            local_presencial = input("\nInforme o endereço do evento: ").strip()
+            local_presencial = input("\nInforme o endereço do evento: \n").strip()
             while True:
                 try:
                     capacidadeMax = int(input("Quantidade maxima de vagas para esse evento? "))
@@ -86,27 +86,31 @@ def criar_evento():
             print("Tipo de evento inválido. Digite 'presencial' ou 'online'.")
         
         
-        evento = {
-            "nome":nome_evento,
-            "descricao":descricao_evento,
-            "data_inicio":data_inicio,
-            "hora_inicio":hora_inicio,
-            "data_fim":data_fim,
-            "hora_fim":hora_fim,
-            "publico_alvo":publico_alvo,
-            "tipo":local,
-            "endereco":local_presencial,
-            "capacidade":capacidadeMax
-        }
+    evento = {
+        "nome":nome_evento,
+        "descricao":descricao_evento,
+        "data_inicio":data_inicio,
+        "hora_inicio":hora_inicio,
+        "data_fim":data_fim,
+        "hora_fim":hora_fim,
+        "publico_alvo":publico_alvo,
+        "tipo":local,
+        "endereco":local_presencial,
+        "capacidade":capacidadeMax
+    }
         
-        eventos.append(evento)
-        print(f"\n✅ Evento {nome_evento} cadastrado com sucesso!")
-        print(f"Data Inicio: {data_inicio.strftime('%d/%m/%Y')} às {hora_inicio}")
-        print(f"Data de fim: {data_fim.strftime('%d/%m/%Y')} às {hora_fim}")
+    eventos.append(evento)
+    print(f"\n✅ Evento {nome_evento} cadastrado com sucesso!")
+    print(f"Data Inicio: {data_inicio.strftime('%d/%m/%Y')} às {hora_inicio}")
+    print(f"Data de fim: {data_fim.strftime('%d/%m/%Y')} às {hora_fim}")
 
-        tem_atividades = input("O evento terá atividades? (s/n): ").lower()
-        if tem_atividades == 's':
-            print("Chama o modulo do Luiz e Pedro")
+    tem_atividades = input("O evento terá atividades? (s/n): ").lower()
+    if tem_atividades == 's':
+        try:
+            import atividade
+            atividade.menu_atividades(evento["id"])
+        except ModuleNotFoundError:
+            print("⚠️  Módulo de atividades não encontrado. Avise o responsável.")
 
 
 
@@ -142,16 +146,16 @@ while True:
         print("Opção inválida.")
         continue
     
-    if escolha ==1:
+    if escolha == 1:
         criar_evento()
 
     elif escolha == 2:
         visualizar_eventos()
 
-    elif escolha ==3:
+    elif escolha == 3:
         print("Editar eventos (em construção)")
 
-    elif escolha ==4:
+    elif escolha == 4:
         print("Excluir evento(em construção)")
 
     else:
