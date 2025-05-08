@@ -3,13 +3,6 @@ import re
 
 organizadores = []
 
-def menu():
-    print("------MENU PRINCIPAL-----")
-
-    print("1 - Organizador")
-    print("2 - Participante")
-    print("3 - Sair do programa")
-
 while True:
 
     def isCpfValid(cpf):
@@ -84,8 +77,8 @@ while True:
             else:
                 return False    
 
-    menu()
-      
+    
+    
     opcao = int(input("\nDigite a opção desejada: "))
     
     if (opcao == 1):

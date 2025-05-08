@@ -65,7 +65,7 @@ while True:
         editar()
     elif (opcao == 5):
         import main
-        main.menu()
+        main.ma
         break
     else:
         print("\nOpção inválida! Digite novamente. \n")

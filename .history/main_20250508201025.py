@@ -84,8 +84,7 @@ while True:
             else:
                 return False    
 
-    menu()
-      
+     menu()  
     opcao = int(input("\nDigite a opção desejada: "))
     
     if (opcao == 1):

@@ -64,8 +64,8 @@ while True:
     elif (opcao == 3):
         editar()
     elif (opcao == 5):
-        import main
-        main.menu()
+        import cadastramentoEvento
+        cadastramentoEvento.menu
         break
     else:
         print("\nOpção inválida! Digite novamente. \n")
