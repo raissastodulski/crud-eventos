@@ -15,26 +15,17 @@ def menu():
 
     
 def criar():
-    nome = input("\nDigite o nome da atividade: ")
-    facilitador = input("Digite o nome do responsável da atividade: ")
-    horario_str = input("Digite a hora que começa a atividade (hh:mm): ")
-    horario = datetime.datetime.strptime(horario_str, "%H:%M").strftime("%H:%M")
-    local = input("Digite o local da atividade: ")
-    vagas = int(input("Digite a quantidade de vagas: "))
 
-    atividade = {
-            "nome":nome,
-            "facilitador":facilitador,
-            "horario":horario,
-            "local": local,
-            "vagas":vagas
-    }
 
-    atividades.append(atividade)
-    print(f"\nA atividade {nome} foi cadastrada com sucesso!\n")
+while True:
 
-def editar():
-    if atividades:
+    menu()
+
+    opcao = int(input("\nDigite a opção desejada: "))
+    if(opcao == 1):
+        
+    elif (opcao == 3):
+        if atividades:
             print("\n--- Editar Atividade ---")
             for i, atividade in enumerate(atividades):
                 print(f"{i+1}. Nome: {atividade['nome']}")
@@ -53,16 +44,6 @@ def editar():
                     novo_valor = input(f"Digite o novo valor para {campo_editar}: ")
                 atividade[campo_editar] = novo_valor
                 print(f"\nCampo {campo_editar} atualizado com sucesso!\n")
-
-while True:
-
-    menu()
-
-    opcao = int(input("\nDigite a opção desejada: "))
-    if(opcao == 1):
-        criar()    
-    elif (opcao == 3):
-        editar()
     elif (opcao == 5):
         print("Programa encerrado")
         break

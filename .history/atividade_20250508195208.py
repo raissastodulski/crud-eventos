@@ -28,13 +28,21 @@ def criar():
             "horario":horario,
             "local": local,
             "vagas":vagas
-    }
+        }
 
-    atividades.append(atividade)
-    print(f"\nA atividade {nome} foi cadastrada com sucesso!\n")
+        atividades.append(atividade)
+        print(f"\nA atividade {nome} foi cadastrada com sucesso!\n")
 
-def editar():
-    if atividades:
+
+while True:
+
+    menu()
+
+    opcao = int(input("\nDigite a opção desejada: "))
+    if(opcao == 1):
+        
+    elif (opcao == 3):
+        if atividades:
             print("\n--- Editar Atividade ---")
             for i, atividade in enumerate(atividades):
                 print(f"{i+1}. Nome: {atividade['nome']}")
@@ -53,16 +61,6 @@ def editar():
                     novo_valor = input(f"Digite o novo valor para {campo_editar}: ")
                 atividade[campo_editar] = novo_valor
                 print(f"\nCampo {campo_editar} atualizado com sucesso!\n")
-
-while True:
-
-    menu()
-
-    opcao = int(input("\nDigite a opção desejada: "))
-    if(opcao == 1):
-        criar()    
-    elif (opcao == 3):
-        editar()
     elif (opcao == 5):
         print("Programa encerrado")
         break

@@ -1,5 +1,5 @@
 import re
-
+import 
 
 organizadores = []
 
@@ -185,16 +185,13 @@ while True:
                     else:
                         print("\nOrganizador não existe")
             elif (opcao == 4):
-                import cadastramentoEvento
-                cadastramentoEvento.criar_evento()
-                print("ola")
+                print("Parte de Nicolly")
             elif (opcao == 5):
                 break
             else:
                 print("\nOpção inválida! Tente novamento\n")
     elif(opcao ==2 ):
-        import participantes
-        participantes.menu()
+        print("Parte de Thomaz e Heitor")
     elif(opcao == 3):
         print("\nPrograma encerrado. Volte sempre!!")
         break
