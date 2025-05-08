@@ -9,7 +9,8 @@ def menu():
         print("2 - Atualizar Dados do participante")
         print("3 - Listar os participantes")
         print("4 - Excluir perfil")
-        print("5 - Sair")
+        print("5 - Lista de eventos")
+        print("6 - Retornar ao menu principal")
 
 def atualizar_participante(nome_antigo, novo_nome,novo_email,novo_cpf,novo_telefone):
     for participante in participantes:
@@ -83,15 +84,19 @@ while True:
             else:
                 print("\nResposta inválida, tente novamente.")
                 indice_participantes = int(input(print("\nInforme o número do perfil que deseja excluir >> ")))
-    
+
     elif(resposta == "5"):
-        break
+        import cadastramentoEvento
+        cadastramentoEvento.visualizar_eventos()
+    
+    elif(resposta == "6"):
+        import main
+        main.menu()
 
     else:
         print("\nRESPOSTA INVALIDA, TENTE NOVAMENTE")
      
                
-print("Programa encerrado!")
 
 
 
