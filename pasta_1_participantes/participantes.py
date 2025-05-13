@@ -90,8 +90,8 @@ while True:
         cadastramentoEvento.visualizar_eventos()
     
     elif(resposta == "6"):
-        import main
-        main.menu()
+        import old.mainOld as mainOld
+        mainOld.menu()
 
     else:
         print("\nRESPOSTA INVALIDA, TENTE NOVAMENTE")

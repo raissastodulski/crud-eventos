@@ -92,8 +92,8 @@ while True:
     elif (opcao == 4 ):
         excluir_atividade()
     elif (opcao == 5):
-        import main
-        main.menu()
+        import old.mainOld as mainOld
+        mainOld.menu()
         break
     else:
         print("\nOpção inválida! Digite novamente. \n")

@@ -1,0 +1,1 @@
+# Esta pasta é um pacote Python
