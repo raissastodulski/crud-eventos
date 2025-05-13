@@ -12,16 +12,66 @@ def menu():
         print("5 - Lista de eventos")
         print("6 - Retornar ao menu principal")
 
-def atualizar_participante(nome_antigo, novo_nome,novo_email,novo_cpf,novo_telefone):
+def atualizar_participante(nome_antigo):
+
+    categoria = 0
     for participante in participantes:
         if participante['nome'] == nome_antigo:
-            participante['nome'] = novo_nome
-            participante['email'] = novo_email
-            participante['cpf'] = novo_cpf
-            participante['telefone'] = novo_telefone
-            print(f"Participante '{nome_antigo}' atualizado com sucesso!")
-            return
-    print(f"Participante com nome '{nome_antigo}' não encontrado.")
+            break
+    else:
+        print(f"Participante com nome '{nome_antigo}' não encontrado.")
+        return
+    while categoria != 5:
+        
+        print("Escolha a categoria que você deseja editar")
+        print("~"*34)
+        print("  Categorias")
+        print("~"*34)
+
+        print("1 - Nome")
+        print("2 - Email")
+        print("3 - CPF")
+        print("4 - Telefone")
+        print("5 - Sair")
+        categoria = int(input("Informe a opção desejada: "))
+
+        if categoria == 1:
+            novo_nome = input("Informe o novo nome do usuario:")
+            for participante in participantes:
+                if participante['nome'] == nome_antigo:
+                    participante['nome'] = novo_nome
+                    nome_antigo = novo_nome
+            
+        
+        elif categoria == 2:
+            novo_email = input("Informe o novo email do usuario:")
+            for participante in participantes:
+                if participante['nome'] == nome_antigo:
+                    participante['email'] = novo_email
+            
+
+        elif categoria == 3:
+            novo_cpf = input("Informe o novo cpf do usuario:")
+            for participante in participantes:
+                if participante['nome'] == nome_antigo:
+                    participante['cpf'] = novo_cpf
+                
+
+        elif categoria == 4:
+            novo_telefone = input("Informe o novo telefone do usuario:")
+            for participante in participantes:
+                if participante['nome'] == nome_antigo:
+                    participante['telefone'] = novo_telefone
+    
+
+        elif categoria == 5:
+            print("Saíndo da edição")
+            break
+
+        else:
+            print("Opção inválida")
+
+
 
 while True: 
 
@@ -47,14 +97,20 @@ while True:
 
         print(f"Participante {nome_participante} de CPF {cpf_participante} cadastrado!")
     
-    elif(resposta == "2"):
-        print("ATUALIZAÇÃO DE PERFIL \n")
+    elif resposta == "2":
+        if not participantes:
+            print("Nenhum participante cadastrado.")
+        else:
+            print("\nLista de Participantes:")
+            print("-" * 40)
+            for participante in participantes:
+                print(f"Nome: {participante['nome']}")
+                print(f"E-mail: {participante['email']}")
+                print(f"CPF: {participante['cpf']}")
+                print(f"Telefone: {participante['telefone']}")
+                print("-" * 40)
         nome_antigo = input("Digite o nome do participante a ser atualizado:")
-        novo_nome = input("Informe o novo nome do usuario:")
-        novo_email = input("Informe o novo email do usuario:")
-        novo_cpf = input("Informe o novo cpf do usuario:")
-        novo_telefone = input("Informe o novo telefone do usuario:")
-        atualizar_participante(nome_antigo, novo_nome,novo_email,novo_cpf,novo_telefone)
+        atualizar_participante(nome_antigo)
     
     elif(resposta == "3"):
         print("LISTA DE PARTICIPANTES")
