@@ -1,6 +1,6 @@
 import os
-from pasta_3_atividades import atividade
-class MenuAtividades:
+
+class MenuParticipantes:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
     
@@ -9,45 +9,43 @@ class MenuAtividades:
         os.system('cls' if os.name == 'nt' else 'clear')
     
     def exibir_menu(self):
-        """Exibe as opções do menu de gerenciamento de atividades"""
+        """Exibe as opções do menu de gerenciamento de participantes"""
         self.limpar_tela()
-        print("\n===== GERENCIAMENTO DE ATIVIDADES =====")
-        print("1. Adicionar Atividade")
-        print("2. Ver Todas as Atividades")
-        print("3. Ver Detalhes da Atividade")
-        print("4. Atualizar Atividade")
-        print("5. Excluir Atividade")
-        print("6. Buscar Atividades")
+        print("\n===== GERENCIAMENTO DE PARTICIPANTES =====")
+        print("1. Adicionar Participante")
+        print("2. Ver Todos os Participantes")
+        print("3. Ver Detalhes do Participante")
+        print("4. Atualizar Participante")
+        print("5. Excluir Participante")
+        print("6. Buscar Participantes")
         print("0. Voltar ao Menu Principal")
         print("===================================")
         return input("Digite sua escolha: ")
     
     def executar(self):
-        """Executa o menu de atividades"""
+        """Executa o menu de participantes"""
         while True:
-            escolha = self.exibir_menu()
+            import participantes
+
+            escolha = participantes.mainOld
             
             if escolha == '1':
-                print("\nAdicionar Atividade")
-                atividade.criar_atividade()
+                print("\nAdicionar Participante (em desenvolvimento)")
                 input("Pressione Enter para continuar...")
             elif escolha == '2':
-                print("\nVer Todas as Atividades")
-                atividade.visualizar_atividade()
+                print("\nVer Todos os Participantes (em desenvolvimento)")
                 input("Pressione Enter para continuar...")
             elif escolha == '3':
-                print("\nVer Detalhes da Atividade (em desenvolvimento)")
+                print("\nVer Detalhes do Participante (em desenvolvimento)")
                 input("Pressione Enter para continuar...")
             elif escolha == '4':
-                print("\nAtualizar Atividade")
-                atividade.editar_atividade()
+                print("\nAtualizar Participante (em desenvolvimento)")
                 input("Pressione Enter para continuar...")
             elif escolha == '5':
-                print("\nExcluir Atividade ")
-                atividade.excluir_atividade()
+                print("\nExcluir Participante (em desenvolvimento)")
                 input("Pressione Enter para continuar...")
             elif escolha == '6':
-                print("\nBuscar Atividades (em desenvolvimento)")
+                print("\nBuscar Participantes (em desenvolvimento)")
                 input("Pressione Enter para continuar...")
             elif escolha == '0':
                 print("Voltando ao menu principal...")

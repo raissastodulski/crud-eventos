@@ -44,7 +44,6 @@ class MenuAtividades:
                 input("Pressione Enter para continuar...")
             elif escolha == '5':
                 print("\nExcluir Atividade ")
-                atividade.excluir_atividade()
                 input("Pressione Enter para continuar...")
             elif escolha == '6':
                 print("\nBuscar Atividades (em desenvolvimento)")
