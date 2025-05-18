@@ -24,5 +24,5 @@ def principal():
         # O fechamento da conexão já ocorre no menu principal
         pass
 
-if __name__ == "__main__":
+if __name__ == "__main__":3
     principal()

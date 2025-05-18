@@ -2,17 +2,6 @@ import datetime
 
 atividades = []
 
-
-def menu():
-    print("-----MODULO DE ATIVIDADE-----")
-
-    print("\n >>> Menu de Atividade <<<\n")
-    print("1 - Criar Atividade")
-    print("2 - Visualizar Atividade")
-    print("3 - Editar Atividade")
-    print("4 - Excluir Atividade")
-    print("5 - Encerra o Programa")
-    
 def criar_atividade():
     nome = input("\nDigite o nome da atividade: ")
     facilitador = input("Digite o nome do responsável da atividade: ")
@@ -92,8 +81,8 @@ while True:
     elif (opcao == 4 ):
         excluir_atividade()
     elif (opcao == 5):
-        import main
-        main.menu()
+        import old.mainOld as mainOld
+        mainOld.menu()
         break
     else:
         print("\nOpção inválida! Digite novamente. \n")
