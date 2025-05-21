@@ -1,15 +1,9 @@
 from datetime import datetime, date, time
+from database import DatabaseManager
+from pasta_2_eventos import events_object
 
-print("---MODULO EVENTOS---")
 
-def menu():
-    print("\n>>>Menu Eventos<<<\n")
-    print("------------------------")
-    print("1 - Criar Evento")
-    print("2 - Visualizar Evento")
-    print("3 - Editar Evento")
-    print("4 - Excluir Evento")
-    print("------------------------")
+gerenciador_bd = DatabaseManager()
 
 
 eventos = []
@@ -86,28 +80,32 @@ def criar_evento():
             print("Tipo de evento inválido. Digite 'presencial' ou 'online'.")
         
         
-    evento = {
-        "nome":nome_evento,
-        "descricao":descricao_evento,
-        "data_inicio":data_inicio,
-        "hora_inicio":hora_inicio,
-        "data_fim":data_fim,
-        "hora_fim":hora_fim,
-        "publico_alvo":publico_alvo,
-        "tipo":local,
-        "endereco":local_presencial,
-        "capacidade":capacidadeMax
-    }
-        
-    eventos.append(evento)
-    print(f"\n✅ Evento {nome_evento} cadastrado com sucesso!")
-    print(f"Data Inicio: {data_inicio.strftime('%d/%m/%Y')} às {hora_inicio}")
-    print(f"Data de fim: {data_fim.strftime('%d/%m/%Y')} às {hora_fim}")
+    evento = events_object(
+        nome = nome_evento,
+        descricao = descricao_evento,
+        data_inicio = data_inicio,
+        hora_inicio = hora_inicio,
+        data_fim = data_fim,
+        hora_fim = hora_fim,
+        publico_alvo = publico_alvo,
+        tipo = local,
+        endereco = local_presencial,
+        capacidade = capacidadeMax
+    )
+
+
+    if evento.is_valid():
+        gerenciador_bd.create_event("Eventos", evento.to_tuple())
+        eventos.append(evento)
+        print(f"\n✅ Evento {nome_evento} cadastrado com sucesso!")
+
+    else:
+        print("⚠️  Erro: Dados incompletos. Preencha todos os campos obrigatorios.")
 
     tem_atividades = input("O evento terá atividades? (s/n): ").lower()
     if tem_atividades == 's':
         try:
-            import atividade
+            from pasta_3_atividades import atividade
             atividade.menu_atividades(evento["id"])
         except ModuleNotFoundError:
             print("⚠️  Módulo de atividades não encontrado. Avise o responsável.")
@@ -127,6 +125,7 @@ def visualizar_eventos():
         print(f"Descrição: {evento['descricao']}")
         print(f"Início: {evento['data_inicio'].strftime('%d/%m/%Y')} às {evento['hora_inicio'].strftime('%H:%M')}")
         print(f"Fim: {evento['data_fim'].strftime('%d/%m/%Y')} às {evento['hora_fim'].strftime('%H:%M')}")
+        print(f"Duração: {evento.duracao:.1f} horas")
         print(f"Público Alvo: {evento['publico_alvo'].capitalize()}")
         print(f"Tipo: {evento['tipo'].capitalize()}")
         print(f"Endereço: {evento['endereco']}")
@@ -135,34 +134,43 @@ def visualizar_eventos():
         print("-------------------------------")
 
 
+def ver_detalhe_evento():
+    if not eventos:
+        print("⚠️  Nenhum evento cadastrado até o momento.")
+        return
 
-
-while True:
-    menu()
-
+    visualizar_eventos()
     try:
-        escolha = int(input("Escolha um serviço: "))
+        id_evento = int(input("\nDigite o ID do evento para ver detalhes: "))
+        evento = None
+        for i in eventos:
+            if i.id == id_evento:
+                evento = i
+                break
+        if evento:
+            print("\n" + "=" *30)
+            print(f"📌 Detalhes do Evento (ID: {evento.id})")
+            print(evento)
+            print("="*30)
+        else:
+            print("⚠️  Evento não encontrado.")
     except ValueError:
-        print("Opção inválida.")
-        continue
+        print("⚠️  ID inválido. Digite um número.")
+
+
+def buscar_evento():
+    termo = input("Digite um termo para buscar(nome, descrição ou local): ").strip()
+    if not termo:
+        print("⚠️  Digite um termo válido")
+        return
     
-    if escolha == 1:
-        criar_evento()
-
-    elif escolha == 2:
-        visualizar_eventos()
-
-    elif escolha == 3:
-        print("Editar eventos (em construção)")
-
-    elif escolha == 4:
-        print("Excluir evento(em construção)")
+    resultados = gerenciador_bd.search_events(termo)
+    if resultados:
+        print(f"\n Resultados para '{termo}':")
+        for evento in resultados:
+            print("\n" + "=" *30)
+            print(evento)
+            print("=" * 30)
 
     else:
-        print("Opção inválida.")
-    
-    repetir = input("\nDeseja continuar no menu?(s/n): ").strip().lower()
-    if repetir != 's':
-        print("Saindo do Módulo de eventos.")
-        break
-
+        print("⚠️  Nenhum evento encontrado.")
