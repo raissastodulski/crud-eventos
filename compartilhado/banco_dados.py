@@ -1,5 +1,5 @@
 import sqlite3
-from pasta_2_eventos.events_object import Event
+from pasta_0_modelos.evento import Evento
 
 class GerenciadorBD:
     def __init__(self, nome_bd="eventos.db"):
