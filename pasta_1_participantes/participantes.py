@@ -146,8 +146,8 @@ while True:
         cadastramentoEvento.visualizar_eventos()
     
     elif(resposta == "6"):
-        import old.mainOld as mainOld
-        mainOld.menu()
+        import compartilhado.menu_principal as menuPrincipal
+        menuPrincipal.executar()
 
     else:
         print("\nRESPOSTA INVALIDA, TENTE NOVAMENTE")

@@ -1,5 +1,5 @@
 import sqlite3
-from pasta_0_modelos.evento import Evento
+from pasta_2_eventos.events_object import Event
 
 class GerenciadorBD:
     def __init__(self, nome_bd="eventos.db"):
@@ -26,8 +26,40 @@ class GerenciadorBD:
             titulo TEXT NOT NULL,
             descricao TEXT,
             data TEXT,
-            local TEXT
-        )
+            hora_inicio TEXT,
+            hora_fim TEXT,
+            publico_alvo TEXT,
+            capacidade INTEGER,
+            local TEXT,
+            endereco TEXT
+        );
+        
+        CREATE TABLE IF NOT EXISTS participantes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT,
+            cpf TEXT,
+            email TEXT,
+            telefone TEXT,
+            data TEXT
+        );
+        
+        CREATE TABLE IF NOT EXISTS atividades (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            nome TEXT,
+            facilitador TEXT,
+            id_evento INTEGER,
+            hora_inicio TEXT,
+            vagas INTEGER,
+            FOREIGN KEY (id_evento) REFERENCES eventos (id)
+        );
+                            
+        CREATE TABLE IF NOT EXISTS inscricoes (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            id_participante INTEGER,
+            id_evento INTEGER,
+            FOREIGN KEY (id_participante) REFERENCES participantes (id),
+            FOREIGN KEY (id_evento) REFERENCES eventos (id)
+        );
         ''')
         self.conn.commit()
     
