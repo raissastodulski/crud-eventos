@@ -42,7 +42,6 @@ class MenuAtividades:
                 input("Pressione Enter para continuar...")
             elif escolha == '3':
                 print("\nVer Detalhes da Atividade")
-                atividade.visualizar_atividade()
                 input("Pressione Enter para continuar...")
             elif escolha == '4':
                 print("\nAtualizar Atividade")
