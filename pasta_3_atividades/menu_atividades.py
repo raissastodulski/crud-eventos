@@ -1,5 +1,8 @@
 import os
+import sys
+sys.path.append('.')
 from pasta_3_atividades import atividade
+
 class MenuAtividades:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
@@ -24,6 +27,9 @@ class MenuAtividades:
     
     def executar(self):
         """Executa o menu de atividades"""
+        # Passar a conexão com o banco de dados para o módulo atividade
+        atividade.gerenciador_bd = self.gerenciador_bd
+        
         while True:
             escolha = self.exibir_menu()
             
