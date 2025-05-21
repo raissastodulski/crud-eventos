@@ -1,14 +1,10 @@
 from datetime import datetime, date, time
-from database import DatabaseManager
-from pasta_2_eventos import events_object
+from pasta_2_eventos.events_object import Event
 
 
-gerenciador_bd = DatabaseManager()
 
 
-eventos = []
-
-def criar_evento():
+def criar_evento(self):
 
     nome_evento = input("Informe Nome do Evento: ").strip()
     descricao_evento = input("\nDescreva o Evento que será realizado: ").strip()
@@ -80,7 +76,7 @@ def criar_evento():
             print("Tipo de evento inválido. Digite 'presencial' ou 'online'.")
         
         
-    evento = events_object(
+    evento = Event(
         nome = nome_evento,
         descricao = descricao_evento,
         data_inicio = data_inicio,
@@ -92,15 +88,7 @@ def criar_evento():
         endereco = local_presencial,
         capacidade = capacidadeMax
     )
-
-
-    if evento.is_valid():
-        gerenciador_bd.create_event("Eventos", evento.to_tuple())
-        eventos.append(evento)
-        print(f"\n✅ Evento {nome_evento} cadastrado com sucesso!")
-
-    else:
-        print("⚠️  Erro: Dados incompletos. Preencha todos os campos obrigatorios.")
+    self.gerenciador_bd.create_event(evento)
 
     tem_atividades = input("O evento terá atividades? (s/n): ").lower()
     if tem_atividades == 's':
@@ -112,30 +100,22 @@ def criar_evento():
 
 
 
-def visualizar_eventos():
-    print("\n>>> Lista de Eventos Cadastrados <<<")
+def visualizar_eventos(self):
+    print("\n>>> Todos Eventos <<<")
+
+    eventos = self.gerenciador_bd.read_all_events()
 
     if not eventos:
         print("⚠️  Nenhum evento cadastrado até o momento.")
         return
 
     for evento in eventos:
-        print("\n--------------------------------")
-        print(f"Nome: {evento['nome']}")
-        print(f"Descrição: {evento['descricao']}")
-        print(f"Início: {evento['data_inicio'].strftime('%d/%m/%Y')} às {evento['hora_inicio'].strftime('%H:%M')}")
-        print(f"Fim: {evento['data_fim'].strftime('%d/%m/%Y')} às {evento['hora_fim'].strftime('%H:%M')}")
-        print(f"Duração: {evento.duracao:.1f} horas")
-        print(f"Público Alvo: {evento['publico_alvo'].capitalize()}")
-        print(f"Tipo: {evento['tipo'].capitalize()}")
-        print(f"Endereço: {evento['endereco']}")
-        if evento['tipo'] == "presencial":
-            print(f"Capacidade Máxima: {evento['capacidade']}")
-        print("-------------------------------")
+        print(evento)
 
 
-def ver_detalhe_evento():
-    if not eventos:
+
+def ver_detalhe_evento(self):
+    if not evento:
         print("⚠️  Nenhum evento cadastrado até o momento.")
         return
 
@@ -143,31 +123,39 @@ def ver_detalhe_evento():
     try:
         id_evento = int(input("\nDigite o ID do evento para ver detalhes: "))
         evento = None
-        for i in eventos:
+        for i in evento:
             if i.id == id_evento:
                 evento = i
                 break
+        evento = self.gerenciador_bd.read_event_by_id(int(id_evento))
         if evento:
             print("\n" + "=" *30)
             print(f"📌 Detalhes do Evento (ID: {evento.id})")
-            print(evento)
+            print(f"ID: {evento.id}")
+            print(f"Título: {evento.titulo}")
+            print(f"Descrição: {evento.descricao}")
+            print(f"Data: {evento.data}")
+            print(f"Local: {evento.local}")
             print("="*30)
         else:
             print("⚠️  Evento não encontrado.")
     except ValueError:
         print("⚠️  ID inválido. Digite um número.")
 
+    
 
-def buscar_evento():
+
+def buscar_evento(self):
     termo = input("Digite um termo para buscar(nome, descrição ou local): ").strip()
     if not termo:
         print("⚠️  Digite um termo válido")
         return
-    
-    resultados = gerenciador_bd.search_events(termo)
-    if resultados:
-        print(f"\n Resultados para '{termo}':")
-        for evento in resultados:
+
+    eventos = self.gerenciador_bd.search_events(termo)
+
+    if eventos:
+        print(f"\n Resultados para '{len(termo)}':")
+        for evento in eventos:
             print("\n" + "=" *30)
             print(evento)
             print("=" * 30)

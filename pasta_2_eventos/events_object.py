@@ -76,17 +76,6 @@ class Event:
 
         )
     
-    def is_valid(self):
-        campos_obrigatorios = [
-            self.nome,
-            self.descricao,
-            self.data_inicio,
-            self.hora_inicio,
-            self.publico_alvo,
-            self.tipo,
-            self.endereco if self.tipo =="presencial" else True
-        ]
-        return all(campos_obrigatorios)
     
     @property
     def duracao(self):
