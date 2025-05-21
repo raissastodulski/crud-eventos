@@ -1,4 +1,4 @@
-from .banco_dados import GerenciadorBD
+from .gerenciador_bd import GerenciadorBD
 from pasta_0_modelos.menu_eventos import MenuEventos
 from pasta_1_participantes.menu_participantes import MenuParticipantes
 from pasta_3_atividades.menu_atividades import MenuAtividades

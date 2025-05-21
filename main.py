@@ -1,5 +1,5 @@
 # Importar do diretório compartilhado
-from compartilhado.banco_dados import GerenciadorBD
+from compartilhado.gerenciador_bd import GerenciadorBD
 from compartilhado.menu_principal import MenuPrincipal
 import os
 

@@ -34,15 +34,20 @@ class CrudEventos:
         """Ver todos os eventos"""
         print("\n===== TODOS OS EVENTOS =====")
         
-        eventos = self.gerenciador_bd.ler_todos_eventos()
-        
-        if not eventos:
-            print("Nenhum evento encontrado.")
+        try:
+            eventos = self.gerenciador_bd.ler_todos_eventos()
+            
+            if not eventos:
+                print("Nenhum evento encontrado.")
+                return []
+            else:
+                for evento in eventos:
+                    if evento:  # Verifica se o evento é válido
+                        print(evento)
+                return eventos
+        except Exception as e:
+            print(f"Erro ao listar eventos: {e}")
             return []
-        else:
-            for evento in eventos:
-                print(evento)
-            return eventos
     
     def ver_detalhes_evento(self, id_evento=None):
         """Ver detalhes de um evento específico"""
