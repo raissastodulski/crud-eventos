@@ -36,10 +36,11 @@ class MenuEventos:
                 input("Pressione Enter para continuar...")
             elif escolha == '2':
                 print("\nVer Todas as Atividades")
-                evento.visualizar_evento()
+                evento.visualizar_eventos()
                 input("Pressione Enter para continuar...")
             elif escolha == '3':
                 print("\nVer Detalhes da Atividade (em desenvolvimento)")
+                evento.ver_detalhe_evento()
                 input("Pressione Enter para continuar...")
             elif escolha == '4':
                 print("\nAtualizar Atividade")
@@ -51,6 +52,7 @@ class MenuEventos:
                 input("Pressione Enter para continuar...")
             elif escolha == '6':
                 print("\nBuscar Atividades (em desenvolvimento)")
+                evento.buscar_evento()
                 input("Pressione Enter para continuar...")
             elif escolha == '0':
                 print("Voltando ao menu principal...")
