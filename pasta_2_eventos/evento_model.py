@@ -1,27 +1,85 @@
+from datetime import datetime
+
 class Evento:
-    def __init__(self, titulo="", descricao="", data="", local="", id=None):
+    def __init__(self, id=None, nome=None, descricao=None, data_inicio=None, hora_inicio= None,
+                 data_fim = None, hora_fim = None, publico_alvo=None, tipo = None, endereco = None, capacidade = None):
         self.id = id
-        self.titulo = titulo
+        self.nome = nome
         self.descricao = descricao
-        self.data = data
-        self.local = local
+        self.data_inicio = data_inicio
+        self.hora_inicio = hora_inicio
+        self.data_fim = data_fim
+        self.hora_fim = hora_fim
+        self.publico_alvo = publico_alvo
+        self.tipo = tipo
+        self.endereco = endereco
+        self.capacidade =capacidade
+
+    def __str__(self):
+        return (
+            f"Evento: {self.nome}\n"
+            f"ID: {self.id}\n"
+            f"Descrição: {self.descricao}\n"
+            f"Inicio: {self.data_inicio} às {self.hora_inicio}\n"
+            f"Término: {self.data_fim} às {self.hora_fim}\n"
+            f"Público-Alvo: {self.publico_alvo}\n"
+            f"Tipo: {self.tipo}\n"
+            f"Endereço: {self.endereco}\n"
+            f"Capacidade Max: {self.capacidade}\n"
+        )    
     
     def para_tupla(self):
         """Converte evento para tupla para operações de banco de dados (sem ID)"""
-        return (self.titulo, self.descricao, self.data, self.local)
+        return (
+            self.nome, 
+            self.descricao, 
+            self.data_inicio, 
+            self.hora_inicio,
+            self.data_fim, 
+            self.hora_fim, 
+            self.publico_alvo, 
+            self.tipo,
+            self.endereco, 
+            self.capacidade)
     
     def para_tupla_com_id(self):
         """Converte evento para tupla para operações de banco de dados (com ID)"""
-        return (self.titulo, self.descricao, self.data, self.local, self.id)
+        return (
+            self.id,
+            self.nome, 
+            self.descricao, 
+            self.data_inicio, 
+            self.hora_inicio,
+            self.data_fim, 
+            self.hora_fim, 
+            self.publico_alvo, 
+            self.tipo,
+            self.endereco, 
+            self.capacidade
+        )
     
     @classmethod
     def de_tupla(cls, dados):
         """Cria um objeto Evento a partir de uma tupla do banco de dados"""
-        id, titulo, descricao, data, local = dados
-        return cls(titulo=titulo, descricao=descricao, data=data, local=local, id=id)
+        id, titulo, descricao, data_incio, hora_inicio, data_fim, hora_fim, publico_alvo, tipo, endereco, capacidade = dados
+        return cls(
+            titulo=titulo, 
+            descricao=descricao, 
+            data_incio=data_incio, 
+            hora_inicio=hora_inicio,
+            data_fim = data_fim,
+            hora_fim = hora_fim,
+            publico_alvo = publico_alvo,
+            tipo = tipo,
+            endereco = endereco,
+            capacidade = capacidade, 
+            id=id
+        )
     
-    def __str__(self):
-        """Representação em string do evento"""
-        data_str = f" | {self.data}" if self.data else ""
-        local_str = f" | {self.local}" if self.local else ""
-        return f"[{self.id}] {self.titulo}{data_str}{local_str}"
+    @property
+    def duracao(self):
+        if all([self.data_inicio, self.hora_fim, self.data_fim, self.hora_fim]):
+            inicio = datetime.combine(self.data_inicio, self.hora_inicio)
+            fim = datetime.combine(self.data_fim, self.hora_fim)
+            return(fim - inicio).total_seconds()/3600
+        return None    
