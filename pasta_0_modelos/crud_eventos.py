@@ -16,14 +16,14 @@ class CrudEventos:
         
         # Validação de data
         while True:
-            data_str = input("Digite a data do evento (AAAA-MM-DD): ")
+            data_str = input("Digite a data do evento (DD-MM-AAAA): ")
             try:
                 # Valida o formato da data
                 if data_str:
-                    datetime.datetime.strptime(data_str, "%Y-%m-%d")
+                    datetime.datetime.strptime(data_str, "%d-%m-%Y")
                 break
             except ValueError:
-                print("Formato de data inválido. Use AAAA-MM-DD.")
+                print("Formato de data inválido. Use DD-MM-AAAA.")
         
         local = input("Digite o local do evento: ")
         
@@ -111,16 +111,16 @@ class CrudEventos:
         
         # Validação de data
         while True:
-            nova_data = input(f"Nova data [{evento.data}] (AAAA-MM-DD): ")
+            nova_data = input(f"Nova data [{evento.data}] (DD-MM-AAAA): ")
             if not nova_data:
                 break
             try:
                 # Valida o formato da data
-                datetime.datetime.strptime(nova_data, "%Y-%m-%d")
+                datetime.datetime.strptime(nova_data, "%d-%m-%Y")
                 evento.data = nova_data
                 break
             except ValueError:
-                print("Formato de data inválido. Use AAAA-MM-DD.")
+                print("Formato de data inválido. Use DD-MM-AAAA.")
         
         novo_local = input(f"Novo local [{evento.local}]: ")
         if novo_local:

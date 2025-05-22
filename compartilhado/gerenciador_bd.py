@@ -1,7 +1,7 @@
 import sqlite3
 
 class GerenciadorBD:
-    def __init__(self, nome_bd="eventos.db"):
+    def __init__(self, nome_bd="crud-eventos.db"):
         self.nome_bd = nome_bd
         self.conn = None
         self.cursor = None

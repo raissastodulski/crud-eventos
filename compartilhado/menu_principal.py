@@ -1,4 +1,3 @@
-from .gerenciador_bd import GerenciadorBD
 from pasta_0_modelos import MenuEventos
 from pasta_1_participantes.menu_participantes import MenuParticipantes
 from pasta_3_atividades.menu_atividades import MenuAtividades
@@ -8,7 +7,6 @@ import os
 class MenuPrincipal:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
-        # Inicializar os submenus
         self.menu_eventos = MenuEventos(gerenciador_bd)
         self.menu_participantes = MenuParticipantes(gerenciador_bd)
         self.menu_atividades = MenuAtividades(gerenciador_bd)
@@ -33,19 +31,15 @@ class MenuPrincipal:
             escolha = self.exibir_menu()
             
             if escolha == '1':
-                # Submenu de Eventos
                 self.menu_eventos.executar()
             elif escolha == '2':
-                # Submenu de Participantes
                 self.menu_participantes.executar()
             elif escolha == '3':
-                # Submenu de Atividades
                 self.menu_atividades.executar()
             elif escolha == '4':
-                # Submenu de Inscrições
                 self.menu_inscricoes.executar()
             elif escolha == '0':
-                print("Saindo da aplicação. Até mais!")
+                print("Finalizando aplicação...")
                 self.gerenciador_bd.fechar()
                 break
             else:
