@@ -1,6 +1,6 @@
 from pasta_0_modelos import MenuEventos
 from pasta_1_participantes.menu_participantes import MenuParticipantes
-from pasta_3_atividades.menu_atividades import MenuAtividades
+from pasta_3_atividades import MenuActivity
 from pasta_4_inscricoes.menu_inscricoes import MenuInscricoes
 import os
 
@@ -9,7 +9,7 @@ class MenuPrincipal:
         self.gerenciador_bd = gerenciador_bd
         self.menu_eventos = MenuEventos(gerenciador_bd)
         self.menu_participantes = MenuParticipantes(gerenciador_bd)
-        self.menu_atividades = MenuAtividades(gerenciador_bd)
+        self.menu_atividades = MenuActivity(gerenciador_bd)
         self.menu_inscricoes = MenuInscricoes(gerenciador_bd)
     
     def limpar_tela(self):

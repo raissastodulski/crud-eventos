@@ -1,18 +1,17 @@
 import os
 import sys
-sys.path.append('.')
+from .crud_activity import CrudActivity
 
-from pasta_3_atividades.crud_activity import CrudActivity
 
 class MenuActivity:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
         self.crud_atividades = CrudActivity(gerenciador_bd)
-    
+
     def limpar_tela(self):
         """Limpa a tela do console"""
-        os.system('cls' if os.name == 'nt' else 'clear')
-    
+        os.system("cls" if os.name == "nt" else "clear")
+
     def exibir_menu(self):
         """Exibe as opções do menu de gerenciamento de eventos"""
         self.limpar_tela()
@@ -26,37 +25,37 @@ class MenuActivity:
         print("0. Voltar ao Menu Principal")
         print("===================================")
         return input("Digite sua escolha: ")
-    
+
     def executar(self):
         """Executa a interface do menu"""
         while True:
             escolha = self.exibir_menu()
-            
-            if escolha == '1':
+
+            if escolha == "1":
                 self.limpar_tela()
                 self.crud_atividades.adicionar_atividade()
                 input("\nPressione Enter para continuar...")
-            elif escolha == '2':
+            elif escolha == "2":
                 self.limpar_tela()
                 self.crud_atividades.ver_todas_atividades()
                 input("\nPressione Enter para continuar...")
-            elif escolha == '3':
+            elif escolha == "3":
                 self.limpar_tela()
                 self.crud_atividades.ver_detalhes_atividades()
                 input("\nPressione Enter para continuar...")
-            elif escolha == '4':
+            elif escolha == "4":
                 self.limpar_tela()
                 self.crud_atividades.atualizar_atividade()
                 input("\nPressione Enter para continuar...")
-            elif escolha == '5':
+            elif escolha == "5":
                 self.limpar_tela()
                 self.crud_atividades.excluir_atividade()
                 input("\nPressione Enter para continuar...")
-            elif escolha == '6':
+            elif escolha == "6":
                 self.limpar_tela()
                 self.crud_atividades.excluir_atividade()
                 input("\nPressione Enter para continuar...")
-            elif escolha == '0':
+            elif escolha == "0":
                 print("Voltando ao menu principal...")
                 break
             else:
