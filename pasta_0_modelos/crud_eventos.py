@@ -25,9 +25,49 @@ class CrudEventos:
             except ValueError:
                 print("Formato de data inválido. Use DD-MM-AAAA.")
         
+        # Validação de hora início
+        while True:
+            hora_inicio = input("Digite a hora de início do evento (HH:MM): ")
+            if not hora_inicio:
+                break
+            try:
+                # Valida o formato da hora
+                datetime.datetime.strptime(hora_inicio, "%H:%M")
+                break
+            except ValueError:
+                print("Formato de hora inválido. Use HH:MM.")
+        
+        # Validação de hora fim
+        while True:
+            hora_fim = input("Digite a hora de término do evento (HH:MM): ")
+            if not hora_fim:
+                break
+            try:
+                # Valida o formato da hora
+                datetime.datetime.strptime(hora_fim, "%H:%M")
+                break
+            except ValueError:
+                print("Formato de hora inválido. Use HH:MM.")
+        
+        publico_alvo = input("Digite o público-alvo do evento: ")
+        
+        # Validação de capacidade (número inteiro)
+        capacidade = None
+        capacidade_str = input("Digite a capacidade do evento (em número de pessoas): ")
+        if capacidade_str and capacidade_str.isdigit():
+            capacidade = int(capacidade_str)
+        elif capacidade_str:
+            print("Aviso: Capacidade inválida. Deve ser um número inteiro.")
+        
         local = input("Digite o local do evento: ")
+        endereco = input("Digite o endereço completo do evento: ")
         
         evento = Evento(titulo=titulo, descricao=descricao, data=data_str, local=local)
+        evento.hora_inicio = hora_inicio if hora_inicio else None
+        evento.hora_fim = hora_fim if hora_fim else None
+        evento.publico_alvo = publico_alvo if publico_alvo else None
+        evento.capacidade = capacidade
+        evento.endereco = endereco if endereco else None
         self.crud_bd_eventos.criar_evento(evento)
         
         return True
@@ -70,7 +110,22 @@ class CrudEventos:
             print(f"Título: {evento.titulo}")
             print(f"Descrição: {evento.descricao}")
             print(f"Data: {evento.data}")
+            
+            # Mostrar campos adicionais
+            if hasattr(evento, 'hora_inicio') and evento.hora_inicio:
+                print(f"Hora de início: {evento.hora_inicio}")
+            if hasattr(evento, 'hora_fim') and evento.hora_fim:
+                print(f"Hora de término: {evento.hora_fim}")
+            if hasattr(evento, 'publico_alvo') and evento.publico_alvo:
+                print(f"Público-alvo: {evento.publico_alvo}")
+            if hasattr(evento, 'capacidade') and evento.capacidade:
+                print(f"Capacidade: {evento.capacidade} pessoas")
+            
             print(f"Local: {evento.local}")
+            
+            if hasattr(evento, 'endereco') and evento.endereco:
+                print(f"Endereço completo: {evento.endereco}")
+            
             return evento
         else:
             print(f"Nenhum evento encontrado com ID {id_evento}")
@@ -98,7 +153,30 @@ class CrudEventos:
         print(f"Título: {evento.titulo}")
         print(f"Descrição: {evento.descricao}")
         print(f"Data: {evento.data}")
+        
+        # Mostrar todos os campos adicionais
+        hora_inicio = getattr(evento, 'hora_inicio', None)
+        if hora_inicio:
+            print(f"Hora de início: {hora_inicio}")
+            
+        hora_fim = getattr(evento, 'hora_fim', None)
+        if hora_fim:
+            print(f"Hora de término: {hora_fim}")
+            
+        publico_alvo = getattr(evento, 'publico_alvo', None)
+        if publico_alvo:
+            print(f"Público-alvo: {publico_alvo}")
+            
+        capacidade = getattr(evento, 'capacidade', None)
+        if capacidade:
+            print(f"Capacidade: {capacidade} pessoas")
+            
         print(f"Local: {evento.local}")
+        
+        endereco = getattr(evento, 'endereco', None)
+        if endereco:
+            print(f"Endereço completo: {endereco}")
+            
         print("\nDigite os novos detalhes (deixe em branco para manter o valor atual):")
         
         novo_titulo = input(f"Novo título [{evento.titulo}]: ")
@@ -122,9 +200,51 @@ class CrudEventos:
             except ValueError:
                 print("Formato de data inválido. Use DD-MM-AAAA.")
         
+        # Validação de hora início
+        while True:
+            nova_hora_inicio = input(f"Nova hora de início [{hora_inicio or ''}] (HH:MM): ")
+            if not nova_hora_inicio:
+                break
+            try:
+                # Valida o formato da hora
+                datetime.datetime.strptime(nova_hora_inicio, "%H:%M")
+                evento.hora_inicio = nova_hora_inicio
+                break
+            except ValueError:
+                print("Formato de hora inválido. Use HH:MM.")
+        
+        # Validação de hora fim
+        while True:
+            nova_hora_fim = input(f"Nova hora de término [{hora_fim or ''}] (HH:MM): ")
+            if not nova_hora_fim:
+                break
+            try:
+                # Valida o formato da hora
+                datetime.datetime.strptime(nova_hora_fim, "%H:%M")
+                evento.hora_fim = nova_hora_fim
+                break
+            except ValueError:
+                print("Formato de hora inválido. Use HH:MM.")
+        
+        novo_publico_alvo = input(f"Novo público-alvo [{publico_alvo or ''}]: ")
+        if novo_publico_alvo:
+            evento.publico_alvo = novo_publico_alvo
+        
+        # Validação de capacidade (número inteiro)
+        nova_capacidade_str = input(f"Nova capacidade [{capacidade or ''}] (em número de pessoas): ")
+        if nova_capacidade_str:
+            if nova_capacidade_str.isdigit():
+                evento.capacidade = int(nova_capacidade_str)
+            else:
+                print("Aviso: Capacidade inválida. Deve ser um número inteiro.")
+        
         novo_local = input(f"Novo local [{evento.local}]: ")
         if novo_local:
             evento.local = novo_local
+            
+        novo_endereco = input(f"Novo endereço completo [{endereco or ''}]: ")
+        if novo_endereco:
+            evento.endereco = novo_endereco
         
         sucesso = self.crud_bd_eventos.atualizar_evento(evento)
         if not sucesso:
@@ -155,7 +275,21 @@ class CrudEventos:
         print(f"Título: {evento.titulo}")
         print(f"Descrição: {evento.descricao}")
         print(f"Data: {evento.data}")
+        
+        # Mostrar todos os campos adicionais
+        if hasattr(evento, 'hora_inicio') and evento.hora_inicio:
+            print(f"Hora de início: {evento.hora_inicio}")
+        if hasattr(evento, 'hora_fim') and evento.hora_fim:
+            print(f"Hora de término: {evento.hora_fim}")
+        if hasattr(evento, 'publico_alvo') and evento.publico_alvo:
+            print(f"Público-alvo: {evento.publico_alvo}")
+        if hasattr(evento, 'capacidade') and evento.capacidade:
+            print(f"Capacidade: {evento.capacidade} pessoas")
+            
         print(f"Local: {evento.local}")
+        
+        if hasattr(evento, 'endereco') and evento.endereco:
+            print(f"Endereço completo: {evento.endereco}")
         
         confirmar = input("\nTem certeza de que deseja excluir este evento? (s/n): ")
         

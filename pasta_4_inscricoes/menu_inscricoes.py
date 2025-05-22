@@ -14,9 +14,10 @@ class MenuInscricoes:
         print("\n===== GERENCIAMENTO DE INSCRIÇÕES =====")
         print("1. Adicionar Inscrição")
         print("2. Ver Todas as Inscrições")
-        print("3. Ver Inscrições por Evento")
-        print("4. Ver Inscrições por Participante")
-        print("5. Cancelar Inscrição")
+        print("3. Ver Inscrições por Atividade")
+        print("4. Ver Inscrições por Evento")
+        print("5. Ver Inscrições por Participante")
+        print("6. Cancelar Inscrição")
         print("0. Voltar ao Menu Principal")
         print("===================================")
         return input("Digite sua escolha: ")
@@ -35,13 +36,17 @@ class MenuInscricoes:
                 input("\nPressione Enter para continuar...")
             elif escolha == '3':
                 self.limpar_tela()
-                self.crud_inscricoes.ver_inscricoes_por_evento()
+                self.crud_inscricoes.ver_inscricoes_por_atividade()
                 input("\nPressione Enter para continuar...")
             elif escolha == '4':
                 self.limpar_tela()
-                self.crud_inscricoes.ver_inscricoes_por_participante()
+                self.crud_inscricoes.ver_inscricoes_por_evento()
                 input("\nPressione Enter para continuar...")
             elif escolha == '5':
+                self.limpar_tela()
+                self.crud_inscricoes.ver_inscricoes_por_participante()
+                input("\nPressione Enter para continuar...")
+            elif escolha == '6':
                 self.limpar_tela()
                 self.crud_inscricoes.cancelar_inscricao()
                 input("\nPressione Enter para continuar...")
