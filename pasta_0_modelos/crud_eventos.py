@@ -1,9 +1,11 @@
 from pasta_0_modelos.evento import Evento
+from pasta_0_modelos.crud_bd_eventos import CrudBDEventos
 import datetime
 
 class CrudEventos:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
+        self.crud_bd_eventos = CrudBDEventos(gerenciador_bd)
     
     def adicionar_evento(self):
         """Adiciona um novo evento"""
@@ -26,7 +28,7 @@ class CrudEventos:
         local = input("Digite o local do evento: ")
         
         evento = Evento(titulo=titulo, descricao=descricao, data=data_str, local=local)
-        self.gerenciador_bd.criar_evento(evento)
+        self.crud_bd_eventos.criar_evento(evento)
         
         return True
     
@@ -35,7 +37,7 @@ class CrudEventos:
         print("\n===== TODOS OS EVENTOS =====")
         
         try:
-            eventos = self.gerenciador_bd.ler_todos_eventos()
+            eventos = self.crud_bd_eventos.ler_todos_eventos()
             
             if not eventos:
                 print("Nenhum evento encontrado.")
@@ -60,7 +62,7 @@ class CrudEventos:
                 return None
             id_evento = int(id_evento)
         
-        evento = self.gerenciador_bd.ler_evento_por_id(id_evento)
+        evento = self.crud_bd_eventos.ler_evento_por_id(id_evento)
         
         if evento:
             print("\nDetalhes do Evento:")
@@ -85,7 +87,7 @@ class CrudEventos:
                 return False
             id_evento = int(id_evento)
         
-        evento = self.gerenciador_bd.ler_evento_por_id(id_evento)
+        evento = self.crud_bd_eventos.ler_evento_por_id(id_evento)
         
         if not evento:
             print(f"Nenhum evento encontrado com ID {id_evento}")
@@ -124,7 +126,7 @@ class CrudEventos:
         if novo_local:
             evento.local = novo_local
         
-        sucesso = self.gerenciador_bd.atualizar_evento(evento)
+        sucesso = self.crud_bd_eventos.atualizar_evento(evento)
         if not sucesso:
             print("Falha ao atualizar o evento.")
             return False
@@ -142,7 +144,7 @@ class CrudEventos:
                 return False
             id_evento = int(id_evento)
         
-        evento = self.gerenciador_bd.ler_evento_por_id(id_evento)
+        evento = self.crud_bd_eventos.ler_evento_por_id(id_evento)
         
         if not evento:
             print(f"Nenhum evento encontrado com ID {id_evento}")
@@ -158,7 +160,7 @@ class CrudEventos:
         confirmar = input("\nTem certeza de que deseja excluir este evento? (s/n): ")
         
         if confirmar.lower() == 's':
-            sucesso = self.gerenciador_bd.deletar_evento(id_evento)
+            sucesso = self.crud_bd_eventos.deletar_evento(id_evento)
             if not sucesso:
                 print("Falha ao excluir o evento.")
                 return False
@@ -178,7 +180,7 @@ class CrudEventos:
             print("O termo de busca não pode estar vazio.")
             return []
         
-        eventos = self.gerenciador_bd.buscar_eventos(termo_busca)
+        eventos = self.crud_bd_eventos.buscar_eventos(termo_busca)
         
         if not eventos:
             print(f"Nenhum evento encontrado correspondente a '{termo_busca}'.")

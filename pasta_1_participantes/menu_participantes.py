@@ -1,67 +1,10 @@
 import os
-
-def atualizar_participante(nome_antigo):
-
-    categoria = 0
-    for participante in participantes:
-        if participante['nome'] == nome_antigo:
-            break
-    else:
-        print(f"Participante com nome '{nome_antigo}' não encontrado.")
-        return
-    while categoria != 5:
-        
-        print("Escolha a categoria que você deseja editar")
-        print("~"*34)
-        print("  Categorias")
-        print("~"*34)
-
-        print("1 - Nome")
-        print("2 - Email")
-        print("3 - CPF")
-        print("4 - Telefone")
-        print("5 - Sair")
-        categoria = int(input("Informe a opção desejada: "))
-
-        if categoria == 1:
-            novo_nome = input("Informe o novo nome do usuario:")
-            for participante in participantes:
-                if participante['nome'] == nome_antigo:
-                    participante['nome'] = novo_nome
-                    nome_antigo = novo_nome
-            
-        
-        elif categoria == 2:
-            novo_email = input("Informe o novo email do usuario:")
-            for participante in participantes:
-                if participante['nome'] == nome_antigo:
-                    participante['email'] = novo_email
-            
-
-        elif categoria == 3:
-            novo_cpf = input("Informe o novo cpf do usuario:")
-            for participante in participantes:
-                if participante['nome'] == nome_antigo:
-                    participante['cpf'] = novo_cpf
-                
-
-        elif categoria == 4:
-            novo_telefone = input("Informe o novo telefone do usuario:")
-            for participante in participantes:
-                if participante['nome'] == nome_antigo:
-                    participante['telefone'] = novo_telefone
-    
-
-        elif categoria == 5:
-            print("Saíndo da edição")
-            break
-
-        else:
-            print("Opção inválida")
+from pasta_1_participantes.participantes import CrudParticipantes
 
 class MenuParticipantes:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
+        self.crud_participantes = CrudParticipantes(gerenciador_bd)
     
     def limpar_tela(self):
         """Limpa a tela do console"""
@@ -87,32 +30,29 @@ class MenuParticipantes:
             escolha = self.exibir_menu()
             
             if escolha == '1':
-                print("\nAdicionar Participante (em desenvolvimento)")
-                input("Pressione Enter para continuar...")
+                self.limpar_tela()
+                self.crud_participantes.adicionar_participante()
+                input("\nPressione Enter para continuar...")
             elif escolha == '2':
-                if not participantes:
-                    print("Nenhum participante cadastrado.")
-                else:
-                    print("\nVer Todos os Participantes ")
-                    print("-" * 40)
-                    for participante in participantes:
-                        print(f"Nome: {participante['nome']}")
-                        print(f"E-mail: {participante['email']}")
-                        print(f"CPF: {participante['cpf']}")
-                        print(f"Telefone: {participante['telefone']}")
-                        print("-" * 40)
+                self.limpar_tela()
+                self.crud_participantes.ver_todos_participantes()
+                input("\nPressione Enter para continuar...")
             elif escolha == '3':
-                print("\nVer Detalhes do Participante (em desenvolvimento)")
-                input("Pressione Enter para continuar...")
+                self.limpar_tela()
+                self.crud_participantes.ver_detalhes_participante()
+                input("\nPressione Enter para continuar...")
             elif escolha == '4':
-                print("\nAtualizar Participante (em desenvolvimento)")
-                input("Pressione Enter para continuar...")
+                self.limpar_tela()
+                self.crud_participantes.atualizar_participante()
+                input("\nPressione Enter para continuar...")
             elif escolha == '5':
-                print("\nExcluir Participante (em desenvolvimento)")
-                input("Pressione Enter para continuar...")
+                self.limpar_tela()
+                self.crud_participantes.excluir_participante()
+                input("\nPressione Enter para continuar...")
             elif escolha == '6':
-                print("\nBuscar Participantes (em desenvolvimento)")
-                input("Pressione Enter para continuar...")
+                self.limpar_tela()
+                self.crud_participantes.buscar_participantes()
+                input("\nPressione Enter para continuar...")
             elif escolha == '0':
                 print("Voltando ao menu principal...")
                 break
