@@ -1,5 +1,5 @@
 import os
-from pasta_0_modelos.crud_eventos import CrudEventos
+from pasta_0_modelos import CrudEventos
 
 class MenuEventos:
     def __init__(self, gerenciador_bd):

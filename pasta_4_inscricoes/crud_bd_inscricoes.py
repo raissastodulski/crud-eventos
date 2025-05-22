@@ -1,6 +1,6 @@
 import sqlite3
 from pasta_4_inscricoes.inscricao import Inscricao
-from pasta_0_modelos.evento import Evento
+from pasta_0_modelos import Evento
 from pasta_1_participantes.participante_model import Participante
 
 class CrudBDInscricoes:

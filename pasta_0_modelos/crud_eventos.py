@@ -1,5 +1,5 @@
-from pasta_0_modelos.evento import Evento
-from pasta_0_modelos.crud_bd_eventos import CrudBDEventos
+from pasta_0_modelos import Evento
+from pasta_0_modelos import CrudBDEventos
 import datetime
 
 class CrudEventos:

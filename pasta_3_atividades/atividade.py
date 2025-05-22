@@ -1,6 +1,6 @@
 from pasta_3_atividades.atividade_model import Atividade
 from pasta_3_atividades.crud_bd_atividades import CrudBDAtividades
-from pasta_0_modelos.crud_bd_eventos import CrudBDEventos
+from pasta_0_modelos import CrudBDEventos
 
 class CrudAtividades:
     def __init__(self, gerenciador_bd):
