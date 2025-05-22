@@ -1,5 +1,5 @@
 from datetime import datetime, date, time
-from pasta_2_eventos.events_object import Event
+from pasta_2_eventos.evento_model import Evento
 
 
 
@@ -76,7 +76,7 @@ def criar_evento(self):
             print("Tipo de evento inválido. Digite 'presencial' ou 'online'.")
         
         
-    evento = Event(
+    evento = Evento(
         nome = nome_evento,
         descricao = descricao_evento,
         data_inicio = data_inicio,
@@ -162,3 +162,55 @@ def buscar_evento(self):
 
     else:
         print("⚠️  Nenhum evento encontrado.")
+
+def excluir_evento():
+    print("\nExcluir evento:")
+
+    for i, evento in enumerate(eventos):
+        print(f"{i+1} - {evento['nome']}")
+    while True:
+        try:
+            ind_evento = int(input("\nDigite o número do evento que deseja excluir:"))
+            if 0 < ind_evento <= len(eventos):
+                evento = eventos[ind_evento - 1]['nome']
+                eventos.pop(ind_evento - 1)
+                print(f"Evento excluido com Sucesso!")
+                break
+            else:
+                print("\n Opção invalida tente novamente.")
+                evento = int(input("\nQual evento gostaria de excluir?"))
+        except ValueError:
+            print("\nTente novamente. Qual evento gostaria de excluir?")
+
+def atualizar_eventos():
+    
+    print("\nAtualizar Evento:")
+    for i, evento in enumerate(eventos):
+        print(f"{i+1} - {evento['nome']}")
+
+    while True:
+        try:
+            edit_evento = int(input("\nDiga o número do evento que deseja editar: "))
+            if 0 <= edit_evento <= len(eventos):
+                evento = eventos[edit_evento - 1]
+                print(f"\nVamos atualizar o evento:")
+
+                evento_campos = [
+                    "nome", "descricao", "data_inicio", "hora_inicio",
+                    "data_fim", "hora_fim", "publico_alvo", "tipo",
+                    "endereco", "capacidade"
+                ]
+                
+                for evento_chave in evento_campos:
+                    evento_atual = evento.get(evento_chave,"")
+                    evento_novo = input(f"{evento_chave.replace('_',' ').capitalize()}(Atual: {evento_atual})")
+                if evento_novo.strip() != "":
+                    evento[evento_chave] = evento_novo
+
+                print("Evento Atualizado!")
+                break
+            else:
+                print("Invalido, tente novamente!")
+                return
+        except ValueError:
+            print("Invalido, Digite um número.")

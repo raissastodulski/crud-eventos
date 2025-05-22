@@ -8,7 +8,6 @@ class MenuEventos:
 
 
     def limpar_tela(self):
-        """Limpa a tela do console"""
         os.system('cls' if os.name == 'nt' else 'clear')   
 
     
@@ -44,7 +43,7 @@ class MenuEventos:
                 input("Pressione Enter para continuar...")
             elif escolha == '4':
                 print("\nAtualizar Atividade")
-                evento.editar_evento()
+                evento.atualizar_eventos()
                 input("Pressione Enter para continuar...")
             elif escolha == '5':
                 print("\nExcluir Atividade ")
