@@ -29,7 +29,6 @@ class Evento:
         )    
     
     def para_tupla(self):
-        """Converte evento para tupla para operações de banco de dados (sem ID)"""
         return (
             self.nome, 
             self.descricao, 
@@ -43,7 +42,6 @@ class Evento:
             self.capacidade)
     
     def para_tupla_com_id(self):
-        """Converte evento para tupla para operações de banco de dados (com ID)"""
         return (
             self.id,
             self.nome, 
@@ -60,7 +58,6 @@ class Evento:
     
     @classmethod
     def de_tupla(cls, dados):
-        """Cria um objeto Evento a partir de uma tupla do banco de dados"""
         id, titulo, descricao, data_incio, hora_inicio, data_fim, hora_fim, publico_alvo, tipo, endereco, capacidade = dados
         return cls(
             titulo=titulo, 

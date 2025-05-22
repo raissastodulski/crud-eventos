@@ -3,7 +3,6 @@ from compartilhado import GerenciadorBD, MenuPrincipal
 import os
 
 def principal():
-    """Ponto de entrada principal da aplicação"""
     # Seta o caminho do banco de dados no diretório atual
     diretorio_atual = os.path.dirname(os.path.abspath(__file__))
     caminho_bd = os.path.join(diretorio_atual, "crud-eventos.db")

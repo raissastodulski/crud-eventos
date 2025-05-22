@@ -8,7 +8,6 @@ class CrudBDInscricoes:
         self.gerenciador_bd = gerenciador_bd
     
     def criar_inscricao(self, inscricao):
-        """Adiciona uma nova inscrição ao banco de dados"""
         try:
             # Verifica se o participante já está inscrito no evento
             self.gerenciador_bd.cursor.execute('''
@@ -32,7 +31,6 @@ class CrudBDInscricoes:
             return None
     
     def ler_todas_inscricoes(self):
-        """Recupera todas as inscrições do banco de dados"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT * FROM inscricoes")
             inscricoes = []
@@ -44,7 +42,6 @@ class CrudBDInscricoes:
             return []
     
     def ler_inscricao_por_id(self, id_inscricao):
-        """Recupera uma única inscrição pelo ID"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT * FROM inscricoes WHERE id=?", (id_inscricao,))
             dados_inscricao = self.gerenciador_bd.cursor.fetchone()
@@ -56,7 +53,6 @@ class CrudBDInscricoes:
             return None
     
     def ler_inscricoes_por_evento(self, id_evento):
-        """Recupera todas as inscrições associadas a um evento"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT * FROM inscricoes WHERE id_evento=?", (id_evento,))
             inscricoes = []
@@ -68,7 +64,6 @@ class CrudBDInscricoes:
             return []
     
     def ler_inscricoes_por_participante(self, id_participante):
-        """Recupera todas as inscrições de um participante"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT * FROM inscricoes WHERE id_participante=?", (id_participante,))
             inscricoes = []
@@ -80,7 +75,6 @@ class CrudBDInscricoes:
             return []
     
     def verificar_inscricao(self, id_participante, id_evento):
-        """Verifica se um participante já está inscrito em um evento"""
         try:
             self.gerenciador_bd.cursor.execute('''
             SELECT * FROM inscricoes 
@@ -93,7 +87,6 @@ class CrudBDInscricoes:
             return False
     
     def deletar_inscricao(self, id_inscricao):
-        """Exclui uma inscrição pelo ID"""
         try:
             self.gerenciador_bd.cursor.execute("DELETE FROM inscricoes WHERE id=?", (id_inscricao,))
             self.gerenciador_bd.conn.commit()
@@ -107,7 +100,6 @@ class CrudBDInscricoes:
             return False
     
     def deletar_inscricao_por_participante_evento(self, id_participante, id_evento):
-        """Exclui uma inscrição pela combinação de participante e evento"""
         try:
             self.gerenciador_bd.cursor.execute('''
             DELETE FROM inscricoes 
@@ -124,7 +116,6 @@ class CrudBDInscricoes:
             return False
     
     def listar_participantes_por_evento(self, id_evento):
-        """Lista todos os participantes inscritos em um evento"""
         try:
             self.gerenciador_bd.cursor.execute('''
             SELECT p.* FROM participantes p
@@ -141,7 +132,6 @@ class CrudBDInscricoes:
             return []
     
     def listar_eventos_por_participante(self, id_participante):
-        """Lista todos os eventos em que um participante está inscrito"""
         try:
             self.gerenciador_bd.cursor.execute('''
             SELECT e.* FROM eventos e
@@ -171,7 +161,6 @@ class CrudBDInscricoes:
             return []
     
     def contar_participantes_por_evento(self, id_evento):
-        """Conta o número de participantes inscritos em um evento"""
         try:
             self.gerenciador_bd.cursor.execute('''
             SELECT COUNT(*) FROM inscricoes

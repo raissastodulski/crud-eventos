@@ -8,7 +8,6 @@ class MenuEventos:
 
 
     def limpar_tela(self):
-        """Limpa a tela do console"""
         os.system('cls' if os.name == 'nt' else 'clear')   
 
     

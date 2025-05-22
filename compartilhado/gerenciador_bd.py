@@ -8,7 +8,6 @@ class GerenciadorBD:
         self.inicializar()
     
     def inicializar(self):
-        """Inicializa a conexão com o banco de dados e cria tabelas se não existirem"""
         try:
             self.conn = sqlite3.connect(self.nome_bd)
             self.cursor = self.conn.cursor()
@@ -18,7 +17,6 @@ class GerenciadorBD:
             print(f"Erro no banco de dados: {e}")
     
     def criar_tabelas(self):
-        """Cria as tabelas se não existirem"""
         # Tabela eventos
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS eventos (
@@ -74,7 +72,6 @@ class GerenciadorBD:
         self.conn.commit()
     
     def fechar(self):
-        """Fecha a conexão com o banco de dados"""
         if self.conn:
             self.conn.close()
             print("Conexão com banco de dados encerrada.")

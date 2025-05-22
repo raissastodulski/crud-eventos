@@ -6,7 +6,6 @@ class CrudBDAtividades:
         self.gerenciador_bd = gerenciador_bd
     
     def criar_atividade(self, atividade):
-        """Adiciona uma nova atividade ao banco de dados"""
         try:
             self.gerenciador_bd.cursor.execute('''
             INSERT INTO atividades (nome, facilitador, id_evento, hora_inicio, vagas)
@@ -20,7 +19,6 @@ class CrudBDAtividades:
             return None
     
     def ler_todas_atividades(self):
-        """Recupera todas as atividades do banco de dados"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT * FROM atividades")
             atividades = []
@@ -32,7 +30,6 @@ class CrudBDAtividades:
             return []
     
     def ler_atividade_por_id(self, id_atividade):
-        """Recupera uma única atividade pelo ID"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT * FROM atividades WHERE id=?", (id_atividade,))
             dados_atividade = self.gerenciador_bd.cursor.fetchone()
@@ -44,7 +41,6 @@ class CrudBDAtividades:
             return None
     
     def ler_atividades_por_evento(self, id_evento):
-        """Recupera todas as atividades associadas a um evento"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT * FROM atividades WHERE id_evento=?", (id_evento,))
             atividades = []
@@ -56,7 +52,6 @@ class CrudBDAtividades:
             return []
     
     def atualizar_atividade(self, atividade):
-        """Atualiza uma atividade existente"""
         try:
             self.gerenciador_bd.cursor.execute('''
             UPDATE atividades
@@ -74,7 +69,6 @@ class CrudBDAtividades:
             return False
     
     def deletar_atividade(self, id_atividade):
-        """Exclui uma atividade pelo ID"""
         try:
             self.gerenciador_bd.cursor.execute("DELETE FROM atividades WHERE id=?", (id_atividade,))
             self.gerenciador_bd.conn.commit()
