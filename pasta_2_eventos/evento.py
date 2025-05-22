@@ -1,5 +1,5 @@
 from datetime import datetime, date, time
-from pasta_2_eventos.events_object import Event
+from pasta_2_eventos.evento_model import Evento
 
 
 
@@ -76,7 +76,7 @@ def criar_evento(self):
             print("Tipo de evento inválido. Digite 'presencial' ou 'online'.")
         
         
-    evento = Event(
+    evento = Evento(
         nome = nome_evento,
         descricao = descricao_evento,
         data_inicio = data_inicio,
