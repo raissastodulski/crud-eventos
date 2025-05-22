@@ -1,10 +1,12 @@
 from .atividade_model import Atividade
+from .crud_bd_atividades import CrudBDAtividades
 import datetime
 
 
 class CrudActivity:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
+        self.crud_atividade = CrudBDAtividades(gerenciador_bd)
 
     def adicionar_atividade(self):
         """Adiciona um novo evento"""
@@ -24,14 +26,14 @@ class CrudActivity:
             local=local,
             vagas=vagas,
         )
-        self.gerenciador_bd.criar_activity(activity)
+        self.crud_atividade.criar_atividade(activity)
 
         return True
 
     def ver_todas_atividades(self):
         print("\n===== TODOS AS ATIVIDADES =====")
 
-        atividades = self.gerenciador_bd.ler_todas_atividades()
+        atividades = self.crud_atividade.ler_todas_atividades()
 
         if not atividades:
             print("Nenhuma atividade encontrada.")
@@ -52,7 +54,7 @@ class CrudActivity:
                 return None
             id_atividade = int(id_atividade)
 
-        atividade = self.gerenciador_bd.ler_atividade_por_id(id_atividade)
+        atividade = self.crud_atividade.ler_atividade_por_id(id_atividade)
 
         if atividade:
             print("\nDetalhes da Atividade:")
@@ -78,7 +80,7 @@ class CrudActivity:
                 return False
             id_atividade = int(id_atividade)
 
-        atividade = self.gerenciador_bd.ler_atividade_por_id(id_atividade)
+        atividade = self.crud_atividade.ler_atividade_por_id(id_atividade)
 
         if not atividade:
             print(f"Nenhuma atividade encontrada com ID {id_atividade}")
@@ -113,7 +115,7 @@ class CrudActivity:
         if novo_vagas:
             atividade.vagas = novo_vagas
 
-        sucesso = self.gerenciador_bd.atualizar_atividade(atividade)
+        sucesso = self.crud_atividade.atualizar_atividade(atividade)
         if not sucesso:
             print("Falha ao atualizar a atividade.")
             return False
@@ -131,7 +133,7 @@ class CrudActivity:
                 return False
             id_atividade = int(id_atividade)
 
-        atividade = self.gerenciador_bd.ler_atividade_por_id(id_atividade)
+        atividade = self.crud_atividade.ler_atividade_por_id(id_atividade)
 
         if not atividade:
             print(f"Nenhuma atividade foi encontrada com ID {id_atividade}")
@@ -148,7 +150,7 @@ class CrudActivity:
         confirmar = input("\nTem certeza de que deseja excluir este evento? (s/n): ")
 
         if confirmar.lower() == "s":
-            sucesso = self.gerenciador_bd.deletar_atividade(id_atividade)
+            sucesso = self.crud_atividade.deletar_atividade(id_atividade)
             if not sucesso:
                 print("Falha ao excluir a atividade.")
                 return False
@@ -168,7 +170,7 @@ class CrudActivity:
             print("O termo de busca não pode estar vazio.")
             return []
 
-        atividades = self.gerenciador_bd.buscar_atividades(termo_busca)
+        atividades = self.crud_atividade.buscar_atividades(termo_busca)
 
         if not atividades:
             print(f"Nenhuma atividade encontrada correspondente a '{termo_busca}'.")
