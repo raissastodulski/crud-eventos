@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import datetime
 from pasta_4_inscricoes.inscricao import Inscricao
-from pasta_0_modelos.evento import Evento
+from pasta_0_modelos import Evento
 from pasta_3_atividades.atividade_model import Atividade
 from pasta_1_participantes.participante_model import Participante
 
@@ -87,7 +87,7 @@ class CrudBDInscricoes:
             
             # Se a data de inscrição não foi fornecida, usar a data atual
             if inscricao.data_inscricao is None:
-                inscricao.data_inscricao = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                inscricao.data_inscricao = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
             
             # Inserir a inscrição
             self.gerenciador_bd.cursor.execute('''
