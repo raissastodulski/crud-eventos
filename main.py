@@ -1,6 +1,5 @@
 # Importar do diretório compartilhado
-from compartilhado.gerenciador_bd import GerenciadorBD
-from compartilhado.menu_principal import MenuPrincipal
+from compartilhado import GerenciadorBD, MenuPrincipal
 import os
 
 def principal():
