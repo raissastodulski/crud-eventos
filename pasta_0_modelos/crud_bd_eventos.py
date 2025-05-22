@@ -1,5 +1,5 @@
 import sqlite3
-from pasta_0_modelos import Evento
+from .evento import Evento
 
 class CrudBDEventos:
     def __init__(self, gerenciador_bd):
