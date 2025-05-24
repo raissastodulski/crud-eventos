@@ -3,7 +3,7 @@ from datetime import datetime
 from pasta_4_inscricoes.inscricao import Inscricao
 from pasta_0_modelos import Evento
 from pasta_3_atividades.atividade_model import Atividade
-from pasta_1_participantes.participante_model import Participante
+from pasta_1_participantes.participante import Participante
 
 class CrudBDInscricoes:
     def __init__(self, gerenciador_bd):

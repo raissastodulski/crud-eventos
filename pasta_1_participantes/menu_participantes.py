@@ -1,5 +1,5 @@
 import os
-from pasta_1_participantes.crud_participantes import CrudParticipantes
+from .crud_participantes import CrudParticipantes
 
 class MenuParticipantes:
     def __init__(self, gerenciador_bd):
@@ -35,11 +35,11 @@ class MenuParticipantes:
                 input("\nPressione Enter para continuar...")
             elif escolha == '2':
                 self.limpar_tela()
-                self.crud_participantes.ver_todos_participantes()
+                self.crud_participantes.visualizar_participantes()
                 input("\nPressione Enter para continuar...")
             elif escolha == '3':
                 self.limpar_tela()
-                self.crud_participantes.ver_detalhes_participante()
+                self.crud_participantes.detalhes_participante()
                 input("\nPressione Enter para continuar...")
             elif escolha == '4':
                 self.limpar_tela()

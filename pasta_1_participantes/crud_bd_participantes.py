@@ -1,5 +1,5 @@
 import sqlite3
-from pasta_1_participantes.participante_model import Participante
+from .participante import Participante
 
 class CrudBDParticipantes:
     def __init__(self, gerenciador_bd):

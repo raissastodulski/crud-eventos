@@ -1,7 +1,32 @@
-from pasta_1_participantes.participante_model import Participante
-from pasta_1_participantes.crud_bd_participantes import CrudBDParticipantes
+from .participante import Participante
+from .crud_bd_participantes import CrudBDParticipantes
+import datetime
+
 
 class CrudParticipantes:
+    @staticmethod
+    def validar_cpf( cpf):
+        # Remove caracteres não numéricos
+        cpf = ''.join(filter(str.isdigit, cpf))
+        
+        if len(cpf) != 11:
+            return False
+        
+        # Não pode ser todos iguais, tipo 11111111111
+        if cpf == cpf[0] * 11:
+            return False
+        
+        # Cálculo do primeiro dígito verificador
+        soma = sum(int(cpf[i]) * (10 - i) for i in range(9))
+        digito1 = (soma * 10 % 11) % 10
+        
+        # Cálculo do segundo dígito verificador
+        soma = sum(int(cpf[i]) * (11 - i) for i in range(10))
+        digito2 = (soma * 10 % 11) % 10
+        
+        return digito1 == int(cpf[9]) and digito2 == int(cpf[10])
+
+
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
         self.crud_bd_participantes = CrudBDParticipantes(gerenciador_bd)
@@ -21,7 +46,7 @@ class CrudParticipantes:
         
         return True
     
-    def ver_todos_participantes(self):
+    def visualizar_participantes(self):
         """Mostrar todos os participantes"""
         print("\n==== LISTAR PARTICIPANTES ====")
         participantes = self.crud_bd_participantes.ler_todos_participantes()
@@ -31,14 +56,14 @@ class CrudParticipantes:
         else:
             print("Não há participantes")
     
-    def ver_detalhes_participantes(self, idParticipante=None):
+    def detalhes_participante(self, idParticipante=None):
         """Ver todos os detalhes de um participante"""
         print("\n==== DETALHES PARTICIPANTES ====")
         if idParticipante is None:
             idParticipante = input("Digite o ID do participante: ")
-        if not idParticipante.isdigit():
-            print("ID inválido, digite um ID válido, por favor")
-            return none
+            if not idParticipante.isdigit():
+                print("ID inválido, digite um ID válido, por favor")
+                return None
         idParticipante = int(idParticipante)
         participante = self.crud_bd_participantes.ler_participante_por_id(idParticipante)
 
@@ -54,6 +79,68 @@ class CrudParticipantes:
         else:
             print("Participante com essa ID não encontrada, tente novamente")
             return None
+        
+    def atualizar_participante(self, idParticipante=None,):
+        """Atualizar um dos participantes"""
+        print("\n==== ATUALIZAR PARTICIPANTES ====")
+        if idParticipante is None:
+            idParticipante = input("Digite o ID do participante: ")
+            if not idParticipante.isdigit():
+                print("ID inválido, tente novamente")
+                return None
+            idParticipante = int(idParticipante)
+        
+        participante = self.crud_bd_participantes.ler_participante_por_id(idParticipante)
+
+        if not participante:
+            print(f"Nenhum participante encontrado com {idParticipante}")
+            return False
+        print("\nInformações do Participante:")
+        print(f"ID: {participante.id}")
+        print(f"Nome: {participante.nome}")
+        print(f"CPF: {participante.cpf}")
+        print(f"Telefone: {participante.telefone}")
+        print(f"Email: {participante.email}")
+        print(f"Data de Nascimento: {participante.data}")
+
+        print("\nDigite os novos detalhes (deixe em branco par amanter o valor atual):")
+        novo_nome = input(f"Nome a atualizar[{participante.nome}]: ")
+        if novo_nome:
+            participante.nome = novo_nome        
+        while True:
+            novo_cpf = input(f"CPF a atualizar [{participante.cpf}]: ")
+            if not novo_cpf:
+                break  # manteve o CPF atual
+            if CrudParticipantes.validar_cpf(novo_cpf):
+                participante.cpf = novo_cpf
+                break
+            else:
+                print("CPF inválido. Tente novamente.")
+        novo_email = input(f"Email a atualizar [{participante.email}]: ")
+        if novo_email:
+            participante.email = novo_email
+
+        novo_telefone = input(f"Telefone a atualizar [{participante.telefone}]: ")
+        if novo_telefone:
+            participante.telefone = novo_telefone
+             # Validação de data
+        while True:
+            nova_data = input(f"Nova data [{participante.data}] (DD-MM-AAAA): ")
+            if not nova_data:
+                break
+            try:
+                # Valida o formato da data
+                datetime.datetime.strptime(nova_data, "%d-%m-%Y")
+                participante.data = nova_data
+                break
+            except ValueError:
+                print("Formato de data inválido. Use DD-MM-AAAA.")
+        sucesso = self.crud_bd_participantes.atualizar_participante(participante)
+        if not sucesso:
+            print("Falha ao atualizar a participante.")
+            return False
+
+        return True
 
     
     def excluir_participante(self, id_participante=None):
