@@ -1,5 +1,5 @@
 import os
-from pasta_1_participantes.participantes import CrudParticipantes
+from pasta_1_participantes.crud_participantes import CrudParticipantes
 
 class MenuParticipantes:
     def __init__(self, gerenciador_bd):

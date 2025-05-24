@@ -22,99 +22,39 @@ class CrudParticipantes:
         return True
     
     def ver_todos_participantes(self):
-        """Ver todos os participantes"""
-        print("\n===== TODOS OS PARTICIPANTES =====")
-        
+        """Mostrar todos os participantes"""
+        print("\n==== LISTAR PARTICIPANTES ====")
         participantes = self.crud_bd_participantes.ler_todos_participantes()
-        
-        if not participantes:
-            print("Nenhum participante encontrado.")
-            return []
-        else:
+        if participantes:
             for participante in participantes:
                 print(participante)
-            return participantes
+        else:
+            print("Não há participantes")
     
-    def ver_detalhes_participante(self, id_participante=None):
-        """Ver detalhes de um participante específico"""
-        print("\n===== DETALHES DO PARTICIPANTE =====")
-        
-        if id_participante is None:
-            id_participante = input("Digite o ID do participante: ")
-            if not id_participante.isdigit():
-                print("ID inválido. Por favor, digite um número.")
-                return None
-            id_participante = int(id_participante)
-        
-        participante = self.crud_bd_participantes.ler_participante_por_id(id_participante)
-        
+    def ver_detalhes_participantes(self, idParticipante=None):
+        """Ver todos os detalhes de um participante"""
+        print("\n==== DETALHES PARTICIPANTES ====")
+        if idParticipante is None:
+            idParticipante = input("Digite o ID do participante: ")
+        if not idParticipante.isdigit():
+            print("ID inválido, digite um ID válido, por favor")
+            return none
+        idParticipante = int(idParticipante)
+        participante = self.crud_bd_participantes.ler_participante_por_id(idParticipante)
+
         if participante:
             print("\nDetalhes do Participante:")
             print(f"ID: {participante.id}")
             print(f"Nome: {participante.nome}")
             print(f"CPF: {participante.cpf}")
-            print(f"Email: {participante.email}")
             print(f"Telefone: {participante.telefone}")
-            if participante.data:
-                print(f"Data de Nascimento: {participante.data}")
+            print(f"Email: {participante.email}")
+            print(f"Data de Nascimento: {participante.data}")
             return participante
         else:
-            print(f"Nenhum participante encontrado com ID {id_participante}")
+            print("Participante com essa ID não encontrada, tente novamente")
             return None
-    
-    def atualizar_participante(self, id_participante=None):
-        """Atualizar um participante existente"""
-        print("\n===== ATUALIZAR PARTICIPANTE =====")
-        
-        if id_participante is None:
-            id_participante = input("Digite o ID do participante para atualizar: ")
-            if not id_participante.isdigit():
-                print("ID inválido. Por favor, digite um número.")
-                return False
-            id_participante = int(id_participante)
-        
-        participante = self.crud_bd_participantes.ler_participante_por_id(id_participante)
-        
-        if not participante:
-            print(f"Nenhum participante encontrado com ID {id_participante}")
-            return False
-        
-        print("\nDetalhes Atuais do Participante:")
-        print(f"ID: {participante.id}")
-        print(f"Nome: {participante.nome}")
-        print(f"CPF: {participante.cpf}")
-        print(f"Email: {participante.email}")
-        print(f"Telefone: {participante.telefone}")
-        if participante.data:
-            print(f"Data de Nascimento: {participante.data}")
-        print("\nDigite os novos detalhes (deixe em branco para manter o valor atual):")
-        
-        novo_nome = input(f"Novo nome [{participante.nome}]: ")
-        if novo_nome:
-            participante.nome = novo_nome
-        
-        novo_cpf = input(f"Novo CPF [{participante.cpf}]: ")
-        if novo_cpf:
-            participante.cpf = novo_cpf
-        
-        novo_email = input(f"Novo email [{participante.email}]: ")
-        if novo_email:
-            participante.email = novo_email
-        
-        novo_telefone = input(f"Novo telefone [{participante.telefone}]: ")
-        if novo_telefone:
-            participante.telefone = novo_telefone
-        
-        nova_data = input(f"Nova data de nascimento [{participante.data}] (AAAA-MM-DD): ")
-        if nova_data:
-            participante.data = nova_data
-        
-        sucesso = self.crud_bd_participantes.atualizar_participante(participante)
-        if not sucesso:
-            print("Falha ao atualizar o participante.")
-            return False
-        
-        return True
+
     
     def excluir_participante(self, id_participante=None):
         """Excluir um participante"""
