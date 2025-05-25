@@ -49,7 +49,10 @@ class CrudEvento:
             hora_fim_str = input("\nInforme a HORA de FIM do evento (hh:mm): ")
             try:
                 hora_fim = datetime.strptime(hora_fim_str, "%H:%M").time()
-                break
+                if hora_fim< hora_inicio:
+                    print("⚠️  A hora final não pode ser anterior à hora de início do evento.")
+                else:
+                    break
             except ValueError:
                 print("⚠️  Hora inválida. Use o formato hh:mm.")
 
@@ -69,7 +72,7 @@ class CrudEvento:
                 break
             elif tipo_evento == "presencial":
                 print("Evento do tipo Presencial")
-                endereco = input("\nInforme o endereço do evento: ").strip()
+                endereco = input("\nInforme o endereço do evento:(Rua - numero - complemento - bairro/estado -) ").strip()
                 while True:
                     try:
                         capacidadeMax = int(input("Quantidade máxima de vagas para esse evento: "))
@@ -205,8 +208,12 @@ class CrudEvento:
             if not nova_data_inicio:
                 break
             try:
-                evento.data_inicio = datetime.strptime(nova_data_inicio, "%d/%m/%Y").date()
-                break
+                data_convertida = datetime.strptime(nova_data_inicio, "%d/%m/%Y").date()
+                if data_convertida<date.today():
+                    print("⚠️  A data não pode ser no passado. Tente novamente")
+                else:    
+                    evento.data_inicio = data_convertida
+                    break
             except ValueError:
                 print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
 
@@ -242,8 +249,12 @@ class CrudEvento:
             if not nova_hora_fim:
                 break
             try:
-                evento.hora_fim = datetime.strptime(nova_hora_fim, "%H:%M").time()
-                break
+                hora_convertida = datetime.strptime(nova_hora_fim, "%H:%M").time()
+                if hora_convertida< evento.hora_inicio:
+                    print("⚠️  A hora final não pode ser anterior à hora de início do evento.")
+                else:
+                    evento.hora_fim = hora_convertida
+                    break
             except ValueError:
                 print("⚠️  Hora inválida. Use o formato hh:mm.")
 
@@ -270,20 +281,24 @@ class CrudEvento:
                 print("⚠️  Opção inválida. Use: presencial ou online.")
 
         # Endereço
-        novo_endereco = input(f"Endereço (atual: {evento.endereco}): ").strip()
-        if novo_endereco:
-            evento.endereco = novo_endereco
+        if evento.tipo =="online":
+            evento.endereco = "não se aplica"
+            evento.capacidade = "Ilimitado"
+        else:
+            novo_endereco = input(f"Endereço (atual: {evento.endereco}): ").strip()
+            if novo_endereco:
+                evento.endereco = novo_endereco
 
-        # Capacidade
-        while True:
-            nova_capacidade = input(f"Capacidade (atual: {evento.capacidade}): ").strip()
-            if not nova_capacidade:
-                break
-            try:
-                evento.capacidade = int(nova_capacidade) if nova_capacidade else None
-                break
-            except ValueError:
-                print("⚠️  Capacidade deve ser um número inteiro.")
+            # Capacidade
+            while True:
+                nova_capacidade = input(f"Capacidade (atual: {evento.capacidade}): ").strip()
+                if not nova_capacidade:
+                    break
+                try:
+                    evento.capacidade = int(nova_capacidade)
+                    break
+                except ValueError:
+                    print("⚠️  Capacidade deve ser um número inteiro.")
 
         # Salvar alterações
         if self.crudBd.atualizar_evento(evento):
