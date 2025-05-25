@@ -108,24 +108,28 @@ class CrudBDEventos:
     def buscar_eventos_por_data(self, data_inicio=None, data_fim=None):
         """Busca eventos por período de data"""
         try:
-            if data_inicio and data_fim:
+            # Converter datas para string se necessário
+            data_inicio_str = data_inicio.isoformat() if data_inicio else None
+            data_fim_str = data_fim.isoformat() if data_fim else None
+            
+            if data_inicio_str and data_fim_str:
                 self.gerenciador_bd.cursor.execute("""
                 SELECT * FROM eventos 
                 WHERE data_inicio >= ? AND data_fim <= ?
                 ORDER BY data_inicio
-                """, (data_inicio, data_fim))
-            elif data_inicio:
+                """, (data_inicio_str, data_fim_str))
+            elif data_inicio_str:
                 self.gerenciador_bd.cursor.execute("""
                 SELECT * FROM eventos 
                 WHERE data_inicio >= ?
                 ORDER BY data_inicio
-                """, (data_inicio,))
-            elif data_fim:
+                """, (data_inicio_str,))
+            elif data_fim_str:
                 self.gerenciador_bd.cursor.execute("""
                 SELECT * FROM eventos 
                 WHERE data_fim <= ?
                 ORDER BY data_inicio
-                """, (data_fim,))
+                """, (data_fim_str,))
             else:
                 return self.ler_todos_eventos()
             
