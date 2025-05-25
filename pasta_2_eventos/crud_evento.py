@@ -7,6 +7,8 @@ class CrudEvento:
         self.gerenciador_bd = gerenciador_bd
         self.crudBd = CrudBDEventos(gerenciador_bd)
 
+
+
     def criar_evento(self):
         print("\n===== ADICIONAR UM NOVO EVENTO =====")
 
@@ -93,16 +95,6 @@ class CrudEvento:
         
         evento_id = self.crudBd.criar_evento(evento)
         
-        if evento_id:
-            # Pergunta se o usuário quer adicionar atividades
-            tem_atividades = input("O evento terá atividades? (s/n): ").lower()
-            if tem_atividades == 's':
-                try:
-                    from pasta_3_atividades.menu_atividades import MenuAtividades
-                    menu_atividades = MenuAtividades(self.gerenciador_bd)
-                    menu_atividades.criar_atividade_para_evento(evento_id)
-                except (ModuleNotFoundError, ImportError):
-                    print("⚠️  Módulo de atividades não encontrado. Prosseguindo sem atividades.")
 
     def visualizar_eventos(self):
         print("\n===== TODOS OS EVENTOS =====")
@@ -117,6 +109,8 @@ class CrudEvento:
                 print(evento)
                 print("-" * 50)
             return eventos
+        
+
 
     def ver_detalhe_evento(self):
         print("\n===== DETALHES DO EVENTO =====")
@@ -144,6 +138,9 @@ class CrudEvento:
                 print("⚠️  Evento não encontrado.")
         except ValueError:
             print("⚠️  ID inválido. Digite um número.")
+            
+
+
 
     def buscar_evento(self, termo=None):
         print("\n===== BUSCAR EVENTOS =====")
@@ -165,37 +162,6 @@ class CrudEvento:
         else:
             print("⚠️  Nenhum evento encontrado.")
 
-    def excluir_evento(self):
-        print("\n===== EXCLUIR EVENTO =====")
-
-        eventos = self.crudBd.ler_todos_eventos()
-        if not eventos:
-            print("⚠️  Nenhum evento cadastrado para excluir.")
-            return
-
-        print("\nEventos disponíveis:")
-        for i, evento in enumerate(eventos):
-            print(f"{i+1} - {evento.nome} (ID: {evento.id})")
-            
-        while True:
-            try:
-                opcao = int(input("\nDigite o número do evento que deseja excluir: "))
-                if 1 <= opcao <= len(eventos):
-                    evento_selecionado = eventos[opcao - 1]
-                    confirmacao = input(f"Tem certeza que deseja excluir o evento '{evento_selecionado.nome}'? (s/n): ").lower()
-                    
-                    if confirmacao == 's':
-                        if self.crudBd.deletar_evento(evento_selecionado.id):
-                            print("✅ Evento excluído com sucesso!")
-                        else:
-                            print("❌ Erro ao excluir evento.")
-                    else:
-                        print("Operação cancelada.")
-                    break
-                else:
-                    print("⚠️  Opção inválida. Tente novamente.")
-            except ValueError:
-                print("⚠️  Digite um número válido.")
 
     def atualizar_evento(self):
         print("\n===== ATUALIZAR EVENTO =====")
@@ -325,53 +291,36 @@ class CrudEvento:
         else:
             print("❌ Erro ao atualizar evento.")
 
-    def listar_eventos_por_data(self):
-        print("\n===== BUSCAR EVENTOS POR DATA =====")
-        
-        data_inicio_str = input("Data início da busca (dd/mm/aaaa) [Enter para ignorar]: ").strip()
-        data_fim_str = input("Data fim da busca (dd/mm/aaaa) [Enter para ignorar]: ").strip()
-        
-        data_inicio = None
-        data_fim = None
-        
-        if data_inicio_str:
-            try:
-                data_inicio = datetime.strptime(data_inicio_str, "%d/%m/%Y").date()
-            except ValueError:
-                print("⚠️  Data de início inválida. Ignorando...")
-                
-        if data_fim_str:
-            try:
-                data_fim = datetime.strptime(data_fim_str, "%d/%m/%Y").date()
-            except ValueError:
-                print("⚠️  Data fim inválida. Ignorando...")
-        
-        eventos = self.crudBd.buscar_eventos_por_data(data_inicio, data_fim)
-        
-        if eventos:
-            print(f"\n{len(eventos)} evento(s) encontrado(s):")
-            for evento in eventos:
-                print("\n" + "=" * 30)
-                print(evento)
-                print("=" * 30)
-        else:
-            print("⚠️  Nenhum evento encontrado no período especificado.")
 
-    def listar_eventos_por_tipo(self):
-        print("\n===== BUSCAR EVENTOS POR TIPO =====")
-        
-        tipo = input("Digite o tipo de evento para buscar: ").strip()
-        if not tipo:
-            print("⚠️  Digite um tipo válido.")
+    def excluir_evento(self):
+        print("\n===== EXCLUIR EVENTO =====")
+
+        eventos = self.crudBd.ler_todos_eventos()
+        if not eventos:
+            print("⚠️  Nenhum evento cadastrado para excluir.")
             return
+
+        print("\nEventos disponíveis:")
+        for i, evento in enumerate(eventos):
+            print(f"{i+1} - {evento.nome} (ID: {evento.id})")
             
-        eventos = self.crudBd.buscar_eventos_por_tipo(tipo)
-        
-        if eventos:
-            print(f"\n{len(eventos)} evento(s) encontrado(s) do tipo '{tipo}':")
-            for evento in eventos:
-                print("\n" + "=" * 30)
-                print(evento)
-                print("=" * 30)
-        else:
-            print(f"⚠️  Nenhum evento encontrado do tipo '{tipo}'.")
+        while True:
+            try:
+                opcao = int(input("\nDigite o número do evento que deseja excluir: "))
+                if 1 <= opcao <= len(eventos):
+                    evento_selecionado = eventos[opcao - 1]
+                    confirmacao = input(f"Tem certeza que deseja excluir o evento '{evento_selecionado.nome}'? (s/n): ").lower()
+                    
+                    if confirmacao == 's':
+                        if self.crudBd.deletar_evento(evento_selecionado.id):
+                            print("✅ Evento excluído com sucesso!")
+                        else:
+                            print("❌ Erro ao excluir evento.")
+                    else:
+                        print("Operação cancelada.")
+                    break
+                else:
+                    print("⚠️  Opção inválida. Tente novamente.")
+            except ValueError:
+                print("⚠️  Digite um número válido.")
+

@@ -22,7 +22,7 @@ class CrudActivity:
         activity = Atividade(
             nome=nome,
             facilitador=facilitador,
-            horario=horario,
+            horario_inicio=horario,
             local=local,
             vagas=vagas,
         )
