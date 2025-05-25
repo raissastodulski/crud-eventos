@@ -95,7 +95,7 @@ class CrudEvento:
             endereco = local_presencial,
             capacidade = capacidadeMax
         )
-        #ajustar aqui
+
         self.crudBd.criar_evento(evento)
 
         #testar se vai linkar
