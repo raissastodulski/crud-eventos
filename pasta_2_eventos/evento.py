@@ -58,19 +58,19 @@ class Evento:
     
     @classmethod
     def de_tupla(cls, dados):
-        id, titulo, descricao, data_incio, hora_inicio, data_fim, hora_fim, publico_alvo, tipo, endereco, capacidade = dados
+        id, nome, descricao, data_inicio, hora_inicio, data_fim, hora_fim, publico_alvo, tipo, endereco, capacidade = dados
         return cls(
-            titulo=titulo, 
+            id=id,
+            nome=nome, 
             descricao=descricao, 
-            data_incio=data_incio, 
+            data_inicio=data_inicio, 
             hora_inicio=hora_inicio,
-            data_fim = data_fim,
-            hora_fim = hora_fim,
-            publico_alvo = publico_alvo,
-            tipo = tipo,
-            endereco = endereco,
-            capacidade = capacidade, 
-            id=id
+            data_fim=data_fim,
+            hora_fim=hora_fim,
+            publico_alvo=publico_alvo,
+            tipo=tipo,
+            endereco=endereco,
+            capacidade=capacidade
         )
     
     @property
