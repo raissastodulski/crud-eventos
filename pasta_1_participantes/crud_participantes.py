@@ -6,21 +6,19 @@ import datetime
 class CrudParticipantes:
     @staticmethod
     def validar_cpf( cpf):
-        # Remove caracteres não numéricos
         cpf = ''.join(filter(str.isdigit, cpf))
         
         if len(cpf) != 11:
             return False
         
-        # Não pode ser todos iguais, tipo 11111111111
         if cpf == cpf[0] * 11:
             return False
         
-        # Cálculo do primeiro dígito verificador
+        
         soma = sum(int(cpf[i]) * (10 - i) for i in range(9))
         digito1 = (soma * 10 % 11) % 10
         
-        # Cálculo do segundo dígito verificador
+     
         soma = sum(int(cpf[i]) * (11 - i) for i in range(10))
         digito2 = (soma * 10 % 11) % 10
         
@@ -47,7 +45,6 @@ class CrudParticipantes:
         return True
     
     def visualizar_participantes(self):
-        """Mostrar todos os participantes"""
         print("\n==== LISTAR PARTICIPANTES ====")
         participantes = self.crud_bd_participantes.ler_todos_participantes()
         if participantes:
@@ -57,7 +54,6 @@ class CrudParticipantes:
             print("Não há participantes")
     
     def detalhes_participante(self, idParticipante=None):
-        """Ver todos os detalhes de um participante"""
         print("\n==== DETALHES PARTICIPANTES ====")
         if idParticipante is None:
             idParticipante = input("Digite o ID do participante: ")
@@ -81,7 +77,6 @@ class CrudParticipantes:
             return None
         
     def atualizar_participante(self, idParticipante=None,):
-        """Atualizar um dos participantes"""
         print("\n==== ATUALIZAR PARTICIPANTES ====")
         if idParticipante is None:
             idParticipante = input("Digite o ID do participante: ")
@@ -110,7 +105,7 @@ class CrudParticipantes:
         while True:
             novo_cpf = input(f"CPF a atualizar [{participante.cpf}]: ")
             if not novo_cpf:
-                break  # manteve o CPF atual
+                break 
             if CrudParticipantes.validar_cpf(novo_cpf):
                 participante.cpf = novo_cpf
                 break
@@ -123,13 +118,12 @@ class CrudParticipantes:
         novo_telefone = input(f"Telefone a atualizar [{participante.telefone}]: ")
         if novo_telefone:
             participante.telefone = novo_telefone
-             # Validação de data
         while True:
             nova_data = input(f"Nova data [{participante.data}] (DD-MM-AAAA): ")
             if not nova_data:
                 break
             try:
-                # Valida o formato da data
+
                 datetime.datetime.strptime(nova_data, "%d-%m-%Y")
                 participante.data = nova_data
                 break
