@@ -1,16 +1,17 @@
 from datetime import datetime, date, time
-from pasta_2_eventos.evento_model import Evento
-#falta importar crud_bd_eventos/CrudBDEventos
+from .evento import Evento
+from .crud_bd_eventos import CrudBDEventos
 
 
 
 class CrudEvento:
-    def __init__(self):
-        pass
-
+    def __init__(self,gerenciador_bd):
+        self.gerenciador_bd = gerenciador_bd
+        self.crudBd = CrudBDEventos(gerenciador_bd)
 
 
     def criar_evento(self):
+        print("\n===== ADICIONAR UM NOVO EVENTO =====")
 
         nome_evento = input("Informe Nome do Evento: ").strip()
         descricao_evento = input("\nDescreva o Evento que será realizado: ").strip()
@@ -94,38 +95,42 @@ class CrudEvento:
             endereco = local_presencial,
             capacidade = capacidadeMax
         )
-        self.gerenciador_bd.create_event(evento)
+        #ajustar aqui
+        self.crudBd.criar_evento(evento)
 
+        #testar se vai linkar
         tem_atividades = input("O evento terá atividades? (s/n): ").lower()
         if tem_atividades == 's':
             try:
-                from pasta_3_atividades import atividade
-                atividade.menu_atividades(evento["id"])
+                from pasta_3_atividades import menu_activity
+                menu_activity(evento["id"])
             except ModuleNotFoundError:
                 print("⚠️  Módulo de atividades não encontrado. Avise o responsável.")
 
 
 
     def visualizar_eventos(self):
-        print("\n>>> Todos Eventos <<<")
+        print("\n===== TODOS OS EVENTOS =====")
 
-        eventos = self.gerenciador_bd.read_all_events()
+        eventos = self.crudBd.ler_todos_eventos(evento)
 
         if not eventos:
             print("⚠️  Nenhum evento cadastrado até o momento.")
             return
-
-        for evento in eventos:
-            print(evento)
+        else:
+            for evento in eventos:
+                print(evento)
+            return eventos
 
 
 
     def ver_detalhe_evento(self):
+        print("\n===== DETALHES DO EVENTO =====")
         if not evento:
             print("⚠️  Nenhum evento cadastrado até o momento.")
             return
 
-        visualizar_eventos()
+        
         try:
             id_evento = int(input("\nDigite o ID do evento para ver detalhes: "))
             evento = None
@@ -133,7 +138,7 @@ class CrudEvento:
                 if i.id == id_evento:
                     evento = i
                     break
-            evento = self.gerenciador_bd.read_event_by_id(int(id_evento))
+            evento = self.crudBd.ler_evento_por_id(int(id_evento))
             if evento:
                 print("\n" + "=" *30)
                 print(f"📌 Detalhes do Evento (ID: {evento.id})")
@@ -151,13 +156,16 @@ class CrudEvento:
         
 
 
-    def buscar_evento(self):
-        termo = input("Digite um termo para buscar(nome, descrição ou local): ").strip()
+    def buscar_evento(self, termo = None):
+        print("\n===== BUSCAR ATIVIDADES =====")
+        
+        if termo is None:
+            termo = input("Digite um termo para buscar(nome, descrição ou local): ").strip()
         if not termo:
             print("⚠️  Digite um termo válido")
             return
 
-        eventos = self.gerenciador_bd.search_events(termo)
+        eventos = self.crudBd.buscar_eventos(termo)
 
         if eventos:
             print(f"\n Resultados para '{len(termo)}':")
@@ -169,8 +177,8 @@ class CrudEvento:
         else:
             print("⚠️  Nenhum evento encontrado.")
 
-    def excluir_evento():
-        print("\nExcluir evento:")
+    def excluir_evento(self):
+        print("\n===== EXCLUIR EVENTO =====")
 
         for i, evento in enumerate(eventos):
             print(f"{i+1} - {evento['nome']}")
@@ -188,7 +196,7 @@ class CrudEvento:
             except ValueError:
                 print("\nTente novamente. Qual evento gostaria de excluir?")
 
-    def atualizar_eventos():
+    def atualizar_eventos(self):
         
         print("\nAtualizar Evento:")
         for i, evento in enumerate(eventos):

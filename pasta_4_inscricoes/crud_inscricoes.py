@@ -1,7 +1,7 @@
 from datetime import datetime
 from pasta_4_inscricoes.inscricao import Inscricao
 from pasta_4_inscricoes.crud_bd_inscricoes import CrudBDInscricoes
-from pasta_0_modelos.crud_bd_eventos import CrudBDEventos
+from pasta_2_eventos import CrudBDEventos
 from pasta_1_participantes.crud_bd_participantes import CrudBDParticipantes
 from pasta_3_atividades.crud_bd_atividades import CrudBDAtividades
 

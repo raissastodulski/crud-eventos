@@ -12,7 +12,7 @@ class CrudBDEventos:
             INSERT INTO eventos (titulo, descricao, data, hora_inicio, hora_fim, 
                                 publico_alvo, capacidade, local, endereco)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (evento.titulo, evento.descricao, evento.data, 
+            ''', (evento.nome, evento.descricao, evento.data, 
                  getattr(evento, 'hora_inicio', None), 
                  getattr(evento, 'hora_fim', None),
                  getattr(evento, 'publico_alvo', None), 
@@ -20,7 +20,7 @@ class CrudBDEventos:
                  evento.local, 
                  getattr(evento, 'endereco', None)))
             self.gerenciador_bd.conn.commit()
-            print(f"Evento '{evento.titulo}' adicionado com sucesso.")
+            print(f"Evento '{evento.nome}' adicionado com sucesso.")
             return self.gerenciador_bd.cursor.lastrowid
         except sqlite3.Error as e:
             print(f"Erro ao criar evento: {e}")
@@ -35,7 +35,7 @@ class CrudBDEventos:
                 try:
                     if len(dados_evento) >= 10:  # Verifica se tem todos os campos necessários
                         evento = Evento(
-                            titulo=dados_evento[1],
+                            nome=dados_evento[1],
                             descricao=dados_evento[2],
                             data=dados_evento[3],
                             local=dados_evento[8],
@@ -64,7 +64,7 @@ class CrudBDEventos:
             dados_evento = self.gerenciador_bd.cursor.fetchone()
             if dados_evento:
                 evento = Evento(
-                    titulo=dados_evento[1],
+                    nome=dados_evento[1],
                     descricao=dados_evento[2],
                     data=dados_evento[3],
                     local=dados_evento[8],
@@ -90,7 +90,7 @@ class CrudBDEventos:
             SET titulo=?, descricao=?, data=?, hora_inicio=?, hora_fim=?, 
                 publico_alvo=?, capacidade=?, local=?, endereco=?
             WHERE id=?
-            ''', (evento.titulo, evento.descricao, evento.data, 
+            ''', (evento.nome, evento.descricao, evento.data, 
                  getattr(evento, 'hora_inicio', None), 
                  getattr(evento, 'hora_fim', None),
                  getattr(evento, 'publico_alvo', None), 
@@ -100,7 +100,7 @@ class CrudBDEventos:
                  evento.id))
             self.gerenciador_bd.conn.commit()
             if self.gerenciador_bd.cursor.rowcount > 0:
-                print(f"Evento '{evento.titulo}' atualizado com sucesso.")
+                print(f"Evento '{evento.nome}' atualizado com sucesso.")
                 return True
             print(f"Nenhum evento encontrado com ID {evento.id}")
             return False
@@ -134,7 +134,7 @@ class CrudBDEventos:
             eventos = []
             for dados_evento in self.gerenciador_bd.cursor.fetchall():
                 evento = Evento(
-                    titulo=dados_evento[1],
+                    nome=dados_evento[1],
                     descricao=dados_evento[2],
                     data=dados_evento[3],
                     local=dados_evento[8],

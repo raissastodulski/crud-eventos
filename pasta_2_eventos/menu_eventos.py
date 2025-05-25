@@ -1,10 +1,13 @@
 import os
+import sys
+from .crud_evento import CrudEvento
 
-from pasta_2_eventos import evento
+
 class MenuEventos:
 
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
+        self.crud_evento = CrudEvento(gerenciador_bd)
 
 
     def limpar_tela(self):
@@ -31,27 +34,27 @@ class MenuEventos:
             
             if escolha == '1':
                 print("\nAdicionar Atividade")
-                evento.criar_evento()
+                self.crud_evento.criar_evento()
                 input("Pressione Enter para continuar...")
             elif escolha == '2':
                 print("\nVer Todas as Atividades")
-                evento.visualizar_eventos()
+                self.crud_evento.visualizar_eventos()
                 input("Pressione Enter para continuar...")
             elif escolha == '3':
                 print("\nVer Detalhes da Atividade (em desenvolvimento)")
-                evento.ver_detalhe_evento()
+                self.crud_evento.ver_detalhe_evento()
                 input("Pressione Enter para continuar...")
             elif escolha == '4':
                 print("\nAtualizar Atividade")
-                evento.atualizar_eventos()
+                self.crud_evento.atualizar_eventos()
                 input("Pressione Enter para continuar...")
             elif escolha == '5':
                 print("\nExcluir Atividade ")
-                evento.excluir_evento()
+                self.crud_evento.excluir_evento()
                 input("Pressione Enter para continuar...")
             elif escolha == '6':
                 print("\nBuscar Atividades (em desenvolvimento)")
-                evento.buscar_evento()
+                self.crud_evento.buscar_evento()
                 input("Pressione Enter para continuar...")
             elif escolha == '0':
                 print("Voltando ao menu principal...")

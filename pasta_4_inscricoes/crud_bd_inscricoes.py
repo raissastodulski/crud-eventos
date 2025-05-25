@@ -1,7 +1,7 @@
 import sqlite3
 from datetime import datetime
 from pasta_4_inscricoes.inscricao import Inscricao
-from pasta_0_modelos import Evento
+from pasta_2_eventos import Evento
 from pasta_3_atividades.atividade_model import Atividade
 from pasta_1_participantes.participante import Participante
 
