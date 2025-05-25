@@ -21,8 +21,6 @@ class MenuEventos:
         print("4. Atualizar Evento")
         print("5. Excluir Evento")
         print("6. Buscar Eventos")
-        print("7. Buscar Eventos por Data")
-        print("8. Buscar Eventos por Tipo")
         print("0. Voltar ao Menu Principal")
         print("===================================")
         return input("Digite sua escolha: ")   
