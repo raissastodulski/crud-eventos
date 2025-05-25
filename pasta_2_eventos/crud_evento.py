@@ -65,7 +65,7 @@ class CrudEvento:
             if tipo_evento == "online":
                 print("Evento do tipo Online")
                 endereco = "Online"
-                capacidadeMax = None
+                capacidadeMax = "Ilimitado"
                 break
             elif tipo_evento == "presencial":
                 print("Evento do tipo Presencial")
