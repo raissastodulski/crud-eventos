@@ -9,16 +9,10 @@ class CrudBDEventos:
         """Adiciona um novo evento ao banco de dados"""
         try:
             self.gerenciador_bd.cursor.execute('''
-            INSERT INTO eventos (titulo, descricao, data, hora_inicio, hora_fim, 
-                                publico_alvo, capacidade, local, endereco)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            ''', (evento.nome, evento.descricao, evento.data, 
-                 getattr(evento, 'hora_inicio', None), 
-                 getattr(evento, 'hora_fim', None),
-                 getattr(evento, 'publico_alvo', None), 
-                 getattr(evento, 'capacidade', None),
-                 evento.local, 
-                 getattr(evento, 'endereco', None)))
+            INSERT INTO eventos (nome, descricao, data_inicio, hora_inicio, data_fim, hora_fim, 
+                                publico_alvo, tipo, endereco, capacidade)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            ''', evento.para_tupla())
             self.gerenciador_bd.conn.commit()
             print(f"Evento '{evento.nome}' adicionado com sucesso.")
             return self.gerenciador_bd.cursor.lastrowid
@@ -33,20 +27,8 @@ class CrudBDEventos:
             eventos = []
             for dados_evento in self.gerenciador_bd.cursor.fetchall():
                 try:
-                    if len(dados_evento) >= 10:  # Verifica se tem todos os campos necessários
-                        evento = Evento(
-                            nome=dados_evento[1],
-                            descricao=dados_evento[2],
-                            data=dados_evento[3],
-                            local=dados_evento[8],
-                            id=dados_evento[0]
-                        )
-                        # Adiciona os outros atributos
-                        evento.hora_inicio = dados_evento[4]
-                        evento.hora_fim = dados_evento[5]
-                        evento.publico_alvo = dados_evento[6]
-                        evento.capacidade = dados_evento[7]
-                        evento.endereco = dados_evento[9]
+                    if len(dados_evento) >= 11:  # Verifica se tem todos os campos necessários
+                        evento = Evento.de_tupla(dados_evento)
                         eventos.append(evento)
                     else:
                         print(f"Aviso: Registro de evento incompleto: {dados_evento}")
@@ -63,20 +45,7 @@ class CrudBDEventos:
             self.gerenciador_bd.cursor.execute("SELECT * FROM eventos WHERE id=?", (id_evento,))
             dados_evento = self.gerenciador_bd.cursor.fetchone()
             if dados_evento:
-                evento = Evento(
-                    nome=dados_evento[1],
-                    descricao=dados_evento[2],
-                    data=dados_evento[3],
-                    local=dados_evento[8],
-                    id=dados_evento[0]
-                )
-                # Adiciona os outros atributos
-                evento.hora_inicio = dados_evento[4]
-                evento.hora_fim = dados_evento[5]
-                evento.publico_alvo = dados_evento[6]
-                evento.capacidade = dados_evento[7]
-                evento.endereco = dados_evento[9]
-                return evento
+                return Evento.de_tupla(dados_evento)
             return None
         except sqlite3.Error as e:
             print(f"Erro ao recuperar evento: {e}")
@@ -87,17 +56,10 @@ class CrudBDEventos:
         try:
             self.gerenciador_bd.cursor.execute('''
             UPDATE eventos
-            SET titulo=?, descricao=?, data=?, hora_inicio=?, hora_fim=?, 
-                publico_alvo=?, capacidade=?, local=?, endereco=?
+            SET nome=?, descricao=?, data_inicio=?, hora_inicio=?, data_fim=?, hora_fim=?, 
+                publico_alvo=?, tipo=?, endereco=?, capacidade=?
             WHERE id=?
-            ''', (evento.nome, evento.descricao, evento.data, 
-                 getattr(evento, 'hora_inicio', None), 
-                 getattr(evento, 'hora_fim', None),
-                 getattr(evento, 'publico_alvo', None), 
-                 getattr(evento, 'capacidade', None),
-                 evento.local, 
-                 getattr(evento, 'endereco', None),
-                 evento.id))
+            ''', (*evento.para_tupla(), evento.id))
             self.gerenciador_bd.conn.commit()
             if self.gerenciador_bd.cursor.rowcount > 0:
                 print(f"Evento '{evento.nome}' atualizado com sucesso.")
@@ -123,31 +85,79 @@ class CrudBDEventos:
             return False
     
     def buscar_eventos(self, termo_busca):
-        """Busca eventos contendo o termo de busca no título ou descrição"""
+        """Busca eventos contendo o termo de busca no nome, descrição, tipo ou endereço"""
         try:
             padrao_busca = f"%{termo_busca}%"
             self.gerenciador_bd.cursor.execute("""
             SELECT * FROM eventos 
-            WHERE titulo LIKE ? OR descricao LIKE ? OR local LIKE ?
-            """, (padrao_busca, padrao_busca, padrao_busca))
+            WHERE nome LIKE ? OR descricao LIKE ? OR tipo LIKE ? OR endereco LIKE ?
+            """, (padrao_busca, padrao_busca, padrao_busca, padrao_busca))
             
             eventos = []
             for dados_evento in self.gerenciador_bd.cursor.fetchall():
-                evento = Evento(
-                    nome=dados_evento[1],
-                    descricao=dados_evento[2],
-                    data=dados_evento[3],
-                    local=dados_evento[8],
-                    id=dados_evento[0]
-                )
-                # Adiciona os outros atributos
-                evento.hora_inicio = dados_evento[4]
-                evento.hora_fim = dados_evento[5]
-                evento.publico_alvo = dados_evento[6]
-                evento.capacidade = dados_evento[7]
-                evento.endereco = dados_evento[9]
-                eventos.append(evento)
+                try:
+                    evento = Evento.de_tupla(dados_evento)
+                    eventos.append(evento)
+                except Exception as ex:
+                    print(f"Erro ao processar evento na busca: {ex}")
             return eventos
         except sqlite3.Error as e:
             print(f"Erro ao buscar eventos: {e}")
+            return []
+    
+    def buscar_eventos_por_data(self, data_inicio=None, data_fim=None):
+        """Busca eventos por período de data"""
+        try:
+            if data_inicio and data_fim:
+                self.gerenciador_bd.cursor.execute("""
+                SELECT * FROM eventos 
+                WHERE data_inicio >= ? AND data_fim <= ?
+                ORDER BY data_inicio
+                """, (data_inicio, data_fim))
+            elif data_inicio:
+                self.gerenciador_bd.cursor.execute("""
+                SELECT * FROM eventos 
+                WHERE data_inicio >= ?
+                ORDER BY data_inicio
+                """, (data_inicio,))
+            elif data_fim:
+                self.gerenciador_bd.cursor.execute("""
+                SELECT * FROM eventos 
+                WHERE data_fim <= ?
+                ORDER BY data_inicio
+                """, (data_fim,))
+            else:
+                return self.ler_todos_eventos()
+            
+            eventos = []
+            for dados_evento in self.gerenciador_bd.cursor.fetchall():
+                try:
+                    evento = Evento.de_tupla(dados_evento)
+                    eventos.append(evento)
+                except Exception as ex:
+                    print(f"Erro ao processar evento na busca por data: {ex}")
+            return eventos
+        except sqlite3.Error as e:
+            print(f"Erro ao buscar eventos por data: {e}")
+            return []
+    
+    def buscar_eventos_por_tipo(self, tipo):
+        """Busca eventos por tipo"""
+        try:
+            self.gerenciador_bd.cursor.execute("""
+            SELECT * FROM eventos 
+            WHERE tipo LIKE ?
+            ORDER BY data_inicio
+            """, (f"%{tipo}%",))
+            
+            eventos = []
+            for dados_evento in self.gerenciador_bd.cursor.fetchall():
+                try:
+                    evento = Evento.de_tupla(dados_evento)
+                    eventos.append(evento)
+                except Exception as ex:
+                    print(f"Erro ao processar evento na busca por tipo: {ex}")
+            return eventos
+        except sqlite3.Error as e:
+            print(f"Erro ao buscar eventos por tipo: {e}")
             return []

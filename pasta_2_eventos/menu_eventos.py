@@ -9,55 +9,72 @@ class MenuEventos:
         self.gerenciador_bd = gerenciador_bd
         self.crud_evento = CrudEvento(gerenciador_bd)
 
-
     def limpar_tela(self):
         os.system('cls' if os.name == 'nt' else 'clear')   
 
-    
     def exibir_menu(self):
         self.limpar_tela()
         print("\n===== GERENCIAMENTO DE EVENTOS =====")
         print("1. Adicionar Evento")
         print("2. Ver Todos os Eventos")
-        print("3. Ver Detalhes do Eventos")
-        print("4. Atualizar Eventos")
-        print("5. Excluir Eventos")
+        print("3. Ver Detalhes do Evento")
+        print("4. Atualizar Evento")
+        print("5. Excluir Evento")
         print("6. Buscar Eventos")
+        print("7. Buscar Eventos por Data")
+        print("8. Buscar Eventos por Tipo")
         print("0. Voltar ao Menu Principal")
         print("===================================")
         return input("Digite sua escolha: ")   
     
     def executar(self):
-        
         while True:
             escolha = self.exibir_menu()
             
             if escolha == '1':
-                print("\nAdicionar Atividade")
+                print("\n--- Adicionar Evento ---")
                 self.crud_evento.criar_evento()
-                input("Pressione Enter para continuar...")
+                input("\nPressione Enter para continuar...")
+                
             elif escolha == '2':
-                print("\nVer Todas as Atividades")
+                print("\n--- Ver Todos os Eventos ---")
                 self.crud_evento.visualizar_eventos()
-                input("Pressione Enter para continuar...")
+                input("\nPressione Enter para continuar...")
+                
             elif escolha == '3':
-                print("\nVer Detalhes da Atividade (em desenvolvimento)")
+                print("\n--- Ver Detalhes do Evento ---")
                 self.crud_evento.ver_detalhe_evento()
-                input("Pressione Enter para continuar...")
+                input("\nPressione Enter para continuar...")
+                
             elif escolha == '4':
-                print("\nAtualizar Atividade")
-                self.crud_evento.atualizar_eventos()
-                input("Pressione Enter para continuar...")
+                print("\n--- Atualizar Evento ---")
+                self.crud_evento.atualizar_evento()
+                input("\nPressione Enter para continuar...")
+                
             elif escolha == '5':
-                print("\nExcluir Atividade ")
+                print("\n--- Excluir Evento ---")
                 self.crud_evento.excluir_evento()
-                input("Pressione Enter para continuar...")
+                input("\nPressione Enter para continuar...")
+                
             elif escolha == '6':
-                print("\nBuscar Atividades (em desenvolvimento)")
+                print("\n--- Buscar Eventos ---")
                 self.crud_evento.buscar_evento()
-                input("Pressione Enter para continuar...")
+                input("\nPressione Enter para continuar...")
+                
+            elif escolha == '7':
+                print("\n--- Buscar Eventos por Data ---")
+                self.crud_evento.listar_eventos_por_data()
+                input("\nPressione Enter para continuar...")
+                
+            elif escolha == '8':
+                print("\n--- Buscar Eventos por Tipo ---")
+                self.crud_evento.listar_eventos_por_tipo()
+                input("\nPressione Enter para continuar...")
+                
             elif escolha == '0':
                 print("Voltando ao menu principal...")
                 break
+                
             else:
-                input("Escolha inválida. Pressione Enter para continuar...")
+                print("❌ Escolha inválida. Tente novamente.")
+                input("Pressione Enter para continuar...")

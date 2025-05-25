@@ -2,13 +2,10 @@ from datetime import datetime, date, time
 from .evento import Evento
 from .crud_bd_eventos import CrudBDEventos
 
-
-
 class CrudEvento:
-    def __init__(self,gerenciador_bd):
+    def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
         self.crudBd = CrudBDEventos(gerenciador_bd)
-
 
     def criar_evento(self):
         print("\n===== ADICIONAR UM NOVO EVENTO =====")
@@ -26,6 +23,7 @@ class CrudEvento:
                     break
             except ValueError:
                 print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
+        
         while True:
             hora_inicio_str = input("\nInforme a HORA de INÍCIO do evento (hh:mm): ")
             try:
@@ -35,7 +33,7 @@ class CrudEvento:
                 print("⚠️  Hora inválida. Use o formato hh:mm.")
 
         while True:    
-            data_fim_str = input(f"\nInforme a DATA de FIM  do evento {nome_evento} (dd/mm/aaaa)")
+            data_fim_str = input(f"\nInforme a DATA de FIM do evento {nome_evento} (dd/mm/aaaa): ")
             try:           
                 data_fim = datetime.strptime(data_fim_str, "%d/%m/%Y").date()
                 if data_fim < data_inicio:
@@ -46,7 +44,7 @@ class CrudEvento:
                 print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
 
         while True:
-            hora_fim_str = input("\nInforme a HORA de FIM do evento (hh:mm):")
+            hora_fim_str = input("\nInforme a HORA de FIM do evento (hh:mm): ")
             try:
                 hora_fim = datetime.strptime(hora_fim_str, "%H:%M").time()
                 break
@@ -54,65 +52,62 @@ class CrudEvento:
                 print("⚠️  Hora inválida. Use o formato hh:mm.")
 
         while True:
-            publico_alvo = input("Qual será o Publico Alvo? (Adulto/Juvenil/Infantil)").strip().lower()
-            if publico_alvo in ["adulto","juvenil","infantil"]:
+            publico_alvo = input("Qual será o Público Alvo? (Adulto/Juvenil/Infantil): ").strip().lower()
+            if publico_alvo in ["adulto", "juvenil", "infantil"]:
                 break
             else:
                 print("⚠️  Opção inválida. Informe Adulto, Juvenil ou Infantil.")
 
         while True:        
-            local = input("Informe se o evento será Presencial OU Online: ").strip().lower()
-            if(local =="online"):
+            tipo_evento = input("Informe se o evento será Presencial OU Online: ").strip().lower()
+            if tipo_evento == "online":
                 print("Evento do tipo Online")
-                local_presencial = "Não se Aplica"
+                endereco = "Online"
                 capacidadeMax = None
                 break
-
-            elif local == "presencial":
+            elif tipo_evento == "presencial":
                 print("Evento do tipo Presencial")
-                local_presencial = input("\nInforme o endereço do evento: \n").strip()
+                endereco = input("\nInforme o endereço do evento: ").strip()
                 while True:
                     try:
-                        capacidadeMax = int(input("Quantidade maxima de vagas para esse evento? "))
+                        capacidadeMax = int(input("Quantidade máxima de vagas para esse evento: "))
                         break
                     except ValueError:
                         print("⚠️  Informe um número inteiro.")
                 break
-            
             else:
                 print("Tipo de evento inválido. Digite 'presencial' ou 'online'.")
             
-            
         evento = Evento(
-            nome = nome_evento,
-            descricao = descricao_evento,
-            data_inicio = data_inicio,
-            hora_inicio = hora_inicio,
-            data_fim = data_fim,
-            hora_fim = hora_fim,
-            publico_alvo = publico_alvo,
-            tipo = local,
-            endereco = local_presencial,
-            capacidade = capacidadeMax
+            nome=nome_evento,
+            descricao=descricao_evento,
+            data_inicio=data_inicio,
+            hora_inicio=hora_inicio,
+            data_fim=data_fim,
+            hora_fim=hora_fim,
+            publico_alvo=publico_alvo,
+            tipo=tipo_evento,
+            endereco=endereco,
+            capacidade=capacidadeMax
         )
-
-        self.crudBd.criar_evento(evento)
-
-        #testar se vai linkar
-        tem_atividades = input("O evento terá atividades? (s/n): ").lower()
-        if tem_atividades == 's':
-            try:
-                from pasta_3_atividades import menu_activity
-                menu_activity(evento["id"])
-            except ModuleNotFoundError:
-                print("⚠️  Módulo de atividades não encontrado. Avise o responsável.")
-
-
+        
+        evento_id = self.crudBd.criar_evento(evento)
+        
+        if evento_id:
+            # Pergunta se o usuário quer adicionar atividades
+            tem_atividades = input("O evento terá atividades? (s/n): ").lower()
+            if tem_atividades == 's':
+                try:
+                    from pasta_3_atividades.menu_atividades import MenuAtividades
+                    menu_atividades = MenuAtividades(self.gerenciador_bd)
+                    menu_atividades.criar_atividade_para_evento(evento_id)
+                except (ModuleNotFoundError, ImportError):
+                    print("⚠️  Módulo de atividades não encontrado. Prosseguindo sem atividades.")
 
     def visualizar_eventos(self):
         print("\n===== TODOS OS EVENTOS =====")
 
-        eventos = self.crudBd.ler_todos_eventos(evento)
+        eventos = self.crudBd.ler_todos_eventos()
 
         if not eventos:
             print("⚠️  Nenhum evento cadastrado até o momento.")
@@ -120,47 +115,41 @@ class CrudEvento:
         else:
             for evento in eventos:
                 print(evento)
+                print("-" * 50)
             return eventos
-
-
 
     def ver_detalhe_evento(self):
         print("\n===== DETALHES DO EVENTO =====")
-        if not evento:
+        
+        eventos = self.crudBd.ler_todos_eventos()
+        if not eventos:
             print("⚠️  Nenhum evento cadastrado até o momento.")
             return
 
-        
         try:
             id_evento = int(input("\nDigite o ID do evento para ver detalhes: "))
-            evento = None
-            for i in evento:
-                if i.id == id_evento:
-                    evento = i
-                    break
-            evento = self.crudBd.ler_evento_por_id(int(id_evento))
+            evento = self.crudBd.ler_evento_por_id(id_evento)
+            
             if evento:
-                print("\n" + "=" *30)
+                print("\n" + "=" * 50)
                 print(f"📌 Detalhes do Evento (ID: {evento.id})")
-                print(f"ID: {evento.id}")
-                print(f"Título: {evento.titulo}")
-                print(f"Descrição: {evento.descricao}")
-                print(f"Data: {evento.data}")
-                print(f"Local: {evento.local}")
-                print("="*30)
+                print(evento)
+                print("=" * 50)
+                
+                # Mostrar duração se disponível
+                if evento.duracao:
+                    print(f"Duração: {evento.duracao:.1f} horas")
+                    print("=" * 50)
             else:
                 print("⚠️  Evento não encontrado.")
         except ValueError:
             print("⚠️  ID inválido. Digite um número.")
 
-        
-
-
-    def buscar_evento(self, termo = None):
-        print("\n===== BUSCAR ATIVIDADES =====")
+    def buscar_evento(self, termo=None):
+        print("\n===== BUSCAR EVENTOS =====")
         
         if termo is None:
-            termo = input("Digite um termo para buscar(nome, descrição ou local): ").strip()
+            termo = input("Digite um termo para buscar (nome, descrição, tipo ou endereço): ").strip()
         if not termo:
             print("⚠️  Digite um termo válido")
             return
@@ -168,63 +157,221 @@ class CrudEvento:
         eventos = self.crudBd.buscar_eventos(termo)
 
         if eventos:
-            print(f"\n Resultados para '{len(termo)}':")
+            print(f"\n{len(eventos)} resultado(s) encontrado(s) para '{termo}':")
             for evento in eventos:
-                print("\n" + "=" *30)
+                print("\n" + "=" * 30)
                 print(evento)
                 print("=" * 30)
-
         else:
             print("⚠️  Nenhum evento encontrado.")
 
     def excluir_evento(self):
         print("\n===== EXCLUIR EVENTO =====")
 
+        eventos = self.crudBd.ler_todos_eventos()
+        if not eventos:
+            print("⚠️  Nenhum evento cadastrado para excluir.")
+            return
+
+        print("\nEventos disponíveis:")
         for i, evento in enumerate(eventos):
-            print(f"{i+1} - {evento['nome']}")
+            print(f"{i+1} - {evento.nome} (ID: {evento.id})")
+            
         while True:
             try:
-                ind_evento = int(input("\nDigite o número do evento que deseja excluir:"))
-                if 0 < ind_evento <= len(eventos):
-                    evento = eventos[ind_evento - 1]['nome']
-                    eventos.pop(ind_evento - 1)
-                    print(f"Evento excluido com Sucesso!")
-                    break
-                else:
-                    print("\n Opção invalida tente novamente.")
-                    evento = int(input("\nQual evento gostaria de excluir?"))
-            except ValueError:
-                print("\nTente novamente. Qual evento gostaria de excluir?")
-
-    def atualizar_eventos(self):
-        
-        print("\nAtualizar Evento:")
-        for i, evento in enumerate(eventos):
-            print(f"{i+1} - {evento['nome']}")
-
-        while True:
-            try:
-                edit_evento = int(input("\nDiga o número do evento que deseja editar: "))
-                if 0 <= edit_evento <= len(eventos):
-                    evento = eventos[edit_evento - 1]
-                    print(f"\nVamos atualizar o evento:")
-
-                    evento_campos = [
-                        "nome", "descricao", "data_inicio", "hora_inicio",
-                        "data_fim", "hora_fim", "publico_alvo", "tipo",
-                        "endereco", "capacidade"
-                    ]
+                opcao = int(input("\nDigite o número do evento que deseja excluir: "))
+                if 1 <= opcao <= len(eventos):
+                    evento_selecionado = eventos[opcao - 1]
+                    confirmacao = input(f"Tem certeza que deseja excluir o evento '{evento_selecionado.nome}'? (s/n): ").lower()
                     
-                    for evento_chave in evento_campos:
-                        evento_atual = evento.get(evento_chave,"")
-                        evento_novo = input(f"{evento_chave.replace('_',' ').capitalize()}(Atual: {evento_atual})")
-                    if evento_novo.strip() != "":
-                        evento[evento_chave] = evento_novo
-
-                    print("Evento Atualizado!")
+                    if confirmacao == 's':
+                        if self.crudBd.deletar_evento(evento_selecionado.id):
+                            print("✅ Evento excluído com sucesso!")
+                        else:
+                            print("❌ Erro ao excluir evento.")
+                    else:
+                        print("Operação cancelada.")
                     break
                 else:
-                    print("Invalido, tente novamente!")
-                    return
+                    print("⚠️  Opção inválida. Tente novamente.")
             except ValueError:
-                print("Invalido, Digite um número.")
+                print("⚠️  Digite um número válido.")
+
+    def atualizar_evento(self):
+        print("\n===== ATUALIZAR EVENTO =====")
+        
+        eventos = self.crudBd.ler_todos_eventos()
+        if not eventos:
+            print("⚠️  Nenhum evento cadastrado para atualizar.")
+            return
+
+        print("\nEventos disponíveis:")
+        for i, evento in enumerate(eventos):
+            print(f"{i+1} - {evento.nome} (ID: {evento.id})")
+
+        while True:
+            try:
+                opcao = int(input("\nDigite o número do evento que deseja editar: "))
+                if 1 <= opcao <= len(eventos):
+                    evento = eventos[opcao - 1]
+                    break
+                else:
+                    print("⚠️  Opção inválida. Tente novamente.")
+            except ValueError:
+                print("⚠️  Digite um número válido.")
+
+        print(f"\n--- Atualizando evento: {evento.nome} ---")
+        print("(Pressione Enter para manter o valor atual)")
+
+        # Nome
+        novo_nome = input(f"Nome (atual: {evento.nome}): ").strip()
+        if novo_nome:
+            evento.nome = novo_nome
+
+        # Descrição
+        nova_descricao = input(f"Descrição (atual: {evento.descricao}): ").strip()
+        if nova_descricao:
+            evento.descricao = nova_descricao
+
+        # Data início
+        while True:
+            nova_data_inicio = input(f"Data início (atual: {evento.data_inicio}, formato: dd/mm/aaaa): ").strip()
+            if not nova_data_inicio:
+                break
+            try:
+                evento.data_inicio = datetime.strptime(nova_data_inicio, "%d/%m/%Y").date()
+                break
+            except ValueError:
+                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
+
+        # Hora início
+        while True:
+            nova_hora_inicio = input(f"Hora início (atual: {evento.hora_inicio}, formato: hh:mm): ").strip()
+            if not nova_hora_inicio:
+                break
+            try:
+                evento.hora_inicio = datetime.strptime(nova_hora_inicio, "%H:%M").time()
+                break
+            except ValueError:
+                print("⚠️  Hora inválida. Use o formato hh:mm.")
+
+        # Data fim
+        while True:
+            nova_data_fim = input(f"Data fim (atual: {evento.data_fim}, formato: dd/mm/aaaa): ").strip()
+            if not nova_data_fim:
+                break
+            try:
+                data_fim_temp = datetime.strptime(nova_data_fim, "%d/%m/%Y").date()
+                if data_fim_temp < evento.data_inicio:
+                    print("⚠️  A data fim não pode ser antes da data de início.")
+                else:
+                    evento.data_fim = data_fim_temp
+                    break
+            except ValueError:
+                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
+
+        # Hora fim
+        while True:
+            nova_hora_fim = input(f"Hora fim (atual: {evento.hora_fim}, formato: hh:mm): ").strip()
+            if not nova_hora_fim:
+                break
+            try:
+                evento.hora_fim = datetime.strptime(nova_hora_fim, "%H:%M").time()
+                break
+            except ValueError:
+                print("⚠️  Hora inválida. Use o formato hh:mm.")
+
+        # Público alvo
+        while True:
+            novo_publico = input(f"Público alvo (atual: {evento.publico_alvo}, opções: adulto/juvenil/infantil): ").strip().lower()
+            if not novo_publico:
+                break
+            if novo_publico in ["adulto", "juvenil", "infantil"]:
+                evento.publico_alvo = novo_publico
+                break
+            else:
+                print("⚠️  Opção inválida. Use: adulto, juvenil ou infantil.")
+
+        # Tipo
+        while True:
+            novo_tipo = input(f"Tipo (atual: {evento.tipo}, opções: presencial/online): ").strip().lower()
+            if not novo_tipo:
+                break
+            if novo_tipo in ["presencial", "online"]:
+                evento.tipo = novo_tipo
+                break
+            else:
+                print("⚠️  Opção inválida. Use: presencial ou online.")
+
+        # Endereço
+        novo_endereco = input(f"Endereço (atual: {evento.endereco}): ").strip()
+        if novo_endereco:
+            evento.endereco = novo_endereco
+
+        # Capacidade
+        while True:
+            nova_capacidade = input(f"Capacidade (atual: {evento.capacidade}): ").strip()
+            if not nova_capacidade:
+                break
+            try:
+                evento.capacidade = int(nova_capacidade) if nova_capacidade else None
+                break
+            except ValueError:
+                print("⚠️  Capacidade deve ser um número inteiro.")
+
+        # Salvar alterações
+        if self.crudBd.atualizar_evento(evento):
+            print("✅ Evento atualizado com sucesso!")
+        else:
+            print("❌ Erro ao atualizar evento.")
+
+    def listar_eventos_por_data(self):
+        print("\n===== BUSCAR EVENTOS POR DATA =====")
+        
+        data_inicio_str = input("Data início da busca (dd/mm/aaaa) [Enter para ignorar]: ").strip()
+        data_fim_str = input("Data fim da busca (dd/mm/aaaa) [Enter para ignorar]: ").strip()
+        
+        data_inicio = None
+        data_fim = None
+        
+        if data_inicio_str:
+            try:
+                data_inicio = datetime.strptime(data_inicio_str, "%d/%m/%Y").date()
+            except ValueError:
+                print("⚠️  Data de início inválida. Ignorando...")
+                
+        if data_fim_str:
+            try:
+                data_fim = datetime.strptime(data_fim_str, "%d/%m/%Y").date()
+            except ValueError:
+                print("⚠️  Data fim inválida. Ignorando...")
+        
+        eventos = self.crudBd.buscar_eventos_por_data(data_inicio, data_fim)
+        
+        if eventos:
+            print(f"\n{len(eventos)} evento(s) encontrado(s):")
+            for evento in eventos:
+                print("\n" + "=" * 30)
+                print(evento)
+                print("=" * 30)
+        else:
+            print("⚠️  Nenhum evento encontrado no período especificado.")
+
+    def listar_eventos_por_tipo(self):
+        print("\n===== BUSCAR EVENTOS POR TIPO =====")
+        
+        tipo = input("Digite o tipo de evento para buscar: ").strip()
+        if not tipo:
+            print("⚠️  Digite um tipo válido.")
+            return
+            
+        eventos = self.crudBd.buscar_eventos_por_tipo(tipo)
+        
+        if eventos:
+            print(f"\n{len(eventos)} evento(s) encontrado(s) do tipo '{tipo}':")
+            for evento in eventos:
+                print("\n" + "=" * 30)
+                print(evento)
+                print("=" * 30)
+        else:
+            print(f"⚠️  Nenhum evento encontrado do tipo '{tipo}'.")
