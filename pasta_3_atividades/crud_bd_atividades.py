@@ -110,7 +110,6 @@ class CrudBdAtividades:
             return []
     
     def ler_atividades_com_evento(self):
-        """Read activities with event information joined"""
         try:
             self.gerenciador_bd.cursor.execute("""
             SELECT a.*, e.nome as evento_nome 
@@ -122,10 +121,8 @@ class CrudBdAtividades:
             atividades = []
             for row in self.gerenciador_bd.cursor.fetchall():
                 try:
-                    # Extract activity data (first 10 columns)
                     dados_atividade = row[:10]
                     atividade = Atividade.de_tupla(dados_atividade)
-                    # Add event name as attribute for display
                     atividade.evento_nome = row[10] if len(row) > 10 else "Evento não encontrado"
                     atividades.append(atividade)
                 except Exception as ex:

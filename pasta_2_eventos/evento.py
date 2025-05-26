@@ -64,16 +64,14 @@ class Evento:
     
     @classmethod
     def de_tupla(cls, dados):
-        # Handle both old format (with 'tipo' and 'endereco' as address) and new format
-        if len(dados) == 11:  # Old format: id, nome, descricao, data_inicio, hora_inicio, data_fim, hora_fim, publico_alvo, tipo, endereco, capacidade
+        if len(dados) == 11:
             id, nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, tipo, endereco, capacidade = dados
-            # In old format, 'endereco' was the address, 'tipo' was event type (ignore for now)
-            local = endereco  # Use endereco as local temporarily
+            local = endereco
             endereco_final = endereco
-        elif len(dados) == 10:  # New format without id: nome, descricao, data_inicio, hora_inicio, data_fim, hora_fim, publico_alvo, local, endereco, capacidade
+        elif len(dados) == 10:
             nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, local, endereco_final, capacidade = dados
             id = None
-        elif len(dados) >= 11:  # New format with id: id, nome, descricao, data_inicio, hora_inicio, data_fim, hora_fim, publico_alvo, local, endereco, capacidade
+        elif len(dados) >= 11:
             id, nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, local, endereco_final, capacidade = dados[:11]
         else:
             raise ValueError(f"Formato de dados inválido para Evento: {dados}")

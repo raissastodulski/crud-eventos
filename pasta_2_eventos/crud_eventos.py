@@ -49,7 +49,6 @@ class CrudEventos:
             else:
                 print("⚠️  Opção inválida. Informe Adulto, Juvenil ou Infantil.")
 
-        # Get local information
         local = input("Informe o LOCAL do evento (ex: Auditório Principal, Sala de Conferências): ").strip()
         
         while True:        

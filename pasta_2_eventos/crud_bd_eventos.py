@@ -6,7 +6,6 @@ class CrudBdEventos:
         self.gerenciador_bd = gerenciador_bd
     
     def _executar_com_seguranca(self, funcao):
-        """Executa uma função com verificação de conexão e tratamento de erro"""
         try:
             if not self.gerenciador_bd.verificar_conexao():
                 print("❌ Erro: Conexão com banco de dados não disponível")

@@ -3,7 +3,6 @@ import os
 
 class GerenciadorBD:
     def __init__(self, caminho_bd=None):
-        # Se caminho_bd for um diretório, adiciona o nome do arquivo
         if caminho_bd and os.path.isdir(caminho_bd):
             self.nome_bd = os.path.join(caminho_bd, "crud-eventos.db")
         elif caminho_bd:
@@ -19,13 +18,11 @@ class GerenciadorBD:
         try:
             print(f"Tentando conectar ao banco: {self.nome_bd}")
             
-            # Verificar se o diretório existe
             diretorio = os.path.dirname(self.nome_bd)
             if diretorio and not os.path.exists(diretorio):
                 os.makedirs(diretorio)
                 print(f"Diretório criado: {diretorio}")
             
-            # Conectar ao banco
             self.conn = sqlite3.connect(self.nome_bd, check_same_thread=False)
             if self.conn is None:
                 raise Exception("Falha ao conectar com o banco de dados")
@@ -34,7 +31,6 @@ class GerenciadorBD:
             if self.cursor is None:
                 raise Exception("Falha ao criar cursor do banco de dados")
             
-            # Testar a conexão
             self.cursor.execute("SELECT 1")
             resultado = self.cursor.fetchone()
             if resultado is None:
@@ -51,7 +47,6 @@ class GerenciadorBD:
             self._limpar_conexao()
     
     def _limpar_conexao(self):
-        """Limpa as conexões em caso de erro"""
         try:
             if self.cursor:
                 self.cursor.close()
@@ -66,14 +61,12 @@ class GerenciadorBD:
         self.cursor = None
     
     def verificar_conexao(self):
-        """Verifica e restabelece a conexão se necessário"""
         try:
             if self.conn is None or self.cursor is None:
                 print("⚠️  Conexão perdida. Tentando reconectar...")
                 self.inicializar()
                 return self.conn is not None and self.cursor is not None
             
-            # Testar se a conexão ainda está ativa
             self.cursor.execute("SELECT 1")
             return True
             
@@ -87,7 +80,6 @@ class GerenciadorBD:
             return self.conn is not None and self.cursor is not None
     
     def executar_com_retry(self, funcao):
-        """Executa uma função com retry em caso de erro de conexão"""
         max_tentativas = 3
         for tentativa in range(max_tentativas):
             try:
@@ -115,7 +107,6 @@ class GerenciadorBD:
             if not self.verificar_conexao():
                 raise Exception("Conexão com banco não disponível para criar tabelas")
                 
-            # Verificar se a tabela eventos existe e sua estrutura
             self.cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name='eventos'")
             tabela_existe = self.cursor.fetchone()
             
@@ -127,7 +118,6 @@ class GerenciadorBD:
                     print("Migrando tabela eventos para nova estrutura...")
                     self._migrar_tabela_eventos()
             
-            # Criar tabela eventos
             self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS eventos (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -144,7 +134,6 @@ class GerenciadorBD:
             )
             ''')
             
-            # Verificar e migrar tabela participantes se necessário
             self.cursor.execute("PRAGMA table_info(participantes)")
             colunas_participantes = [coluna[1] for coluna in self.cursor.fetchall()]
             
@@ -157,7 +146,6 @@ class GerenciadorBD:
                 except sqlite3.Error as e:
                     print(f"Erro ao adicionar coluna data_nascimento: {e}")
             
-            # Criar tabela participantes
             self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS participantes (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -169,7 +157,6 @@ class GerenciadorBD:
             )
             ''')
             
-            # Verificar e migrar tabela atividades se necessário
             self.cursor.execute("PRAGMA table_info(atividades)")
             colunas_atividades = [coluna[1] for coluna in self.cursor.fetchall()]
             
@@ -177,7 +164,6 @@ class GerenciadorBD:
                 print("Migrando tabela atividades para nova estrutura...")
                 self._migrar_tabela_atividades()
             
-            # Criar tabela atividades
             self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS atividades (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -194,7 +180,6 @@ class GerenciadorBD:
             )
             ''')
             
-            # Verificar e migrar tabela inscrições se necessário
             self.cursor.execute("PRAGMA table_info(inscricoes)")
             colunas = [coluna[1] for coluna in self.cursor.fetchall()]
             
@@ -202,7 +187,6 @@ class GerenciadorBD:
                 print("Migrando tabela de inscrições para novo formato...")
                 self._migrar_inscricoes()
             elif not colunas:
-                # Criar tabela inscrições
                 self.cursor.execute('''
                 CREATE TABLE IF NOT EXISTS inscricoes (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -299,7 +283,6 @@ class GerenciadorBD:
                 pass
     
     def _migrar_tabela_atividades(self):
-        """Migrate atividades table to include data_inicio, data_fim, hora_fim"""
         try:
             self.cursor.execute('''
             CREATE TABLE atividades_temp (
@@ -344,7 +327,6 @@ class GerenciadorBD:
                 pass
     
     def _migrar_inscricoes(self):
-        """Migrar tabela de inscrições para novo formato"""
         try:
             self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS inscricoes_temp (

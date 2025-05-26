@@ -57,11 +57,9 @@ class CrudAtividades:
             print("⚠️  Local da atividade é obrigatório.")
             return False
 
-        # Get event dates for validation
         data_evento_inicio = FormatadorData.iso_para_data(evento_selecionado[2]) if evento_selecionado[2] else None
         data_evento_fim = FormatadorData.iso_para_data(evento_selecionado[3]) if evento_selecionado[3] else None
 
-        # Activity start date
         print(f"\nO evento ocorre de {FormatadorData.data_para_str(data_evento_inicio)} até {FormatadorData.data_para_str(data_evento_fim)}")
         
         while True:
@@ -80,7 +78,6 @@ class CrudAtividades:
             "Digite a hora de início da atividade"
         )
 
-        # Activity end date and time
         while True:
             data_fim = FormatadorData.solicitar_data_usuario(
                 f"Digite a data de fim da atividade (padrão: {FormatadorData.data_para_str(data_inicio)})",
@@ -103,14 +100,12 @@ class CrudAtividades:
                 permitir_vazio=True
             )
             if not hora_fim:
-                # Default to 1 hour after start time
                 from datetime import datetime, timedelta
                 hora_inicio_dt = datetime.strptime(FormatadorData.hora_para_str(hora_inicio), "%H:%M")
                 hora_fim_dt = hora_inicio_dt + timedelta(hours=1)
                 hora_fim = hora_fim_dt.time()
                 print(f"Usando horário padrão: {FormatadorData.hora_para_str(hora_fim)}")
             
-            # Validate that end time is after start time if on same day
             if data_inicio == data_fim and hora_fim <= hora_inicio:
                 print("⚠️  A hora de fim deve ser posterior à hora de início.")
                 continue
@@ -247,7 +242,6 @@ class CrudAtividades:
                     except ValueError:
                         print("⚠️  Digite um número válido.")
 
-        # Update dates and times
         alterar_periodo = input(f"Alterar período atual ({atividade.periodo_formatado()})? (s/n): ").lower()
         if alterar_periodo == 's':
             nova_data_inicio = FormatadorData.solicitar_data_usuario(

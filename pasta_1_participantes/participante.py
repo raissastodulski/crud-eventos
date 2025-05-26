@@ -36,18 +36,18 @@ class Participante:
     
     @classmethod
     def de_tupla(cls, dados):
-        if len(dados) == 5:  # Old format without data_nascimento
+        if len(dados) == 5:
             id, nome, cpf, email, telefone = dados
             return cls(nome=nome, cpf=cpf, email=email, telefone=telefone, id=id)
-        elif len(dados) >= 6:  # New format with data_nascimento
+        elif len(dados) >= 6:
             id, nome, cpf, email, telefone, data_nascimento = dados[:6]
             
-            # Parse data_nascimento if it exists
+
             data_nascimento_parsed = None
             if data_nascimento:
                 try:
                     if isinstance(data_nascimento, str):
-                        # Try different date formats
+
                         for fmt in ['%Y-%m-%d %H:%M:%S', '%Y-%m-%d', '%d/%m/%Y']:
                             try:
                                 data_nascimento_parsed = datetime.strptime(data_nascimento, fmt)

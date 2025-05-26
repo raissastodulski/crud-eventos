@@ -11,7 +11,6 @@ class CrudBdInscricoes:
     
     def criar_inscricao(self, inscricao):
         try:
-            # Verifica se o participante já está inscrito na atividade
             self.gerenciador_bd.cursor.execute('''
             SELECT * FROM inscricoes 
             WHERE id_participante = ? AND id_atividade = ?
@@ -21,7 +20,6 @@ class CrudBdInscricoes:
                 print(f"Participante ID {inscricao.id_participante} já está inscrito na atividade ID {inscricao.id_atividade}.")
                 return None
             
-            # Obter a atividade para verificar vagas disponíveis
             self.gerenciador_bd.cursor.execute('''
             SELECT * FROM atividades WHERE id = ?
             ''', (inscricao.id_atividade,))
@@ -33,19 +31,16 @@ class CrudBdInscricoes:
             
             atividade = Atividade.de_tupla(dados_atividade)
             
-            # Contar inscrições existentes para esta atividade
             self.gerenciador_bd.cursor.execute('''
             SELECT COUNT(*) FROM inscricoes WHERE id_atividade = ?
             ''', (inscricao.id_atividade,))
             
             count_inscricoes_atividade = self.gerenciador_bd.cursor.fetchone()[0]
             
-            # Verificar se há vagas disponíveis na atividade
             if count_inscricoes_atividade >= atividade.vagas:
                 print(f"Não há vagas disponíveis para a atividade ID {inscricao.id_atividade}.")
                 return None
             
-            # Obter o evento associado à atividade
             self.gerenciador_bd.cursor.execute('''
             SELECT * FROM eventos 
             WHERE id = ?
@@ -56,10 +51,8 @@ class CrudBdInscricoes:
                 print(f"Evento associado à atividade ID {inscricao.id_atividade} não encontrado.")
                 return None
             
-            # Criar um objeto Evento a partir dos dados obtidos
             evento = Evento.de_tupla(dados_evento)
             
-            # Contar participantes únicos inscritos no evento (através de qualquer atividade do evento)
             self.gerenciador_bd.cursor.execute('''
             SELECT COUNT(DISTINCT i.id_participante) 
             FROM inscricoes i
@@ -69,7 +62,6 @@ class CrudBdInscricoes:
             
             count_participantes_evento = self.gerenciador_bd.cursor.fetchone()[0]
             
-            # Verificar se o participante já está inscrito em alguma atividade deste evento
             self.gerenciador_bd.cursor.execute('''
             SELECT i.* FROM inscricoes i
             JOIN atividades a ON i.id_atividade = a.id
@@ -78,18 +70,14 @@ class CrudBdInscricoes:
             
             participante_ja_inscrito_evento = self.gerenciador_bd.cursor.fetchone() is not None
             
-            # Se o participante não estiver inscrito no evento e o evento já atingiu a capacidade,
-            # não permitir a inscrição
             if not participante_ja_inscrito_evento and count_participantes_evento >= evento.capacidade and evento.capacidade is not None:
                 print(f"O evento associado à atividade já atingiu sua capacidade máxima de {evento.capacidade} participantes.")
                 print("Como você não está inscrito em nenhuma atividade deste evento, não é possível realizar a inscrição.")
                 return None
             
-            # Se a data de inscrição não foi fornecida, usar a data atual
             if inscricao.data_inscricao is None:
                 inscricao.data_inscricao = datetime.now().strftime("%d-%m-%Y %H:%M:%S")
             
-            # Inserir a inscrição
             self.gerenciador_bd.cursor.execute('''
             INSERT INTO inscricoes (id_participante, id_atividade, data_inscricao)
             VALUES (?, ?, ?)

@@ -1,9 +1,4 @@
 import os
-import sys
-from datetime import datetime, timedelta, date, time
-
-sys.path.append('.')
-
 from compartilhado.gerenciador_bd import GerenciadorBD
 
 def main():
@@ -27,7 +22,6 @@ def main():
     
     print("Inserindo dados iniciais...")
     
-    # Eventos com nova estrutura (local e endereco separados)
     eventos_exemplo = [
         (
             'Conferência de Tecnologia 2025',
@@ -158,7 +152,7 @@ def main():
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', evento)
     
-    # Participantes com campo data_nascimento
+    
     participantes_exemplo = [
         ('João Silva Santos', '123.456.789-01', 'joao.silva@email.com', '(81) 99999-1111', '1985-03-15 00:00:00'),
         ('Maria Oliveira Costa', '234.567.890-12', 'maria.oliveira@email.com', '(81) 99999-2222', '1990-07-22 00:00:00'),
@@ -183,7 +177,7 @@ def main():
             VALUES (?, ?, ?, ?, ?)
         ''', participante)
     
-    # Atividades com nova estrutura (data_inicio, data_fim, hora_fim)
+    
     atividades_exemplo = [
         ('Palestra: O Futuro da IA', 'Dr. João Tech', 'Auditório Principal', 1, '2025-06-15', '09:00', '2025-06-15', '10:30', 100),
         ('Workshop: Machine Learning', 'Prof. Maria Data', 'Sala de Workshops A', 1, '2025-06-15', '14:00', '2025-06-15', '17:00', 50),
@@ -214,7 +208,7 @@ def main():
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', atividade)
     
-    # Inscrições mantêm a mesma estrutura
+    
     inscricoes_exemplo = [
         (1, 1, '2025-05-20 10:30:00'),
         (1, 2, '2025-05-20 10:35:00'),
@@ -251,7 +245,7 @@ def main():
     
     print("Dados iniciais inseridos com sucesso!")
     
-    # Estatísticas do banco de dados
+    
     gerenciador.cursor.execute('SELECT COUNT(*) FROM eventos')
     total_eventos = gerenciador.cursor.fetchone()[0]
     

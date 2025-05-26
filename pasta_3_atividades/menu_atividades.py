@@ -9,11 +9,9 @@ class MenuAtividades:
         self.crud_atividades = CrudAtividades(gerenciador_bd)
 
     def limpar_tela(self):
-        """Limpa a tela do console"""
         os.system("cls" if os.name == "nt" else "clear")
 
     def exibir_menu(self):
-        """Exibe as opções do menu de gerenciamento de atividades"""
         self.limpar_tela()
         print("\n===== GERENCIAMENTO DE ATIVIDADES =====")
         print("1. Adicionar Nova Atividade")
@@ -27,7 +25,6 @@ class MenuAtividades:
         return input("Digite sua escolha: ")
 
     def executar(self):
-        """Executa a interface do menu"""
         while True:
             escolha = self.exibir_menu()
 

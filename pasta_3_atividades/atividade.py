@@ -13,13 +13,11 @@ class Atividade:
         self.data_fim = data_fim
         self.vagas = vagas
         
-        # Handle hora_inicio
         if isinstance(hora_inicio, time):
             self.hora_inicio = hora_inicio.strftime("%H:%M")
         else:
             self.hora_inicio = hora_inicio
             
-        # Handle hora_fim
         if isinstance(hora_fim, time):
             self.hora_fim = hora_fim.strftime("%H:%M")
         else:
@@ -54,14 +52,12 @@ class Atividade:
 
     @classmethod
     def de_tupla(cls, dados):
-        # Handle both old and new formats
-        if len(dados) == 7:  # Old format: id, nome, facilitador, local, id_evento, hora_inicio, vagas
+        if len(dados) == 7:
             id, nome, facilitador, local, id_evento, hora_inicio, vagas = dados
-            # Set default values for missing fields
             data_inicio = None
             data_fim = None
             hora_fim = ""
-        elif len(dados) >= 10:  # New format: id, nome, facilitador, local, id_evento, data_inicio, hora_inicio, data_fim, hora_fim, vagas
+        elif len(dados) >= 10:
             id, nome, facilitador, local, id_evento, data_inicio_str, hora_inicio, data_fim_str, hora_fim, vagas = dados[:10]
             data_inicio = FormatadorData.iso_para_data(data_inicio_str)
             data_fim = FormatadorData.iso_para_data(data_fim_str)
@@ -124,7 +120,6 @@ class Atividade:
     
     @property
     def duracao(self):
-        """Calculate duration in hours"""
         if all([self.data_inicio, self.hora_inicio, self.data_fim, self.hora_fim]):
             try:
                 inicio_time = FormatadorData.str_para_hora(self.hora_inicio) if isinstance(self.hora_inicio, str) else self.hora_inicio
