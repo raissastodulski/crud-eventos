@@ -1,4 +1,5 @@
 from compartilhado.formatador_data import FormatadorData
+from datetime import time
 
 class Atividade:
     def __init__(
@@ -9,7 +10,11 @@ class Atividade:
         self.facilitador = facilitador
         self.local = local
         self.id_evento = id_evento
-        self.hora_inicio = hora_inicio
+        # Garantir que hora_inicio seja sempre string
+        if isinstance(hora_inicio, time):
+            self.hora_inicio = hora_inicio.strftime("%H:%M")
+        else:
+            self.hora_inicio = hora_inicio
         self.vagas = vagas
 
     def para_tupla(self):
@@ -18,7 +23,7 @@ class Atividade:
             self.facilitador,
             self.local,
             self.id_evento,
-            self.hora_inicio,
+            self.hora_inicio,  # Sempre será string agora
             self.vagas,
         )
 
@@ -28,7 +33,7 @@ class Atividade:
             self.facilitador,
             self.local,
             self.id_evento,
-            self.hora_inicio,
+            self.hora_inicio,  # Sempre será string agora
             self.vagas,
             self.id,
         )
@@ -51,6 +56,8 @@ class Atividade:
     
     def hora_inicio_formatada(self):
         """Retorna hora de início formatada em hh:mm"""
+        if isinstance(self.hora_inicio, str):
+            return self.hora_inicio
         return FormatadorData.hora_para_str(self.hora_inicio)
     
     def dados_formatados(self):
