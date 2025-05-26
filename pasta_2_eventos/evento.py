@@ -65,14 +65,12 @@ class Evento:
     @classmethod
     def de_tupla(cls, dados):
         if len(dados) == 11:
-            id, nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, tipo, endereco, capacidade = dados
-            local = endereco
-            endereco_final = endereco
+            id, nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, local, endereco, capacidade = dados
         elif len(dados) == 10:
-            nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, local, endereco_final, capacidade = dados
+            nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, local, endereco, capacidade = dados
             id = None
         elif len(dados) >= 11:
-            id, nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, local, endereco_final, capacidade = dados[:11]
+            id, nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, local, endereco, capacidade = dados[:11]
         else:
             raise ValueError(f"Formato de dados inválido para Evento: {dados}")
         
@@ -91,7 +89,7 @@ class Evento:
             hora_fim=hora_fim,
             publico_alvo=publico_alvo,
             local=local,
-            endereco=endereco_final,
+            endereco=endereco,
             capacidade=capacidade
         )
     

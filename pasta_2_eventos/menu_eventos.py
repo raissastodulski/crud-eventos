@@ -27,41 +27,25 @@ class MenuEventos:
     def executar(self):
         while True:
             escolha = self.exibir_menu()
+            self.limpar_tela()
             
             if escolha == '1':
-                print("\n--- Adicionar evento ---")
                 self.crud_evento.criar_evento()
-                input("\nPressione Enter para continuar...")
-                
             elif escolha == '2':
-                print("\n--- Ver todos os eventos ---")
                 self.crud_evento.visualizar_eventos()
-                input("\nPressione Enter para continuar...")
-                
             elif escolha == '3':
-                print("\n--- Ver detalhes do evento ---")
                 self.crud_evento.ver_detalhe_evento()
-                input("\nPressione Enter para continuar...")
-                
             elif escolha == '4':
-                print("\n--- Atualizar evento ---")
                 self.crud_evento.atualizar_evento()
-                input("\nPressione Enter para continuar...")
-                
             elif escolha == '5':
-                print("\n--- Excluir evento ---")
                 self.crud_evento.excluir_evento()
-                input("\nPressione Enter para continuar...")
-                
             elif escolha == '6':
-                print("\n--- Buscar eventos ---")
                 self.crud_evento.buscar_evento()
-                input("\nPressione Enter para continuar...")
                 
             elif escolha == '0':
                 print("Voltando ao menu principal...")
                 break
-                
             else:
                 print("❌ Escolha inválida. Tente novamente.")
-                input("Pressione Enter para continuar...")
+            
+            input("\nPressione Enter para continuar...")

@@ -31,7 +31,7 @@ def main():
             '2025-06-15',
             '18:00',
             'adulto',
-            'Centro de Convenções Tech',
+            'Presencial',
             'Av. Tecnologia, 123 - São Paulo/SP',
             500
         ),
@@ -43,7 +43,7 @@ def main():
             '2025-06-20',
             '17:00',
             'adulto',
-            'Laboratório de Informática - UFPE',
+            'Presencial',
             'Rua da Universidade, 456 - Recife/PE',
             50
         ),
@@ -55,7 +55,7 @@ def main():
             '2025-07-10',
             '18:00',
             'adulto',
-            'Auditório Central',
+            'Presencial',
             'Rua Inovação, 789 - Recife/PE',
             200
         ),
@@ -67,7 +67,7 @@ def main():
             '2025-07-27',
             '18:00',
             'adulto',
-            'Campus Universitário',
+            'Presencial',
             'Av. Universidade, 321 - Recife/PE',
             100
         ),
@@ -79,7 +79,7 @@ def main():
             '2025-08-05',
             '21:00',
             'adulto',
-            'Teatro Municipal',
+            'Presencial',
             'Praça Central, 111 - Recife/PE',
             300
         ),
@@ -91,8 +91,8 @@ def main():
             '2025-06-30',
             '21:00',
             'adulto',
-            'Plataforma Online',
             'Online',
+            'Plataforma Online',
             None
         ),
         (
@@ -103,7 +103,7 @@ def main():
             '2025-09-15',
             '17:00',
             'infantil',
-            'Parque da Ciência',
+            'Presencial',
             'Rua das Descobertas, 555 - Recife/PE',
             150
         ),
@@ -115,7 +115,7 @@ def main():
             '2025-08-21',
             '17:00',
             'juvenil',
-            'Centro Juvenil de Tecnologia',
+            'Presencial',
             'Av. Juventude, 888 - Recife/PE',
             80
         ),
@@ -127,8 +127,8 @@ def main():
             '2025-07-30',
             '21:30',
             'adulto',
-            'Plataforma Zoom',
             'Online',
+            'Plataforma Zoom',
             None
         ),
         (
@@ -139,7 +139,7 @@ def main():
             '2025-08-12',
             '16:00',
             'juvenil',
-            'Laboratório de Robótica',
+            'Presencial',
             'Rua dos Inventores, 999 - Recife/PE',
             30
         )
