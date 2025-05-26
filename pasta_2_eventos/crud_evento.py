@@ -33,13 +33,30 @@ class CrudEvento:
             
             if FormatadorData.validar_data_fim_posterior(data_inicio, data_fim):
                 break
-            else:
-                print("⚠️  A data fim não pode ser antes da data de início.")
+            except ValueError:
+                print("⚠️  Hora inválida. Use o formato hh:mm.")
 
-        # Usar FormatadorData para obter hora de fim
-        hora_fim = FormatadorData.solicitar_hora_usuario(
-            "Informe a HORA de FIM do evento"
-        )
+        while True:    
+            data_fim_str = input(f"\nInforme a DATA de FIM do evento {nome_evento} (dd/mm/aaaa): ")
+            try:           
+                data_fim = datetime.strptime(data_fim_str, "%d/%m/%Y").date()
+                if data_fim < data_inicio:
+                    print("⚠️  A data fim não pode ser antes da data de início.")
+                else:
+                    break
+            except ValueError:
+                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
+
+        while True:
+            hora_fim_str = input("\nInforme a HORA de FIM do evento (hh:mm): ")
+            try:
+                hora_fim = datetime.strptime(hora_fim_str, "%H:%M").time()
+                if hora_fim< hora_inicio:
+                    print("⚠️  A hora final não pode ser anterior à hora de início do evento.")
+                else:
+                    break
+            except ValueError:
+                print("⚠️  Hora inválida. Use o formato hh:mm.")
 
         while True:
             publico_alvo = input("Qual será o Público Alvo? (Adulto/Juvenil/Infantil): ").strip().lower()
@@ -57,7 +74,7 @@ class CrudEvento:
                 break
             elif tipo_evento == "presencial":
                 print("Evento do tipo Presencial")
-                endereco = input("\nInforme o endereço do evento: ").strip()
+                endereco = input("\nInforme o endereço do evento:(Rua - numero - complemento - bairro/estado -) ").strip()
                 while True:
                     try:
                         capacidadeMax = int(input("Quantidade máxima de vagas para esse evento: "))
@@ -239,13 +256,26 @@ class CrudEvento:
 
         # Data fim usando FormatadorData com validação
         while True:
-            data_atual_str = FormatadorData.data_para_str(evento.data_fim)
-            nova_data_fim = FormatadorData.solicitar_data_usuario(
-                f"Data fim (atual: {data_atual_str})", 
-                permitir_vazio=True
-            )
-            
-            if nova_data_fim is None:
+            nova_data_inicio = input(f"Data início (atual: {evento.data_inicio}, formato: dd/mm/aaaa): ").strip()
+            if not nova_data_inicio:
+                break
+            try:
+                data_convertida = datetime.strptime(nova_data_inicio, "%d/%m/%Y").date()
+                if data_convertida<date.today():
+                    print("⚠️  A data não pode ser no passado. Tente novamente")
+                else:    
+                    evento.data_inicio = data_convertida
+                    break
+            except ValueError:
+                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
+
+        # Hora início
+        while True:
+            nova_hora_inicio = input(f"Hora início (atual: {evento.hora_inicio}, formato: hh:mm): ").strip()
+            if not nova_hora_inicio:
+                break
+            try:
+                evento.hora_inicio = datetime.strptime(nova_hora_inicio, "%H:%M").time()
                 break
                 
             if FormatadorData.validar_data_fim_posterior(evento.data_inicio, nova_data_fim):
@@ -262,6 +292,30 @@ class CrudEvento:
         )
         if nova_hora_fim:
             evento.hora_fim = nova_hora_fim
+            try:
+                data_fim_temp = datetime.strptime(nova_data_fim, "%d/%m/%Y").date()
+                if data_fim_temp < evento.data_inicio:
+                    print("⚠️  A data fim não pode ser antes da data de início.")
+                else:
+                    evento.data_fim = data_fim_temp
+                    break
+            except ValueError:
+                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
+
+        # Hora fim
+        while True:
+            nova_hora_fim = input(f"Hora fim (atual: {evento.hora_fim}, formato: hh:mm): ").strip()
+            if not nova_hora_fim:
+                break
+            try:
+                hora_convertida = datetime.strptime(nova_hora_fim, "%H:%M").time()
+                if hora_convertida< evento.hora_inicio:
+                    print("⚠️  A hora final não pode ser anterior à hora de início do evento.")
+                else:
+                    evento.hora_fim = hora_convertida
+                    break
+            except ValueError:
+                print("⚠️  Hora inválida. Use o formato hh:mm.")
 
         # Público alvo
         while True:
@@ -286,20 +340,24 @@ class CrudEvento:
                 print("⚠️  Opção inválida. Use: presencial ou online.")
 
         # Endereço
-        novo_endereco = input(f"Endereço (atual: {evento.endereco}): ").strip()
-        if novo_endereco:
-            evento.endereco = novo_endereco
+        if evento.tipo =="online":
+            evento.endereco = "não se aplica"
+            evento.capacidade = "Ilimitado"
+        else:
+            novo_endereco = input(f"Endereço (atual: {evento.endereco}): ").strip()
+            if novo_endereco:
+                evento.endereco = novo_endereco
 
-        # Capacidade
-        while True:
-            nova_capacidade = input(f"Capacidade (atual: {evento.capacidade}): ").strip()
-            if not nova_capacidade:
-                break
-            try:
-                evento.capacidade = int(nova_capacidade) if nova_capacidade else None
-                break
-            except ValueError:
-                print("⚠️  Capacidade deve ser um número inteiro.")
+            # Capacidade
+            while True:
+                nova_capacidade = input(f"Capacidade (atual: {evento.capacidade}): ").strip()
+                if not nova_capacidade:
+                    break
+                try:
+                    evento.capacidade = int(nova_capacidade)
+                    break
+                except ValueError:
+                    print("⚠️  Capacidade deve ser um número inteiro.")
 
         # Salvar alterações
         if self.crudBd.atualizar_evento(evento):
