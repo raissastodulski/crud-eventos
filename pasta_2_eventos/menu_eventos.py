@@ -1,7 +1,6 @@
 import os
 from .crud_eventos import CrudEventos
 
-
 class MenuEventos:
 
     def __init__(self, gerenciador_bd):

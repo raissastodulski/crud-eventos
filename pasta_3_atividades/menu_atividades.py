@@ -1,7 +1,5 @@
 import os
-import sys
 from .crud_atividades import CrudAtividades
-
 
 class MenuAtividades:
     def __init__(self, gerenciador_bd):
@@ -27,33 +25,24 @@ class MenuAtividades:
     def executar(self):
         while True:
             escolha = self.exibir_menu()
+            self.limpar_tela()
 
             if escolha == "1":
-                self.limpar_tela()
                 self.crud_atividades.adicionar_atividade()
-                input("\nPressione Enter para continuar...")
             elif escolha == "2":
-                self.limpar_tela()
                 self.crud_atividades.ver_todas_atividades()
-                input("\nPressione Enter para continuar...")
             elif escolha == "3":
-                self.limpar_tela()
                 self.crud_atividades.ver_detalhes_atividade()
-                input("\nPressione Enter para continuar...")
             elif escolha == "4":
-                self.limpar_tela()
                 self.crud_atividades.atualizar_atividade()
-                input("\nPressione Enter para continuar...")
             elif escolha == "5":
-                self.limpar_tela()
                 self.crud_atividades.excluir_atividade()
-                input("\nPressione Enter para continuar...")
             elif escolha == "6":
-                self.limpar_tela()
                 self.crud_atividades.buscar_atividade()
-                input("\nPressione Enter para continuar...")
+
             elif escolha == "0":
                 print("Voltando ao menu principal...")
                 break
             else:
-                input("Escolha inválida. Pressione Enter para continuar...")
+                input("Escolha inválida.")
+            input("\nPressione Enter para continuar...")

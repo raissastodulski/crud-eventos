@@ -25,33 +25,24 @@ class MenuParticipantes:
     def executar(self):
         while True:
             escolha = self.exibir_menu()
+            self.limpar_tela()
             
             if escolha == '1':
-                self.limpar_tela()
                 self.crud_participantes.adicionar_participante()
-                input("\nPressione Enter para continuar...")
             elif escolha == '2':
-                self.limpar_tela()
                 self.crud_participantes.visualizar_participantes()
-                input("\nPressione Enter para continuar...")
             elif escolha == '3':
-                self.limpar_tela()
                 self.crud_participantes.detalhes_participante()
-                input("\nPressione Enter para continuar...")
             elif escolha == '4':
-                self.limpar_tela()
                 self.crud_participantes.atualizar_participante()
-                input("\nPressione Enter para continuar...")
             elif escolha == '5':
-                self.limpar_tela()
                 self.crud_participantes.excluir_participante()
-                input("\nPressione Enter para continuar...")
             elif escolha == '6':
-                self.limpar_tela()
                 self.crud_participantes.buscar_participantes()
-                input("\nPressione Enter para continuar...")
+
             elif escolha == '0':
                 print("Voltando ao menu principal...")
                 break
             else:
-                input("Escolha inválida. Pressione Enter para continuar...")
+                input("Escolha inválida.")
+            input("\nPressione Enter para continuar...")
