@@ -3,7 +3,7 @@ import sys
 from .crud_activity import CrudActivity
 
 
-class MenuActivity:
+class MenuAtividade:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
         self.crud_atividades = CrudActivity(gerenciador_bd)

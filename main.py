@@ -1,5 +1,6 @@
 from compartilhado import GerenciadorBD, MenuPrincipal
 import os
+
 def principal():
     diretorio_atual = os.path.dirname(os.path.abspath(__file__))
     caminho_bd = os.path.join(diretorio_atual, "crud-eventos.db")

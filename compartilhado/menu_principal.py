@@ -1,6 +1,6 @@
 from pasta_2_eventos import MenuEventos
 from pasta_1_participantes import MenuParticipantes
-from pasta_3_atividades import MenuActivity
+from pasta_3_atividades import MenuAtividade
 from pasta_4_inscricoes import MenuInscricoes
 import os
 
@@ -9,7 +9,7 @@ class MenuPrincipal:
         self.gerenciador_bd = gerenciador_bd
         self.menu_eventos = MenuEventos(gerenciador_bd)
         self.menu_participantes = MenuParticipantes(gerenciador_bd)
-        self.menu_atividades = MenuActivity(gerenciador_bd)
+        self.menu_atividades = MenuAtividade(gerenciador_bd)
         self.menu_inscricoes = MenuInscricoes(gerenciador_bd)
     
     def limpar_tela(self):
@@ -17,13 +17,13 @@ class MenuPrincipal:
     
     def exibir_menu(self):
         self.limpar_tela()
-        print("\n===== SISTEMA DE GERENCIAMENTO =====")
+        print("\n===== Sistema de Gerenciamento de Eventos =====")
         print("1. Gerenciamento de Eventos")
         print("2. Gerenciamento de Participantes")
         print("3. Gerenciamento de Atividades")
         print("4. Gerenciamento de Inscrições")
         print("0. Sair")
-        print("===================================")
+        print("===============================================")
         return input("Digite sua escolha: ")
     
     def executar(self):

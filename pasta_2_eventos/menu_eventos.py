@@ -1,5 +1,4 @@
 import os
-import sys
 from .crud_evento import CrudEvento
 
 
@@ -15,12 +14,12 @@ class MenuEventos:
     def exibir_menu(self):
         self.limpar_tela()
         print("\n===== GERENCIAMENTO DE EVENTOS =====")
-        print("1. Adicionar Evento")
-        print("2. Ver Todos os Eventos")
-        print("3. Ver Detalhes do Evento")
-        print("4. Atualizar Evento")
-        print("5. Excluir Evento")
-        print("6. Buscar Eventos")
+        print("1. Adicionar evento")
+        print("2. Listar eventos")
+        print("3. Ver detalhes do evento")
+        print("4. Atualizar evento")
+        print("5. Excluir evento")
+        print("6. Buscar eventos")
         print("0. Voltar ao Menu Principal")
         print("===================================")
         return input("Digite sua escolha: ")   
