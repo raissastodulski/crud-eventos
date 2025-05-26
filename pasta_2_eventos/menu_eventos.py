@@ -58,16 +58,6 @@ class MenuEventos:
                 self.crud_evento.buscar_evento()
                 input("\nPressione Enter para continuar...")
                 
-            elif escolha == '7':
-                print("\n--- Buscar Eventos por Data ---")
-                self.crud_evento.buscar_eventos_por_data()
-                input("\nPressione Enter para continuar...")
-                
-            elif escolha == '8':
-                print("\n--- Buscar Eventos por Tipo ---")
-                self.crud_evento.listar_eventos_por_tipo()
-                input("\nPressione Enter para continuar...")
-                
             elif escolha == '0':
                 print("Voltando ao menu principal...")
                 break

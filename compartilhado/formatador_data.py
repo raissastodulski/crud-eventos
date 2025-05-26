@@ -49,14 +49,7 @@ class FormatadorData:
             return hora_obj
             
         return hora_obj.strftime(FormatadorData.FORMATO_HORA)
-    
-    @staticmethod
-    def data_hora_para_str(data_hora_obj):
-        if data_hora_obj is None:
-            return ""
-            
-        return data_hora_obj.strftime(FormatadorData.FORMATO_DATA_HORA_BRASILEIRA)
-    
+
     @staticmethod
     def iso_para_data(iso_str):
         if not iso_str or not iso_str.strip():

@@ -152,57 +152,6 @@ class CrudEventos:
         else:
             print("⚠️  Nenhum evento encontrado.")
 
-    def buscar_eventos_por_data(self):
-        print("\n===== BUSCAR EVENTOS POR DATA =====")
-        
-        data_inicio = FormatadorData.solicitar_data_usuario(
-            "Data início da busca [Enter para pular]", 
-            permitir_vazio=True
-        )
-        
-        data_fim = FormatadorData.solicitar_data_usuario(
-            "Data fim da busca [Enter para pular]", 
-            permitir_vazio=True
-        )
-        
-        eventos = self.crudBd.buscar_eventos_por_data(data_inicio, data_fim)
-        
-        if eventos:
-            periodo_str = ""
-            if data_inicio and data_fim:
-                periodo_str = f" de {FormatadorData.data_para_str(data_inicio)} a {FormatadorData.data_para_str(data_fim)}"
-            elif data_inicio:
-                periodo_str = f" a partir de {FormatadorData.data_para_str(data_inicio)}"
-            elif data_fim:
-                periodo_str = f" até {FormatadorData.data_para_str(data_fim)}"
-                
-            print(f"\n{len(eventos)} evento(s) encontrado(s){periodo_str}:")
-            for evento in eventos:
-                print("\n" + "=" * 30)
-                print(evento)
-                print("=" * 30)
-        else:
-            print("⚠️  Nenhum evento encontrado no período especificado.")
-
-    def buscar_eventos_por_local(self):
-        print("\n===== BUSCAR EVENTOS POR LOCAL =====")
-        
-        local = input("Digite o local para buscar: ").strip()
-        if not local:
-            print("⚠️  Digite um local válido")
-            return
-
-        eventos = self.crudBd.buscar_eventos_por_local(local)
-
-        if eventos:
-            print(f"\n{len(eventos)} evento(s) encontrado(s) para o local '{local}':")
-            for evento in eventos:
-                print("\n" + "=" * 30)
-                print(evento)
-                print("=" * 30)
-        else:
-            print("⚠️  Nenhum evento encontrado para esse local.")
-
     def atualizar_evento(self):
         print("\n===== ATUALIZAR EVENTO =====")
         
