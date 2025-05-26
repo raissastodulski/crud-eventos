@@ -4,6 +4,7 @@ from pasta_4_inscricoes.crud_bd_inscricoes import CrudBdInscricoes
 from pasta_2_eventos import CrudBdEventos
 from pasta_1_participantes.crud_bd_participantes import CrudBdParticipantes
 from pasta_3_atividades.crud_bd_atividades import CrudBdAtividades
+from compartilhado.formatador_tabela import FormatadorTabela
 
 class CrudInscricoes:
     def __init__(self, gerenciador_bd):
@@ -115,7 +116,7 @@ class CrudInscricoes:
             print("Nenhuma inscrição encontrada.")
             return []
         else:
-            print(f"Total de inscrições: {len(inscricoes)}")
+            dados_tabela = []
             for inscricao in inscricoes:
                 participante = self.crud_bd_participantes.ler_participante_por_id(inscricao.id_participante)
                 atividade = self.crud_bd_atividades.ler_atividade_por_id(inscricao.id_atividade)
@@ -129,7 +130,31 @@ class CrudInscricoes:
                 
                 nome_evento = evento.nome if evento else "Evento não encontrado"
                 
-                print(f"[{inscricao.id}] {nome_participante} → Atividade: {nome_atividade} | Evento: {nome_evento} | Data: {inscricao.data_inscricao}")
+                data_formatada = ""
+                if inscricao.data_inscricao:
+                    try:
+                        if isinstance(inscricao.data_inscricao, str):
+                            data_obj = datetime.strptime(inscricao.data_inscricao, "%Y-%m-%d %H:%M:%S")
+                        else:
+                            data_obj = inscricao.data_inscricao
+                        data_formatada = data_obj.strftime("%d/%m/%Y %H:%M")
+                    except:
+                        data_formatada = str(inscricao.data_inscricao)
+                
+                dados_tabela.append([
+                    inscricao.id,
+                    FormatadorTabela.truncar_texto(nome_participante, 25),
+                    FormatadorTabela.truncar_texto(nome_atividade, 30),
+                    FormatadorTabela.truncar_texto(nome_evento, 25),
+                    data_formatada
+                ])
+            
+            cabecalhos = ["ID", "Participante", "Atividade", "Evento", "Data Inscrição"]
+            larguras = [4, 25, 30, 25, 16]
+            
+            tabela = FormatadorTabela.criar_tabela(dados_tabela, cabecalhos, larguras)
+            print(tabela)
+            print(f"\nTotal: {len(inscricoes)} inscrição(ões)")
             
             return inscricoes
     
@@ -160,16 +185,28 @@ class CrudInscricoes:
             print(f"Nenhuma atividade encontrada com ID {id_atividade}.")
             return []
         
-        print(f"\nInscrições para a atividade: {atividade.nome}")
+        print(f"\n📋 Inscrições para a atividade: {atividade.nome}")
         participantes = self.crud_bd_inscricoes.listar_participantes_por_atividade(id_atividade)
         
         if not participantes:
             print(f"Nenhuma inscrição encontrada para a atividade '{atividade.nome}'.")
             return []
         
-        print(f"Total de inscrições: {len(participantes)}/{atividade.vagas} vagas")
+        dados_tabela = []
         for participante in participantes:
-            print(f"[{participante.id}] {participante.nome} ({participante.email})")
+            dados_tabela.append([
+                participante.id,
+                FormatadorTabela.truncar_texto(participante.nome, 30),
+                FormatadorTabela.truncar_texto(participante.email or "", 35),
+                FormatadorTabela.truncar_texto(participante.telefone or "", 15)
+            ])
+        
+        cabecalhos = ["ID", "Nome", "Email", "Telefone"]
+        larguras = [4, 30, 35, 15]
+        
+        tabela = FormatadorTabela.criar_tabela(dados_tabela, cabecalhos, larguras)
+        print(tabela)
+        print(f"\nTotal: {len(participantes)}/{atividade.vagas} vagas preenchidas")
         
         return participantes
     
@@ -199,16 +236,30 @@ class CrudInscricoes:
             print(f"Nenhum evento encontrado com ID {id_evento}.")
             return []
         
-        print(f"\nInscrições para o evento: {evento.nome}")
+        print(f"\n📋 Inscrições para o evento: {evento.nome}")
         participantes = self.crud_bd_inscricoes.listar_participantes_por_evento(id_evento)
         
         if not participantes:
             print(f"Nenhuma inscrição encontrada para o evento '{evento.nome}'.")
             return []
         
-        print(f"Total de participantes: {len(participantes)}/{evento.capacidade} capacidade")
+        dados_tabela = []
         for participante in participantes:
-            print(f"[{participante.id}] {participante.nome} ({participante.email})")
+            dados_tabela.append([
+                participante.id,
+                FormatadorTabela.truncar_texto(participante.nome, 30),
+                FormatadorTabela.truncar_texto(participante.email or "", 35),
+                FormatadorTabela.truncar_texto(participante.telefone or "", 15)
+            ])
+        
+        cabecalhos = ["ID", "Nome", "Email", "Telefone"]
+        larguras = [4, 30, 35, 15]
+        
+        tabela = FormatadorTabela.criar_tabela(dados_tabela, cabecalhos, larguras)
+        print(tabela)
+        
+        capacidade_info = evento.capacidade if evento.capacidade else "Ilimitada"
+        print(f"\nTotal: {len(participantes)} participante(s) | Capacidade: {capacidade_info}")
         
         return participantes
     
@@ -237,7 +288,7 @@ class CrudInscricoes:
             print(f"Nenhum participante encontrado com ID {id_participante}.")
             return []
         
-        print(f"\nInscrições do participante: {participante.nome}")
+        print(f"\n📋 Inscrições do participante: {participante.nome}")
         
         atividades = self.crud_bd_inscricoes.listar_atividades_por_participante(id_participante)
         
@@ -245,22 +296,114 @@ class CrudInscricoes:
             print(f"Nenhuma inscrição encontrada para o participante '{participante.nome}'.")
             return []
         
-        print(f"Total de inscrições: {len(atividades)}")
-        print("Atividades:")
+        dados_tabela_atividades = []
         for atividade in atividades:
             evento = self.crud_bd_eventos.ler_evento_por_id(atividade.id_evento)
             nome_evento = evento.nome if evento else "Evento não encontrado"
-            print(f"[{atividade.id}] {atividade.nome} | Evento: {nome_evento}")
+            
+            dados_tabela_atividades.append([
+                atividade.id,
+                FormatadorTabela.truncar_texto(atividade.nome, 30),
+                FormatadorTabela.truncar_texto(atividade.facilitador, 20),
+                FormatadorTabela.truncar_texto(nome_evento, 25),
+                atividade.data_inicio_formatada() if hasattr(atividade, 'data_inicio_formatada') else "N/A"
+            ])
+        
+        cabecalhos_atividades = ["ID", "Atividade", "Facilitador", "Evento", "Data"]
+        larguras_atividades = [4, 30, 20, 25, 12]
+        
+        tabela_atividades = FormatadorTabela.criar_tabela(dados_tabela_atividades, cabecalhos_atividades, larguras_atividades)
+        print(f"\n🎯 Atividades inscritas:")
+        print(tabela_atividades)
         
         eventos = self.crud_bd_inscricoes.listar_eventos_por_participante(id_participante)
         
         if eventos:
-            print("\nEventos:")
+            dados_tabela_eventos = []
             for evento in eventos:
-                data_exibicao = evento.data if hasattr(evento, 'data') else None
-                print(f"[{evento.id}] {evento.nome} ({data_exibicao})")
+                data_exibicao = ""
+                if hasattr(evento, 'data_inicio_formatada'):
+                    data_exibicao = evento.data_inicio_formatada()
+                elif hasattr(evento, 'data'):
+                    data_exibicao = str(evento.data) if evento.data else "N/A"
+                
+                dados_tabela_eventos.append([
+                    evento.id,
+                    FormatadorTabela.truncar_texto(evento.nome, 35),
+                    FormatadorTabela.truncar_texto(evento.local if hasattr(evento, 'local') else "N/A", 25),
+                    data_exibicao
+                ])
+            
+            cabecalhos_eventos = ["ID", "Evento", "Local", "Data"]
+            larguras_eventos = [4, 35, 25, 12]
+            
+            tabela_eventos = FormatadorTabela.criar_tabela(dados_tabela_eventos, cabecalhos_eventos, larguras_eventos)
+            print(f"\n📅 Eventos relacionados:")
+            print(tabela_eventos)
+        
+        print(f"\nTotal: {len(atividades)} inscrição(ões) em atividades")
         
         return atividades
+    
+    def ver_detalhes_inscricao(self, id_inscricao=None):
+        print("\n===== DETALHES DA INSCRIÇÃO =====")
+        
+        if id_inscricao is None:
+            id_inscricao = input("Digite o ID da inscrição para ver detalhes: ")
+            if not id_inscricao.isdigit():
+                print("ID inválido. Por favor, digite um número.")
+                return None
+            id_inscricao = int(id_inscricao)
+        
+        inscricao = self.crud_bd_inscricoes.ler_inscricao_por_id(id_inscricao)
+        if not inscricao:
+            print(f"Nenhuma inscrição encontrada com ID {id_inscricao}.")
+            return None
+        
+        participante = self.crud_bd_participantes.ler_participante_por_id(inscricao.id_participante)
+        atividade = self.crud_bd_atividades.ler_atividade_por_id(inscricao.id_atividade)
+        
+        evento = None
+        if atividade:
+            evento = self.crud_bd_eventos.ler_evento_por_id(atividade.id_evento)
+        
+        data_formatada = ""
+        if inscricao.data_inscricao:
+            try:
+                if isinstance(inscricao.data_inscricao, str):
+                    data_obj = datetime.strptime(inscricao.data_inscricao, "%Y-%m-%d %H:%M:%S")
+                else:
+                    data_obj = inscricao.data_inscricao
+                data_formatada = data_obj.strftime("%d/%m/%Y às %H:%M")
+            except:
+                data_formatada = str(inscricao.data_inscricao)
+        
+        dados_detalhes = {
+            "ID da Inscrição": inscricao.id,
+            "Data da Inscrição": data_formatada,
+            "Participante": participante.nome if participante else "Não encontrado",
+            "Email do Participante": participante.email if participante else "N/A",
+            "Telefone do Participante": participante.telefone if participante else "N/A",
+            "Atividade": atividade.nome if atividade else "Não encontrada",
+            "Facilitador": atividade.facilitador if atividade else "N/A",
+            "Local da Atividade": atividade.local if atividade else "N/A",
+            "Evento": evento.nome if evento else "Não encontrado",
+            "Local do Evento": evento.local if evento else "N/A"
+        }
+        
+        if atividade and hasattr(atividade, 'data_inicio_formatada'):
+            dados_detalhes["Data da Atividade"] = atividade.data_inicio_formatada()
+        
+        if atividade and hasattr(atividade, 'hora_inicio_formatada'):
+            dados_detalhes["Hora da Atividade"] = atividade.hora_inicio_formatada()
+        
+        tabela_detalhes = FormatadorTabela.criar_tabela_detalhes(
+            f"DETALHES DA INSCRIÇÃO (ID: {inscricao.id})",
+            dados_detalhes
+        )
+        print(tabela_detalhes)
+        
+        return inscricao
     
     def cancelar_inscricao(self):
         print("\n===== CANCELAR INSCRIÇÃO =====")

@@ -1,6 +1,7 @@
 from .participante import Participante
 from .crud_bd_participantes import CrudBdParticipantes
 from datetime import datetime
+from compartilhado.formatador_tabela import FormatadorTabela
 
 
 class CrudParticipantes:
@@ -71,10 +72,32 @@ class CrudParticipantes:
         print("\n==== LISTAR PARTICIPANTES ====")
         participantes = self.crud_bd_participantes.ler_todos_participantes()
         if participantes:
-            for participante in participantes:
-                print(participante)
+            dados_tabela = []
+            for p in participantes:
+                data_nasc = ""
+                if p.data_nascimento:
+                    if isinstance(p.data_nascimento, datetime):
+                        data_nasc = p.data_nascimento.strftime('%d/%m/%Y')
+                    else:
+                        data_nasc = str(p.data_nascimento)
+                
+                dados_tabela.append([
+                    p.id,
+                    FormatadorTabela.truncar_texto(p.nome, 25),
+                    FormatadorTabela.truncar_texto(p.cpf or "", 14),
+                    FormatadorTabela.truncar_texto(p.email or "", 30),
+                    FormatadorTabela.truncar_texto(p.telefone or "", 15),
+                    data_nasc
+                ])
+            
+            cabecalhos = ["ID", "Nome", "CPF", "Email", "Telefone", "Nascimento"]
+            larguras = [4, 25, 14, 30, 15, 12]
+            
+            tabela = FormatadorTabela.criar_tabela(dados_tabela, cabecalhos, larguras)
+            print(tabela)
+            print(f"\nTotal: {len(participantes)} participante(s)")
         else:
-            print("Não há participantes")
+            print("Não há participantes cadastrados.")
     
     def detalhes_participante(self, idParticipante=None):
         print("\n==== DETALHES PARTICIPANTES ====")
@@ -87,20 +110,27 @@ class CrudParticipantes:
         participante = self.crud_bd_participantes.ler_participante_por_id(idParticipante)
 
         if participante:
-            print("\nDetalhes do Participante:")
-            print(f"ID: {participante.id}")
-            print(f"Nome: {participante.nome}")
-            print(f"CPF: {participante.cpf}")
-            print(f"Telefone: {participante.telefone}")
-            print(f"Email: {participante.email}")
+            data_nasc = "Não informada"
             if participante.data_nascimento:
                 if isinstance(participante.data_nascimento, datetime):
-                    data_nascimento_str = participante.data_nascimento.strftime('%d/%m/%Y')
+                    data_nasc = participante.data_nascimento.strftime('%d/%m/%Y')
                 else:
-                    data_nascimento_str = str(participante.data_nascimento)
-                print(f"Data de Nascimento: {data_nascimento_str}")
-            else:
-                print("Data de Nascimento: Não informada")
+                    data_nasc = str(participante.data_nascimento)
+            
+            dados_detalhes = {
+                "ID": participante.id,
+                "Nome": participante.nome,
+                "CPF": participante.cpf or "Não informado",
+                "Email": participante.email or "Não informado",
+                "Telefone": participante.telefone or "Não informado",
+                "Data de Nascimento": data_nasc
+            }
+            
+            tabela_detalhes = FormatadorTabela.criar_tabela_detalhes(
+                f"DETALHES DO PARTICIPANTE (ID: {participante.id})",
+                dados_detalhes
+            )
+            print(tabela_detalhes)
             return participante
         else:
             print("Participante com essa ID não encontrada, tente novamente")
@@ -230,7 +260,29 @@ class CrudParticipantes:
             print(f"Nenhum participante encontrado correspondente a '{termo_busca}'.")
             return []
         else:
-            print(f"\nEncontrados {len(participantes)} participantes correspondentes:")
-            for participante in participantes:
-                print(participante)
+            print(f"\n🔍 Encontrados {len(participantes)} participante(s) correspondente(s) a '{termo_busca}':")
+            
+            dados_tabela = []
+            for p in participantes:
+                data_nasc = ""
+                if p.data_nascimento:
+                    if isinstance(p.data_nascimento, datetime):
+                        data_nasc = p.data_nascimento.strftime('%d/%m/%Y')
+                    else:
+                        data_nasc = str(p.data_nascimento)
+                
+                dados_tabela.append([
+                    p.id,
+                    FormatadorTabela.truncar_texto(p.nome, 25),
+                    FormatadorTabela.truncar_texto(p.cpf or "", 14),
+                    FormatadorTabela.truncar_texto(p.email or "", 30),
+                    FormatadorTabela.truncar_texto(p.telefone or "", 15),
+                    data_nasc
+                ])
+            
+            cabecalhos = ["ID", "Nome", "CPF", "Email", "Telefone", "Nascimento"]
+            larguras = [4, 25, 14, 30, 15, 12]
+            
+            tabela = FormatadorTabela.criar_tabela(dados_tabela, cabecalhos, larguras)
+            print(tabela)
             return participantes

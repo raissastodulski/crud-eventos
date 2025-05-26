@@ -1,6 +1,7 @@
 from .atividade import Atividade
 from .crud_bd_atividades import CrudBdAtividades
 from compartilhado.formatador_data import FormatadorData
+from compartilhado.formatador_tabela import FormatadorTabela
 from compartilhado.gerenciador_bd import GerenciadorBD
 
 
@@ -149,10 +150,28 @@ class CrudAtividades:
             print("⚠️  Nenhuma atividade encontrada.")
             return []
         else:
+            dados_tabela = []
             for atividade in atividades:
-                evento_info = f" (Evento: {atividade.evento_nome})" if hasattr(atividade, 'evento_nome') else ""
-                print(f"{atividade}{evento_info}")
-                print("-" * 60)
+                evento_nome = ""
+                if hasattr(atividade, 'evento_nome'):
+                    evento_nome = atividade.evento_nome
+                
+                dados_tabela.append([
+                    atividade.id,
+                    FormatadorTabela.truncar_texto(atividade.nome, 30),
+                    FormatadorTabela.truncar_texto(atividade.facilitador, 20),
+                    atividade.data_inicio_formatada(),
+                    atividade.hora_inicio_formatada(),
+                    FormatadorTabela.truncar_texto(atividade.local, 20),
+                    atividade.vagas if atividade.vagas > 0 else "Ilimitado",
+                    FormatadorTabela.truncar_texto(evento_nome, 25)
+                ])
+            
+            cabecalhos = ["ID", "Nome", "Facilitador", "Data", "Hora", "Local", "Vagas", "Evento"]
+            larguras = [4, 30, 20, 12, 8, 20, 10, 25]
+            
+            tabela = FormatadorTabela.criar_tabela(dados_tabela, cabecalhos, larguras)
+            print(tabela)
             print(f"\nTotal: {len(atividades)} atividade(s)")
             return atividades
 
@@ -167,17 +186,21 @@ class CrudAtividades:
 
         atividade = self.crud_atividade.ler_atividade_por_id(id_atividade)
         if atividade:
-            print(f"\n📋 Detalhes da Atividade (ID: {atividade.id})")
-            print("=" * 50)
-            print(f"Nome: {atividade.nome}")
-            print(f"Facilitador: {atividade.facilitador}")
-            print(f"Local: {atividade.local}")
-            print(f"ID do Evento: {atividade.id_evento}")
-            print(f"Período: {atividade.periodo_formatado()}")
-            print(f"Vagas: {atividade.vagas if atividade.vagas > 0 else 'Ilimitado'}")
+            dados_detalhes = {
+                "ID": atividade.id,
+                "Nome": atividade.nome,
+                "Facilitador": atividade.facilitador,
+                "Local": atividade.local,
+                "ID do Evento": atividade.id_evento,
+                "Data Início": atividade.data_inicio_formatada(),
+                "Hora Início": atividade.hora_inicio_formatada(),
+                "Data Fim": atividade.data_fim_formatada(),
+                "Hora Fim": atividade.hora_fim_formatada(),
+                "Vagas": atividade.vagas if atividade.vagas > 0 else "Ilimitado"
+            }
+            
             if atividade.duracao:
-                print(f"Duração: {atividade.duracao:.1f} horas")
-            print("=" * 50)
+                dados_detalhes["Duração"] = f"{atividade.duracao:.1f} horas"
             
             try:
                 self.gerenciador_bd.cursor.execute(
@@ -185,9 +208,15 @@ class CrudAtividades:
                 )
                 evento_nome = self.gerenciador_bd.cursor.fetchone()
                 if evento_nome:
-                    print(f"Evento relacionado: {evento_nome[0]}")
+                    dados_detalhes["Evento Relacionado"] = evento_nome[0]
             except Exception as e:
                 print(f"Erro ao buscar evento relacionado: {e}")
+            
+            tabela_detalhes = FormatadorTabela.criar_tabela_detalhes(
+                f"DETALHES DA ATIVIDADE (ID: {atividade.id})",
+                dados_detalhes
+            )
+            print(tabela_detalhes)
             return atividade
         else:
             print(f"⚠️  Nenhuma atividade encontrada com ID {id_atividade}")
@@ -346,10 +375,24 @@ class CrudAtividades:
             return []
         else:
             print(f"\n🔍 Encontradas {len(atividades)} atividade(s) correspondente(s) a '{termo_busca}':")
-            print("=" * 70)
+            
+            dados_tabela = []
             for atividade in atividades:
-                print(atividade)
-                print("-" * 70)
+                dados_tabela.append([
+                    atividade.id,
+                    FormatadorTabela.truncar_texto(atividade.nome, 30),
+                    FormatadorTabela.truncar_texto(atividade.facilitador, 20),
+                    atividade.data_inicio_formatada(),
+                    atividade.hora_inicio_formatada(),
+                    FormatadorTabela.truncar_texto(atividade.local, 20),
+                    atividade.vagas if atividade.vagas > 0 else "Ilimitado"
+                ])
+            
+            cabecalhos = ["ID", "Nome", "Facilitador", "Data", "Hora", "Local", "Vagas"]
+            larguras = [4, 30, 20, 12, 8, 20, 10]
+            
+            tabela = FormatadorTabela.criar_tabela(dados_tabela, cabecalhos, larguras)
+            print(tabela)
             return atividades
 
     def ver_atividades_por_evento(self, id_evento=None):
@@ -382,9 +425,23 @@ class CrudAtividades:
             return []
         else:
             print(f"\n📋 Atividades do evento ID {id_evento}:")
-            print("=" * 70)
+            
+            dados_tabela = []
             for atividade in atividades:
-                print(atividade)
-                print("-" * 70)
+                dados_tabela.append([
+                    atividade.id,
+                    FormatadorTabela.truncar_texto(atividade.nome, 30),
+                    FormatadorTabela.truncar_texto(atividade.facilitador, 20),
+                    atividade.data_inicio_formatada(),
+                    atividade.hora_inicio_formatada(),
+                    FormatadorTabela.truncar_texto(atividade.local, 20),
+                    atividade.vagas if atividade.vagas > 0 else "Ilimitado"
+                ])
+            
+            cabecalhos = ["ID", "Nome", "Facilitador", "Data", "Hora", "Local", "Vagas"]
+            larguras = [4, 30, 20, 12, 8, 20, 10]
+            
+            tabela = FormatadorTabela.criar_tabela(dados_tabela, cabecalhos, larguras)
+            print(tabela)
             print(f"\nTotal: {len(atividades)} atividade(s)")
             return atividades

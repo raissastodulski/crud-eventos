@@ -1,5 +1,6 @@
 from datetime import datetime, date, time
 from compartilhado.formatador_data import FormatadorData
+from compartilhado.formatador_tabela import FormatadorTabela
 from .evento import Evento
 from .crud_bd_eventos import CrudBdEventos
 
@@ -101,9 +102,24 @@ class CrudEventos:
             print("⚠️  Nenhum evento cadastrado até o momento.")
             return
         else:
+            dados_tabela = []
             for evento in eventos:
-                print(evento)
-                print("-" * 50)
+                dados_tabela.append([
+                    evento.id,
+                    FormatadorTabela.truncar_texto(evento.nome, 30),
+                    FormatadorTabela.truncar_texto(evento.publico_alvo.title(), 12),
+                    evento.data_inicio_formatada(),
+                    evento.data_fim_formatada(),
+                    FormatadorTabela.truncar_texto(evento.local, 25),
+                    evento.capacidade if evento.capacidade else "N/A"
+                ])
+            
+            cabecalhos = ["ID", "Nome", "Público", "Data Início", "Data Fim", "Local", "Capacidade"]
+            larguras = [4, 30, 12, 12, 12, 25, 10]
+            
+            tabela = FormatadorTabela.criar_tabela(dados_tabela, cabecalhos, larguras)
+            print(tabela)
+            print(f"\nTotal: {len(eventos)} evento(s)")
             return eventos
 
     def ver_detalhe_evento(self):
@@ -119,14 +135,28 @@ class CrudEventos:
             evento = self.crudBd.ler_evento_por_id(id_evento)
             
             if evento:
-                print("\n" + "=" * 50)
-                print(f"📌 Detalhes do Evento (ID: {evento.id})")
-                print(evento)
-                print("=" * 50)
+                dados_detalhes = {
+                    "ID": evento.id,
+                    "Nome": evento.nome,
+                    "Descrição": evento.descricao,
+                    "Data Início": evento.data_inicio_formatada(),
+                    "Hora Início": evento.hora_inicio_formatada(),
+                    "Data Fim": evento.data_fim_formatada(),
+                    "Hora Fim": evento.hora_fim_formatada(),
+                    "Público Alvo": evento.publico_alvo.title(),
+                    "Local": evento.local,
+                    "Endereço": evento.endereco,
+                    "Capacidade": evento.capacidade if evento.capacidade else "Não definida"
+                }
                 
                 if evento.duracao:
-                    print(f"Duração: {evento.duracao:.1f} horas")
-                    print("=" * 50)
+                    dados_detalhes["Duração"] = f"{evento.duracao:.1f} horas"
+                
+                tabela_detalhes = FormatadorTabela.criar_tabela_detalhes(
+                    f"DETALHES DO EVENTO (ID: {evento.id})",
+                    dados_detalhes
+                )
+                print(tabela_detalhes)
             else:
                 print("⚠️  Evento não encontrado.")
         except ValueError:
@@ -144,11 +174,25 @@ class CrudEventos:
         eventos = self.crudBd.buscar_eventos(termo)
 
         if eventos:
-            print(f"\n{len(eventos)} resultado(s) encontrado(s) para '{termo}':")
+            print(f"\n🔍 {len(eventos)} resultado(s) encontrado(s) para '{termo}':")
+            
+            dados_tabela = []
             for evento in eventos:
-                print("\n" + "=" * 30)
-                print(evento)
-                print("=" * 30)
+                dados_tabela.append([
+                    evento.id,
+                    FormatadorTabela.truncar_texto(evento.nome, 30),
+                    FormatadorTabela.truncar_texto(evento.publico_alvo.title(), 12),
+                    evento.data_inicio_formatada(),
+                    evento.data_fim_formatada(),
+                    FormatadorTabela.truncar_texto(evento.local, 25),
+                    evento.capacidade if evento.capacidade else "N/A"
+                ])
+            
+            cabecalhos = ["ID", "Nome", "Público", "Data Início", "Data Fim", "Local", "Capacidade"]
+            larguras = [4, 30, 12, 12, 12, 25, 10]
+            
+            tabela = FormatadorTabela.criar_tabela(dados_tabela, cabecalhos, larguras)
+            print(tabela)
         else:
             print("⚠️  Nenhum evento encontrado.")
 
