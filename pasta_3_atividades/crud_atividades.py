@@ -1,13 +1,13 @@
-from .atividade_model import Atividade
-from .crud_bd_atividades import CrudBDAtividades
+from .atividade import Atividade
+from .crud_bd_atividades import CrudBdAtividades
 from compartilhado.formatador_data import FormatadorData
 from compartilhado.gerenciador_bd import GerenciadorBD
 
 
-class CrudActivity:
+class CrudAtividades:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
-        self.crud_atividade = CrudBDAtividades(gerenciador_bd)
+        self.crud_atividade = CrudBdAtividades(gerenciador_bd)
 
     def listar_eventos_disponiveis(self):
         try:

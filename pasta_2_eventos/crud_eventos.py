@@ -1,12 +1,12 @@
 from datetime import datetime, date, time
 from compartilhado.formatador_data import FormatadorData
 from .evento import Evento
-from .crud_bd_eventos import CrudBDEventos
+from .crud_bd_eventos import CrudBdEventos
 
-class CrudEvento:
+class CrudEventos:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
-        self.crudBd = CrudBDEventos(gerenciador_bd)
+        self.crudBd = CrudBdEventos(gerenciador_bd)
 
     def criar_evento(self):
         print("\n===== ADICIONAR UM NOVO EVENTO =====")

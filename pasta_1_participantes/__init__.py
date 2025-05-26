@@ -1,4 +1,4 @@
 from .participante import Participante
-from .crud_bd_participantes import CrudBDParticipantes
+from .crud_bd_participantes import CrudBdParticipantes
 from .crud_participantes import CrudParticipantes
 from .menu_participantes import MenuParticipantes

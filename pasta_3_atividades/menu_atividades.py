@@ -1,12 +1,12 @@
 import os
 import sys
-from .crud_activity import CrudActivity
+from .crud_atividades import CrudAtividades
 
 
-class MenuAtividade:
+class MenuAtividades:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
-        self.crud_atividades = CrudActivity(gerenciador_bd)
+        self.crud_atividades = CrudAtividades(gerenciador_bd)
 
     def limpar_tela(self):
         """Limpa a tela do console"""

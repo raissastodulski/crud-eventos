@@ -2,10 +2,10 @@ import sqlite3
 from datetime import datetime
 from pasta_4_inscricoes.inscricao import Inscricao
 from pasta_2_eventos import Evento
-from pasta_3_atividades.atividade_model import Atividade
+from pasta_3_atividades.atividade import Atividade
 from pasta_1_participantes.participante import Participante
 
-class CrudBDInscricoes:
+class CrudBdInscricoes:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
     

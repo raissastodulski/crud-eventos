@@ -1,17 +1,17 @@
 from datetime import datetime
 from pasta_4_inscricoes.inscricao import Inscricao
-from pasta_4_inscricoes.crud_bd_inscricoes import CrudBDInscricoes
-from pasta_2_eventos import CrudBDEventos
-from pasta_1_participantes.crud_bd_participantes import CrudBDParticipantes
-from pasta_3_atividades.crud_bd_atividades import CrudBDAtividades
+from pasta_4_inscricoes.crud_bd_inscricoes import CrudBdInscricoes
+from pasta_2_eventos import CrudBdEventos
+from pasta_1_participantes.crud_bd_participantes import CrudBdParticipantes
+from pasta_3_atividades.crud_bd_atividades import CrudBdAtividades
 
 class CrudInscricoes:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
-        self.crud_bd_inscricoes = CrudBDInscricoes(gerenciador_bd)
-        self.crud_bd_eventos = CrudBDEventos(gerenciador_bd)
-        self.crud_bd_participantes = CrudBDParticipantes(gerenciador_bd)
-        self.crud_bd_atividades = CrudBDAtividades(gerenciador_bd)
+        self.crud_bd_inscricoes = CrudBdInscricoes(gerenciador_bd)
+        self.crud_bd_eventos = CrudBdEventos(gerenciador_bd)
+        self.crud_bd_participantes = CrudBdParticipantes(gerenciador_bd)
+        self.crud_bd_atividades = CrudBdAtividades(gerenciador_bd)
     
     def adicionar_inscricao(self):
         """Adiciona uma nova inscrição para uma atividade, verificando as vagas disponíveis"""

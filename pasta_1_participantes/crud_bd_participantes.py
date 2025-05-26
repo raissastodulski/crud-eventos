@@ -1,7 +1,7 @@
 import sqlite3
 from .participante import Participante
 
-class CrudBDParticipantes:
+class CrudBdParticipantes:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
     

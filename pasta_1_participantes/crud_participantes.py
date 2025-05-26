@@ -1,5 +1,5 @@
 from .participante import Participante
-from .crud_bd_participantes import CrudBDParticipantes
+from .crud_bd_participantes import CrudBdParticipantes
 import datetime
 
 
@@ -25,7 +25,7 @@ class CrudParticipantes:
 
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
-        self.crud_bd_participantes = CrudBDParticipantes(gerenciador_bd)
+        self.crud_bd_participantes = CrudBdParticipantes(gerenciador_bd)
     
     def adicionar_participante(self):
         print("\n===== ADICIONAR NOVO PARTICIPANTE =====")

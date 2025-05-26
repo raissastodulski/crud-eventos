@@ -1,7 +1,7 @@
 import sqlite3
 from .evento import Evento
 
-class CrudBDEventos:
+class CrudBdEventos:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
     

@@ -1,8 +1,8 @@
 import sqlite3
-from .atividade_model import Atividade
+from .atividade import Atividade
 
 
-class CrudBDAtividades:
+class CrudBdAtividades:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
 

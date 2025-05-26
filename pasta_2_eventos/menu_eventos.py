@@ -1,12 +1,12 @@
 import os
-from .crud_evento import CrudEvento
+from .crud_eventos import CrudEventos
 
 
 class MenuEventos:
 
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
-        self.crud_evento = CrudEvento(gerenciador_bd)
+        self.crud_evento = CrudEventos(gerenciador_bd)
 
     def limpar_tela(self):
         os.system('cls' if os.name == 'nt' else 'clear')   
