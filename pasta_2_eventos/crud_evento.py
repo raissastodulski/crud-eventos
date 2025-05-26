@@ -32,7 +32,7 @@ class CrudEvento:
                 break
 
         while True:    
-            data_fim_str = input(f"\nInforme a DATA de FIM do evento {nome_evento} (dd/mm/aaaa): ")
+            data_fim_str = input(f"\nInforme a DATA de FIM do evento {nome_evento} (DD/MM/AAAA): ")
             try:           
                 data_fim = datetime.strptime(data_fim_str, "%d/%m/%Y").date()
                 if data_fim < data_inicio:
@@ -40,7 +40,7 @@ class CrudEvento:
                 else:
                     break
             except ValueError:
-                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
+                print("⚠️  Data inválida. Use o formato DD/MM/AAAA.")
 
         while True:
             hora_fim_str = input("\nInforme a HORA de FIM do evento (hh:mm): ")

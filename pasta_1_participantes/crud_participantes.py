@@ -34,7 +34,7 @@ class CrudParticipantes:
         cpf = input("Digite o CPF do participante: ")
         email = input("Digite o email do participante: ")
         telefone = input("Digite o telefone do participante: ")
-        data = input("Digite a data de nascimento (AAAA-MM-DD) ou deixe em branco: ")
+        data = input("Digite a data de nascimento (DD/MM/AAAA) ou deixe em branco: ")
         
         participante = Participante(nome=nome, cpf=cpf, email=email, telefone=telefone, data=data)
         self.crud_bd_participantes.criar_participante(participante)
@@ -116,7 +116,7 @@ class CrudParticipantes:
         if novo_telefone:
             participante.telefone = novo_telefone
         while True:
-            nova_data = input(f"Nova data [{participante.data}] (DD-MM-AAAA): ")
+            nova_data = input(f"Nova data [{participante.data}] (DD/MM/AAAA): ")
             if not nova_data:
                 break
             try:
@@ -124,7 +124,7 @@ class CrudParticipantes:
                 participante.data = nova_data
                 break
             except ValueError:
-                print("Formato de data inválido. Use DD-MM-AAAA.")
+                print("Formato de data inválido. Use o formato DD/MM/AAAA.")
         sucesso = self.crud_bd_participantes.atualizar_participante(participante)
         if not sucesso:
             print("Falha ao atualizar a participante.")

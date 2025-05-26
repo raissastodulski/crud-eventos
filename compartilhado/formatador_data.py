@@ -94,7 +94,7 @@ class FormatadorData:
     @staticmethod
     def solicitar_data_usuario(prompt, permitir_vazio=False, validar_futura=False):
         while True:
-            data_str = input(f"{prompt} (dd/mm/yyyy): ").strip()
+            data_str = input(f"{prompt} (DD/MM/AAAA): ").strip()
             
             if not data_str and permitir_vazio:
                 return None
@@ -106,7 +106,7 @@ class FormatadorData:
             data_obj = FormatadorData.str_para_data(data_str)
             
             if data_obj is None:
-                print("⚠️  Data inválida. Use o formato dd/mm/yyyy.")
+                print("⚠️  Data inválida. Use o formato DD/MM/AAAA.")
                 continue
                 
             if validar_futura and not FormatadorData.validar_data_futura(data_obj):
