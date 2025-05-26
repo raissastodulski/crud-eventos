@@ -31,23 +31,12 @@ class CrudEventos:
             if FormatadorData.validar_data_fim_posterior(data_inicio, data_fim):
                 break
 
-        while True:    
-            data_fim_str = input(f"\nInforme a DATA de FIM do evento {nome_evento} (DD/MM/AAAA): ")
-            try:           
-                data_fim = datetime.strptime(data_fim_str, "%d/%m/%Y").date()
-                if data_fim < data_inicio:
-                    print("⚠️  A data fim não pode ser antes da data de início.")
-                else:
-                    break
-            except ValueError:
-                print("⚠️  Data inválida. Use o formato DD/MM/AAAA.")
-
         while True:
             hora_fim_str = input("\nInforme a HORA de FIM do evento (hh:mm): ")
             try:
                 hora_fim = datetime.strptime(hora_fim_str, "%H:%M").time()
-                if hora_fim< hora_inicio:
-                    print("⚠️  A hora final não pode ser anterior à hora de início do evento.")
+                if data_inicio == data_fim and hora_fim <= hora_inicio:
+                    print("⚠️  A hora final deve ser posterior à hora de início.")
                 else:
                     break
             except ValueError:
@@ -60,6 +49,9 @@ class CrudEventos:
             else:
                 print("⚠️  Opção inválida. Informe Adulto, Juvenil ou Infantil.")
 
+        # Get local information
+        local = input("Informe o LOCAL do evento (ex: Auditório Principal, Sala de Conferências): ").strip()
+        
         while True:        
             tipo_evento = input("Informe se o evento será Presencial OU Online: ").strip().lower()
             if tipo_evento == "online":
@@ -69,7 +61,7 @@ class CrudEventos:
                 break
             elif tipo_evento == "presencial":
                 print("Evento do tipo Presencial")
-                endereco = input("\nInforme o endereço do evento:(Rua - numero - complemento - bairro/estado -) ").strip()
+                endereco = input("\nInforme o ENDEREÇO completo do evento: (Rua, número, bairro, cidade, estado) ").strip()
                 while True:
                     try:
                         capacidadeMax = int(input("Quantidade máxima de vagas para esse evento: "))
@@ -88,7 +80,7 @@ class CrudEventos:
             data_fim=data_fim,
             hora_fim=hora_fim,
             publico_alvo=publico_alvo,
-            tipo=tipo_evento,
+            local=local,
             endereco=endereco,
             capacidade=capacidadeMax
         )
@@ -145,7 +137,7 @@ class CrudEventos:
         print("\n===== BUSCAR EVENTOS =====")
         
         if termo is None:
-            termo = input("Digite um termo para buscar (nome, descrição, tipo ou endereço): ").strip()
+            termo = input("Digite um termo para buscar (nome, descrição, local ou endereço): ").strip()
         if not termo:
             print("⚠️  Digite um termo válido")
             return
@@ -192,6 +184,25 @@ class CrudEventos:
                 print("=" * 30)
         else:
             print("⚠️  Nenhum evento encontrado no período especificado.")
+
+    def buscar_eventos_por_local(self):
+        print("\n===== BUSCAR EVENTOS POR LOCAL =====")
+        
+        local = input("Digite o local para buscar: ").strip()
+        if not local:
+            print("⚠️  Digite um local válido")
+            return
+
+        eventos = self.crudBd.buscar_eventos_por_local(local)
+
+        if eventos:
+            print(f"\n{len(eventos)} evento(s) encontrado(s) para o local '{local}':")
+            for evento in eventos:
+                print("\n" + "=" * 30)
+                print(evento)
+                print("=" * 30)
+        else:
+            print("⚠️  Nenhum evento encontrado para esse local.")
 
     def atualizar_evento(self):
         print("\n===== ATUALIZAR EVENTO =====")
@@ -275,33 +286,23 @@ class CrudEventos:
             else:
                 print("⚠️  Opção inválida. Use: adulto, juvenil ou infantil.")
 
+        novo_local = input(f"Local (atual: {evento.local}): ").strip()
+        if novo_local:
+            evento.local = novo_local
+
+        novo_endereco = input(f"Endereço (atual: {evento.endereco}): ").strip()
+        if novo_endereco:
+            evento.endereco = novo_endereco
+
         while True:
-            novo_tipo = input(f"Tipo (atual: {evento.tipo}, opções: presencial/online): ").strip().lower()
-            if not novo_tipo:
+            nova_capacidade = input(f"Capacidade (atual: {evento.capacidade}): ").strip()
+            if not nova_capacidade:
                 break
-            if novo_tipo in ["presencial", "online"]:
-                evento.tipo = novo_tipo
+            try:
+                evento.capacidade = int(nova_capacidade)
                 break
-            else:
-                print("⚠️  Opção inválida. Use: presencial ou online.")
-
-        if evento.tipo =="online":
-            evento.endereco = "não se aplica"
-            evento.capacidade = "Ilimitado"
-        else:
-            novo_endereco = input(f"Endereço (atual: {evento.endereco}): ").strip()
-            if novo_endereco:
-                evento.endereco = novo_endereco
-
-            while True:
-                nova_capacidade = input(f"Capacidade (atual: {evento.capacidade}): ").strip()
-                if not nova_capacidade:
-                    break
-                try:
-                    evento.capacidade = int(nova_capacidade)
-                    break
-                except ValueError:
-                    print("⚠️  Capacidade deve ser um número inteiro.")
+            except ValueError:
+                print("⚠️  Capacidade deve ser um número inteiro.")
 
         if self.crudBd.atualizar_evento(evento):
             print("✅ Evento atualizado com sucesso!")
@@ -340,20 +341,3 @@ class CrudEventos:
                     print("⚠️  Opção inválida. Tente novamente.")
             except ValueError:
                 print("⚠️  Digite um número válido.")
-
-    def listar_eventos_por_tipo(self):
-        print("\n===== LISTAR EVENTOS POR TIPO =====")
-        
-        tipo = input("Digite o tipo de evento (presencial/online): ").strip().lower()
-        if not tipo:
-            print("⚠️  Digite um tipo válido.")
-            return
-            
-        eventos = self.crudBd.buscar_eventos_por_tipo(tipo)
-        
-        if eventos:
-            print(f"\n{len(eventos)} evento(s) do tipo '{tipo}':")
-            for evento in eventos:
-                print(f"• {evento.nome} - {evento.periodo_formatado()}")
-        else:
-            print(f"⚠️  Nenhum evento do tipo '{tipo}' encontrado.")

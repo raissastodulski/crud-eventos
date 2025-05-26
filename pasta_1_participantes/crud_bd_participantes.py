@@ -8,7 +8,7 @@ class CrudBdParticipantes:
     def criar_participante(self, participante):
         try:
             self.gerenciador_bd.cursor.execute('''
-            INSERT INTO participantes (nome, cpf, email, telefone, data)
+            INSERT INTO participantes (nome, cpf, email, telefone, data_nascimento)
             VALUES (?, ?, ?, ?, ?)
             ''', participante.para_tupla())
             self.gerenciador_bd.conn.commit()
@@ -44,7 +44,7 @@ class CrudBdParticipantes:
         try:
             self.gerenciador_bd.cursor.execute('''
             UPDATE participantes
-            SET nome=?, cpf=?, email=?, telefone=?, data=?
+            SET nome=?, cpf=?, email=?, telefone=?, data_nascimento=?
             WHERE id=?
             ''', participante.para_tupla_com_id())
             self.gerenciador_bd.conn.commit()

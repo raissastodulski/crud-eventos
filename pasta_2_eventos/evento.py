@@ -3,7 +3,7 @@ from compartilhado.formatador_data import FormatadorData
 
 class Evento:
     def __init__(self, id=None, nome=None, descricao=None, data_inicio=None, hora_inicio=None,
-                 data_fim=None, hora_fim=None, publico_alvo=None, tipo=None, endereco=None, capacidade=None):
+                 data_fim=None, hora_fim=None, publico_alvo=None, local=None, endereco=None, capacidade=None):
         self.id = id
         self.nome = nome
         self.descricao = descricao
@@ -12,7 +12,7 @@ class Evento:
         self.data_fim = data_fim
         self.hora_fim = hora_fim
         self.publico_alvo = publico_alvo
-        self.tipo = tipo
+        self.local = local
         self.endereco = endereco
         self.capacidade = capacidade
 
@@ -29,7 +29,7 @@ class Evento:
             f"Inicio: {data_inicio_str} às {hora_inicio_str}\n"
             f"Término: {data_fim_str} às {hora_fim_str}\n"
             f"Público-Alvo: {self.publico_alvo}\n"
-            f"Tipo: {self.tipo}\n"
+            f"Local: {self.local}\n"
             f"Endereço: {self.endereco}\n"
             f"Capacidade Max: {self.capacidade}\n"
         )    
@@ -43,7 +43,7 @@ class Evento:
             FormatadorData.data_para_iso(self.data_fim), 
             FormatadorData.hora_para_str(self.hora_fim), 
             self.publico_alvo, 
-            self.tipo,
+            self.local,
             self.endereco, 
             self.capacidade)
     
@@ -57,14 +57,26 @@ class Evento:
             FormatadorData.data_para_iso(self.data_fim), 
             FormatadorData.hora_para_str(self.hora_fim), 
             self.publico_alvo, 
-            self.tipo,
+            self.local,
             self.endereco, 
             self.capacidade
         )
     
     @classmethod
     def de_tupla(cls, dados):
-        id, nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, tipo, endereco, capacidade = dados
+        # Handle both old format (with 'tipo' and 'endereco' as address) and new format
+        if len(dados) == 11:  # Old format: id, nome, descricao, data_inicio, hora_inicio, data_fim, hora_fim, publico_alvo, tipo, endereco, capacidade
+            id, nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, tipo, endereco, capacidade = dados
+            # In old format, 'endereco' was the address, 'tipo' was event type (ignore for now)
+            local = endereco  # Use endereco as local temporarily
+            endereco_final = endereco
+        elif len(dados) == 10:  # New format without id: nome, descricao, data_inicio, hora_inicio, data_fim, hora_fim, publico_alvo, local, endereco, capacidade
+            nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, local, endereco_final, capacidade = dados
+            id = None
+        elif len(dados) >= 11:  # New format with id: id, nome, descricao, data_inicio, hora_inicio, data_fim, hora_fim, publico_alvo, local, endereco, capacidade
+            id, nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, local, endereco_final, capacidade = dados[:11]
+        else:
+            raise ValueError(f"Formato de dados inválido para Evento: {dados}")
         
         data_inicio = FormatadorData.iso_para_data(data_inicio_str)
         hora_inicio = FormatadorData.str_para_hora(hora_inicio_str)
@@ -80,8 +92,8 @@ class Evento:
             data_fim=data_fim,
             hora_fim=hora_fim,
             publico_alvo=publico_alvo,
-            tipo=tipo,
-            endereco=endereco,
+            local=local,
+            endereco=endereco_final,
             capacidade=capacidade
         )
     

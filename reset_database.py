@@ -27,6 +27,7 @@ def main():
     
     print("Inserindo dados iniciais...")
     
+    # Eventos com nova estrutura (local e endereco separados)
     eventos_exemplo = [
         (
             'Conferência de Tecnologia 2025',
@@ -36,8 +37,8 @@ def main():
             '2025-06-15',
             '18:00',
             'adulto',
-            'presencial',
-            'Centro de Convenções Tech, Av. Tecnologia, 123 - São Paulo/SP',
+            'Centro de Convenções Tech',
+            'Av. Tecnologia, 123 - São Paulo/SP',
             500
         ),
         (
@@ -48,8 +49,8 @@ def main():
             '2025-06-20',
             '17:00',
             'adulto',
-            'presencial',
-            'Laboratório de Informática - UFPE, Rua da Universidade, 456 - Recife/PE',
+            'Laboratório de Informática - UFPE',
+            'Rua da Universidade, 456 - Recife/PE',
             50
         ),
         (
@@ -60,8 +61,8 @@ def main():
             '2025-07-10',
             '18:00',
             'adulto',
-            'presencial',
-            'Auditório Central, Rua Inovação, 789 - Recife/PE',
+            'Auditório Central',
+            'Rua Inovação, 789 - Recife/PE',
             200
         ),
         (
@@ -72,8 +73,8 @@ def main():
             '2025-07-27',
             '18:00',
             'adulto',
-            'presencial',
-            'Campus Universitário, Av. Universidade, 321 - Recife/PE',
+            'Campus Universitário',
+            'Av. Universidade, 321 - Recife/PE',
             100
         ),
         (
@@ -84,8 +85,8 @@ def main():
             '2025-08-05',
             '21:00',
             'adulto',
-            'presencial',
-            'Teatro Municipal, Praça Central, 111 - Recife/PE',
+            'Teatro Municipal',
+            'Praça Central, 111 - Recife/PE',
             300
         ),
         (
@@ -96,7 +97,7 @@ def main():
             '2025-06-30',
             '21:00',
             'adulto',
-            'online',
+            'Plataforma Online',
             'Online',
             None
         ),
@@ -108,8 +109,8 @@ def main():
             '2025-09-15',
             '17:00',
             'infantil',
-            'presencial',
-            'Parque da Ciência, Rua das Descobertas, 555 - Recife/PE',
+            'Parque da Ciência',
+            'Rua das Descobertas, 555 - Recife/PE',
             150
         ),
         (
@@ -120,8 +121,8 @@ def main():
             '2025-08-21',
             '17:00',
             'juvenil',
-            'presencial',
-            'Centro Juvenil de Tecnologia, Av. Juventude, 888 - Recife/PE',
+            'Centro Juvenil de Tecnologia',
+            'Av. Juventude, 888 - Recife/PE',
             80
         ),
         (
@@ -132,7 +133,7 @@ def main():
             '2025-07-30',
             '21:30',
             'adulto',
-            'online',
+            'Plataforma Zoom',
             'Online',
             None
         ),
@@ -144,8 +145,8 @@ def main():
             '2025-08-12',
             '16:00',
             'juvenil',
-            'presencial',
-            'Laboratório de Robótica, Rua dos Inventores, 999 - Recife/PE',
+            'Laboratório de Robótica',
+            'Rua dos Inventores, 999 - Recife/PE',
             30
         )
     ]
@@ -153,64 +154,67 @@ def main():
     for evento in eventos_exemplo:
         gerenciador.cursor.execute('''
             INSERT INTO eventos (nome, descricao, data_inicio, hora_inicio, data_fim, hora_fim, 
-                               publico_alvo, tipo, endereco, capacidade)
+                               publico_alvo, local, endereco, capacidade)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', evento)
     
+    # Participantes com campo data_nascimento
     participantes_exemplo = [
-        ('João Silva Santos', '123.456.789-01', 'joao.silva@email.com', '(81) 99999-1111'),
-        ('Maria Oliveira Costa', '234.567.890-12', 'maria.oliveira@email.com', '(81) 99999-2222'),
-        ('Pedro Santos Lima', '345.678.901-23', 'pedro.santos@email.com', '(81) 99999-3333'),
-        ('Ana Carolina Souza', '456.789.012-34', 'ana.souza@email.com', '(81) 99999-4444'),
-        ('Carlos Eduardo Pereira', '567.890.123-45', 'carlos.pereira@email.com', '(81) 99999-5555'),
-        ('Fernanda Lima Ribeiro', '678.901.234-56', 'fernanda.lima@email.com', '(81) 99999-6666'),
-        ('Ricardo Alves Nunes', '789.012.345-67', 'ricardo.alves@email.com', '(81) 99999-7777'),
-        ('Juliana Ferreira Costa', '890.123.456-78', 'juliana.ferreira@email.com', '(81) 99999-8888'),
-        ('Bruno Henrique Silva', '901.234.567-89', 'bruno.henrique@email.com', '(81) 99999-9999'),
-        ('Camila Santos Rodrigues', '012.345.678-90', 'camila.santos@email.com', '(81) 99999-0000'),
-        ('Lucas Martins Pereira', '111.222.333-44', 'lucas.martins@email.com', '(81) 98888-1111'),
-        ('Isabella Costa Lima', '222.333.444-55', 'isabella.costa@email.com', '(81) 98888-2222'),
-        ('Gabriel Santos Nunes', '333.444.555-66', 'gabriel.santos@email.com', '(81) 98888-3333'),
-        ('Sophia Oliveira Silva', '444.555.666-77', 'sophia.oliveira@email.com', '(81) 98888-4444'),
-        ('Rafael Lima Costa', '555.666.777-88', 'rafael.lima@email.com', '(81) 98888-5555')
+        ('João Silva Santos', '123.456.789-01', 'joao.silva@email.com', '(81) 99999-1111', '1985-03-15 00:00:00'),
+        ('Maria Oliveira Costa', '234.567.890-12', 'maria.oliveira@email.com', '(81) 99999-2222', '1990-07-22 00:00:00'),
+        ('Pedro Santos Lima', '345.678.901-23', 'pedro.santos@email.com', '(81) 99999-3333', '1988-11-08 00:00:00'),
+        ('Ana Carolina Souza', '456.789.012-34', 'ana.souza@email.com', '(81) 99999-4444', '1992-05-14 00:00:00'),
+        ('Carlos Eduardo Pereira', '567.890.123-45', 'carlos.pereira@email.com', '(81) 99999-5555', '1987-09-30 00:00:00'),
+        ('Fernanda Lima Ribeiro', '678.901.234-56', 'fernanda.lima@email.com', '(81) 99999-6666', '1995-01-18 00:00:00'),
+        ('Ricardo Alves Nunes', '789.012.345-67', 'ricardo.alves@email.com', '(81) 99999-7777', '1983-12-03 00:00:00'),
+        ('Juliana Ferreira Costa', '890.123.456-78', 'juliana.ferreira@email.com', '(81) 99999-8888', '1991-04-27 00:00:00'),
+        ('Bruno Henrique Silva', '901.234.567-89', 'bruno.henrique@email.com', '(81) 99999-9999', '1989-08-16 00:00:00'),
+        ('Camila Santos Rodrigues', '012.345.678-90', 'camila.santos@email.com', '(81) 99999-0000', '1994-10-11 00:00:00'),
+        ('Lucas Martins Pereira', '111.222.333-44', 'lucas.martins@email.com', '(81) 98888-1111', '2008-02-20 00:00:00'),
+        ('Isabella Costa Lima', '222.333.444-55', 'isabella.costa@email.com', '(81) 98888-2222', '2007-06-12 00:00:00'),
+        ('Gabriel Santos Nunes', '333.444.555-66', 'gabriel.santos@email.com', '(81) 98888-3333', '2009-03-25 00:00:00'),
+        ('Sophia Oliveira Silva', '444.555.666-77', 'sophia.oliveira@email.com', '(81) 98888-4444', '2008-09-08 00:00:00'),
+        ('Rafael Lima Costa', '555.666.777-88', 'rafael.lima@email.com', '(81) 98888-5555', '2010-12-15 00:00:00')
     ]
     
     for participante in participantes_exemplo:
         gerenciador.cursor.execute('''
-            INSERT INTO participantes (nome, cpf, email, telefone)
-            VALUES (?, ?, ?, ?)
+            INSERT INTO participantes (nome, cpf, email, telefone, data_nascimento)
+            VALUES (?, ?, ?, ?, ?)
         ''', participante)
     
+    # Atividades com nova estrutura (data_inicio, data_fim, hora_fim)
     atividades_exemplo = [
-        ('Palestra: O Futuro da IA', 'Dr. João Tech', 'Auditório Principal', 1, '09:00', 100),
-        ('Workshop: Machine Learning', 'Prof. Maria Data', 'Sala de Workshops A', 1, '14:00', 50),
-        ('Mesa Redonda: Startups', 'Painel de CEOs', 'Sala de Conferências', 1, '16:00', 80),
-        ('Introdução ao Python', 'Prof. Carlos Code', 'Laboratório 1', 2, '09:00', 25),
-        ('Python Avançado', 'Prof. Ana Script', 'Laboratório 2', 2, '14:00', 25),
-        ('Apresentação de Startups', 'Empreendedores Locais', 'Auditório Central', 3, '14:00', 50),
-        ('Networking', 'Organizadores', 'Hall de Entrada', 3, '17:00', 200),
-        ('Desenvolvimento de Apps', 'Mentores Tech', 'Laboratório de Desenvolvimento', 4, '18:00', 50),
-        ('Pitch Final', 'Banca Avaliadora', 'Auditório Principal', 4, '16:00', 100),
-        ('Palestra Principal', 'Dr. Roberto IA', 'Teatro Municipal', 5, '19:00', 300),
-        ('Módulo 1: HTML Básico', 'Prof. Web Master', 'Plataforma Online', 6, '19:00', 0),
-        ('Módulo 2: CSS Avançado', 'Prof. Style Expert', 'Plataforma Online', 6, '19:00', 0),
-        ('Projeto Final', 'Mentores Online', 'Plataforma Online', 6, '20:00', 0),
-        ('Experimentos Divertidos', 'Cientista Maluco', 'Laboratório Infantil', 7, '09:00', 30),
-        ('Construindo Vulcões', 'Prof. Geologia Kids', 'Área Externa', 7, '11:00', 25),
-        ('Show de Química', 'Dr. Reação', 'Anfiteatro', 7, '14:00', 80),
-        ('Programação para Iniciantes', 'Coach Teen Tech', 'Sala de Computadores', 8, '14:00', 40),
-        ('Criando Jogos', 'Game Master Jr', 'Laboratório de Jogos', 8, '09:00', 40),
-        ('Carreira em Desenvolvimento', 'Senior Developer', 'Plataforma Zoom', 9, '20:00', 0),
-        ('Montagem de Robôs', 'Eng. Robô Silva', 'Laboratório de Robótica', 10, '09:00', 15),
-        ('Programação Arduino', 'Tech Arduino Master', 'Sala de Eletrônica', 10, '14:00', 15)
+        ('Palestra: O Futuro da IA', 'Dr. João Tech', 'Auditório Principal', 1, '2025-06-15', '09:00', '2025-06-15', '10:30', 100),
+        ('Workshop: Machine Learning', 'Prof. Maria Data', 'Sala de Workshops A', 1, '2025-06-15', '14:00', '2025-06-15', '17:00', 50),
+        ('Mesa Redonda: Startups', 'Painel de CEOs', 'Sala de Conferências', 1, '2025-06-15', '16:00', '2025-06-15', '18:00', 80),
+        ('Introdução ao Python', 'Prof. Carlos Code', 'Laboratório 1', 2, '2025-06-20', '09:00', '2025-06-20', '12:00', 25),
+        ('Python Avançado', 'Prof. Ana Script', 'Laboratório 2', 2, '2025-06-20', '14:00', '2025-06-20', '17:00', 25),
+        ('Apresentação de Startups', 'Empreendedores Locais', 'Auditório Central', 3, '2025-07-10', '14:00', '2025-07-10', '16:00', 50),
+        ('Networking', 'Organizadores', 'Hall de Entrada', 3, '2025-07-10', '17:00', '2025-07-10', '18:00', 200),
+        ('Desenvolvimento de Apps', 'Mentores Tech', 'Laboratório de Desenvolvimento', 4, '2025-07-25', '18:00', '2025-07-26', '06:00', 50),
+        ('Pitch Final', 'Banca Avaliadora', 'Auditório Principal', 4, '2025-07-27', '16:00', '2025-07-27', '18:00', 100),
+        ('Palestra Principal', 'Dr. Roberto IA', 'Teatro Municipal', 5, '2025-08-05', '19:00', '2025-08-05', '21:00', 300),
+        ('Módulo 1: HTML Básico', 'Prof. Web Master', 'Plataforma Online', 6, '2025-06-01', '19:00', '2025-06-10', '21:00', 0),
+        ('Módulo 2: CSS Avançado', 'Prof. Style Expert', 'Plataforma Online', 6, '2025-06-11', '19:00', '2025-06-20', '21:00', 0),
+        ('Projeto Final', 'Mentores Online', 'Plataforma Online', 6, '2025-06-21', '20:00', '2025-06-30', '21:00', 0),
+        ('Experimentos Divertidos', 'Cientista Maluco', 'Laboratório Infantil', 7, '2025-09-15', '09:00', '2025-09-15', '11:00', 30),
+        ('Construindo Vulcões', 'Prof. Geologia Kids', 'Área Externa', 7, '2025-09-15', '11:00', '2025-09-15', '13:00', 25),
+        ('Show de Química', 'Dr. Reação', 'Anfiteatro', 7, '2025-09-15', '14:00', '2025-09-15', '16:00', 80),
+        ('Programação para Iniciantes', 'Coach Teen Tech', 'Sala de Computadores', 8, '2025-08-20', '14:00', '2025-08-20', '16:00', 40),
+        ('Criando Jogos', 'Game Master Jr', 'Laboratório de Jogos', 8, '2025-08-21', '09:00', '2025-08-21', '12:00', 40),
+        ('Carreira em Desenvolvimento', 'Senior Developer', 'Plataforma Zoom', 9, '2025-07-30', '20:00', '2025-07-30', '21:30', 0),
+        ('Montagem de Robôs', 'Eng. Robô Silva', 'Laboratório de Robótica', 10, '2025-08-10', '09:00', '2025-08-10', '12:00', 15),
+        ('Programação Arduino', 'Tech Arduino Master', 'Sala de Eletrônica', 10, '2025-08-11', '14:00', '2025-08-11', '16:00', 15)
     ]
     
     for atividade in atividades_exemplo:
         gerenciador.cursor.execute('''
-            INSERT INTO atividades (nome, facilitador, local, id_evento, hora_inicio, vagas)
-            VALUES (?, ?, ?, ?, ?, ?)
+            INSERT INTO atividades (nome, facilitador, local, id_evento, data_inicio, hora_inicio, data_fim, hora_fim, vagas)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', atividade)
     
+    # Inscrições mantêm a mesma estrutura
     inscricoes_exemplo = [
         (1, 1, '2025-05-20 10:30:00'),
         (1, 2, '2025-05-20 10:35:00'),
@@ -247,6 +251,7 @@ def main():
     
     print("Dados iniciais inseridos com sucesso!")
     
+    # Estatísticas do banco de dados
     gerenciador.cursor.execute('SELECT COUNT(*) FROM eventos')
     total_eventos = gerenciador.cursor.fetchone()[0]
     
@@ -267,7 +272,7 @@ def main():
     
     print(f'\nExemplos de eventos criados:')
     gerenciador.cursor.execute('''
-        SELECT id, nome, data_inicio, tipo, publico_alvo 
+        SELECT id, nome, data_inicio, local, publico_alvo 
         FROM eventos 
         ORDER BY data_inicio 
         LIMIT 5
@@ -275,19 +280,19 @@ def main():
     eventos_exemplo_resultado = gerenciador.cursor.fetchall()
     
     for evento in eventos_exemplo_resultado:
-        id_evento, nome, data_inicio, tipo, publico_alvo = evento
-        print(f'  {id_evento}. {nome} - {data_inicio} ({tipo}, {publico_alvo})')
+        id_evento, nome, data_inicio, local, publico_alvo = evento
+        print(f'  {id_evento}. {nome} - {data_inicio} ({local}, {publico_alvo})')
     
-    print(f'\nEventos por tipo:')
+    print(f'\nEventos por local:')
     gerenciador.cursor.execute('''
-        SELECT tipo, COUNT(*) 
+        SELECT local, COUNT(*) 
         FROM eventos 
-        GROUP BY tipo
+        GROUP BY local
     ''')
-    tipos_stats = gerenciador.cursor.fetchall()
+    local_stats = gerenciador.cursor.fetchall()
     
-    for tipo, count in tipos_stats:
-        print(f'  - {tipo.capitalize()}: {count} evento(s)')
+    for local, count in local_stats:
+        print(f'  - {local}: {count} evento(s)')
     
     print(f'\nEventos por público-alvo:')
     gerenciador.cursor.execute('''
@@ -308,10 +313,29 @@ def main():
         ORDER BY count DESC
         LIMIT 5
     ''')
-    local_stats = gerenciador.cursor.fetchall()
+    atividade_local_stats = gerenciador.cursor.fetchall()
     
-    for local, count in local_stats:
+    for local, count in atividade_local_stats:
         print(f'  - {local}: {count} atividade(s)')
+    
+    print(f'\nParticipantes por faixa etária:')
+    gerenciador.cursor.execute('''
+        SELECT 
+            CASE 
+                WHEN strftime('%Y', 'now') - strftime('%Y', data_nascimento) < 18 THEN 'Menor de 18'
+                WHEN strftime('%Y', 'now') - strftime('%Y', data_nascimento) BETWEEN 18 AND 30 THEN '18-30 anos'
+                WHEN strftime('%Y', 'now') - strftime('%Y', data_nascimento) BETWEEN 31 AND 50 THEN '31-50 anos'
+                ELSE 'Mais de 50 anos'
+            END as faixa_etaria,
+            COUNT(*) as quantidade
+        FROM participantes 
+        WHERE data_nascimento IS NOT NULL
+        GROUP BY faixa_etaria
+    ''')
+    faixa_etaria_stats = gerenciador.cursor.fetchall()
+    
+    for faixa, count in faixa_etaria_stats:
+        print(f'  - {faixa}: {count} participante(s)')
     
     gerenciador.fechar()
     
@@ -321,17 +345,23 @@ def main():
     print("\nO banco de dados foi resetado e populado com dados de exemplo.")
     print("Dados incluídos:")
     print("  ✅ 10 eventos diversos (presenciais e online)")
-    print("  ✅ 15 participantes")
-    print("  ✅ 21 atividades com locais específicos")
+    print("  ✅ 15 participantes com idades variadas")
+    print("  ✅ 21 atividades com datas e horários específicos")
     print("  ✅ 23 inscrições")
+    print("\nNova estrutura implementada:")
+    print("  🏢 Eventos: campos 'local' e 'endereco' separados")
+    print("  👥 Participantes: campo 'data_nascimento' adicionado")
+    print("  📅 Atividades: campos 'data_inicio', 'data_fim' e 'hora_fim' adicionados")
+    print("  🔗 Relacionamentos mantidos e otimizados")
     print("\nTipos de eventos:")
     print("  🏢 Presenciais: conferências, workshops, seminários")
     print("  💻 Online: cursos e webinars")
     print("  👥 Públicos: adulto, juvenil, infantil")
-    print("\nNova estrutura de atividades:")
-    print("  📍 Campo 'local' adicionado a todas as atividades")
-    print("  🎯 Locais específicos para cada tipo de atividade")
-    print("  🔗 Relacionamento com eventos mantido via id_evento")
+    print("\nRecursos disponíveis:")
+    print("  📍 Locais específicos para cada evento e atividade")
+    print("  📊 Controle de capacidade e vagas")
+    print("  📈 Estatísticas por faixa etária dos participantes")
+    print("  ⏰ Controle detalhado de horários e datas")
     print("\nVocê pode agora executar o programa principal com: python main.py")
 
 if __name__ == "__main__":

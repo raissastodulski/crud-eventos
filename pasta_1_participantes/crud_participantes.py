@@ -1,11 +1,11 @@
 from .participante import Participante
 from .crud_bd_participantes import CrudBdParticipantes
-import datetime
+from datetime import datetime
 
 
 class CrudParticipantes:
     @staticmethod
-    def validar_cpf( cpf):
+    def validar_cpf(cpf):
         cpf = ''.join(filter(str.isdigit, cpf))
         
         if len(cpf) != 11:
@@ -22,6 +22,15 @@ class CrudParticipantes:
         
         return digito1 == int(cpf[9]) and digito2 == int(cpf[10])
 
+    @staticmethod
+    def validar_data_nascimento(data_str):
+        if not data_str.strip():
+            return None
+        
+        try:
+            return datetime.strptime(data_str.strip(), "%d/%m/%Y")
+        except ValueError:
+            return None
 
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
@@ -31,12 +40,29 @@ class CrudParticipantes:
         print("\n===== ADICIONAR NOVO PARTICIPANTE =====")
         
         nome = input("Digite o nome do participante: ")
-        cpf = input("Digite o CPF do participante: ")
+        
+        while True:
+            cpf = input("Digite o CPF do participante: ")
+            if not cpf or self.validar_cpf(cpf):
+                break
+            print("CPF inválido. Tente novamente.")
+        
         email = input("Digite o email do participante: ")
         telefone = input("Digite o telefone do participante: ")
-        data = input("Digite a data de nascimento (DD/MM/AAAA) ou deixe em branco: ")
         
-        participante = Participante(nome=nome, cpf=cpf, email=email, telefone=telefone, data=data)
+        while True:
+            data_nascimento_str = input("Digite a data de nascimento (DD/MM/AAAA) ou deixe em branco: ")
+            if not data_nascimento_str.strip():
+                data_nascimento = None
+                break
+            
+            data_nascimento = self.validar_data_nascimento(data_nascimento_str)
+            if data_nascimento:
+                break
+            else:
+                print("Formato de data inválido. Use DD/MM/AAAA.")
+        
+        participante = Participante(nome=nome, cpf=cpf, email=email, telefone=telefone, data_nascimento=data_nascimento)
         self.crud_bd_participantes.criar_participante(participante)
         
         return True
@@ -67,13 +93,20 @@ class CrudParticipantes:
             print(f"CPF: {participante.cpf}")
             print(f"Telefone: {participante.telefone}")
             print(f"Email: {participante.email}")
-            print(f"Data de Nascimento: {participante.data}")
+            if participante.data_nascimento:
+                if isinstance(participante.data_nascimento, datetime):
+                    data_nascimento_str = participante.data_nascimento.strftime('%d/%m/%Y')
+                else:
+                    data_nascimento_str = str(participante.data_nascimento)
+                print(f"Data de Nascimento: {data_nascimento_str}")
+            else:
+                print("Data de Nascimento: Não informada")
             return participante
         else:
             print("Participante com essa ID não encontrada, tente novamente")
             return None
         
-    def atualizar_participante(self, idParticipante=None,):
+    def atualizar_participante(self, idParticipante=None):
         print("\n==== ATUALIZAR PARTICIPANTES ====")
         if idParticipante is None:
             idParticipante = input("Digite o ID do participante: ")
@@ -87,27 +120,38 @@ class CrudParticipantes:
         if not participante:
             print(f"Nenhum participante encontrado com {idParticipante}")
             return False
+        
         print("\nInformações do Participante:")
         print(f"ID: {participante.id}")
         print(f"Nome: {participante.nome}")
         print(f"CPF: {participante.cpf}")
         print(f"Telefone: {participante.telefone}")
         print(f"Email: {participante.email}")
-        print(f"Data de Nascimento: {participante.data}")
+        
+        data_nascimento_atual = ""
+        if participante.data_nascimento:
+            if isinstance(participante.data_nascimento, datetime):
+                data_nascimento_atual = participante.data_nascimento.strftime('%d/%m/%Y')
+            else:
+                data_nascimento_atual = str(participante.data_nascimento)
+        print(f"Data de Nascimento: {data_nascimento_atual or 'Não informada'}")
 
-        print("\nDigite os novos detalhes (deixe em branco par amanter o valor atual):")
-        novo_nome = input(f"Nome a atualizar[{participante.nome}]: ")
+        print("\nDigite os novos detalhes (deixe em branco para manter o valor atual):")
+        
+        novo_nome = input(f"Nome a atualizar [{participante.nome}]: ")
         if novo_nome:
-            participante.nome = novo_nome        
+            participante.nome = novo_nome
+            
         while True:
             novo_cpf = input(f"CPF a atualizar [{participante.cpf}]: ")
             if not novo_cpf:
                 break 
-            if CrudParticipantes.validar_cpf(novo_cpf):
+            if self.validar_cpf(novo_cpf):
                 participante.cpf = novo_cpf
                 break
             else:
                 print("CPF inválido. Tente novamente.")
+                
         novo_email = input(f"Email a atualizar [{participante.email}]: ")
         if novo_email:
             participante.email = novo_email
@@ -115,23 +159,25 @@ class CrudParticipantes:
         novo_telefone = input(f"Telefone a atualizar [{participante.telefone}]: ")
         if novo_telefone:
             participante.telefone = novo_telefone
+            
         while True:
-            nova_data = input(f"Nova data [{participante.data}] (DD/MM/AAAA): ")
-            if not nova_data:
+            nova_data_str = input(f"Nova data de nascimento [{data_nascimento_atual}] (DD/MM/AAAA): ")
+            if not nova_data_str:
                 break
-            try:
-                datetime.datetime.strptime(nova_data, "%d-%m-%Y")
-                participante.data = nova_data
+            
+            nova_data = self.validar_data_nascimento(nova_data_str)
+            if nova_data:
+                participante.data_nascimento = nova_data
                 break
-            except ValueError:
-                print("Formato de data inválido. Use o formato DD/MM/AAAA.")
+            else:
+                print("Formato de data inválido. Use DD/MM/AAAA.")
+                
         sucesso = self.crud_bd_participantes.atualizar_participante(participante)
         if not sucesso:
-            print("Falha ao atualizar a participante.")
+            print("Falha ao atualizar o participante.")
             return False
 
         return True
-
     
     def excluir_participante(self, id_participante=None):
         print("\n===== EXCLUIR PARTICIPANTE =====")

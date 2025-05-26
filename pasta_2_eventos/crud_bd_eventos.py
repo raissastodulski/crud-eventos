@@ -5,27 +5,40 @@ class CrudBdEventos:
     def __init__(self, gerenciador_bd):
         self.gerenciador_bd = gerenciador_bd
     
-    def criar_evento(self, evento):
+    def _executar_com_seguranca(self, funcao):
+        """Executa uma função com verificação de conexão e tratamento de erro"""
         try:
+            if not self.gerenciador_bd.verificar_conexao():
+                print("❌ Erro: Conexão com banco de dados não disponível")
+                return None
+            return funcao()
+        except sqlite3.Error as e:
+            print(f"❌ Erro SQLite: {e}")
+            return None
+        except Exception as e:
+            print(f"❌ Erro inesperado: {e}")
+            return None
+    
+    def criar_evento(self, evento):
+        def _criar():
             self.gerenciador_bd.cursor.execute('''
             INSERT INTO eventos (nome, descricao, data_inicio, hora_inicio, data_fim, hora_fim, 
-                                publico_alvo, tipo, endereco, capacidade)
+                                publico_alvo, local, endereco, capacidade)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             ''', evento.para_tupla())
             self.gerenciador_bd.conn.commit()
             print(f"Evento '{evento.nome}' adicionado com sucesso.")
             return self.gerenciador_bd.cursor.lastrowid
-        except sqlite3.Error as e:
-            print(f"Erro ao criar evento: {e}")
-            return None
+        
+        return self._executar_com_seguranca(_criar)
     
     def ler_todos_eventos(self):
-        try:
+        def _ler():
             self.gerenciador_bd.cursor.execute("SELECT * FROM eventos")
             eventos = []
             for dados_evento in self.gerenciador_bd.cursor.fetchall():
                 try:
-                    if len(dados_evento) >= 11:
+                    if len(dados_evento) >= 10:
                         evento = Evento.de_tupla(dados_evento)
                         eventos.append(evento)
                     else:
@@ -33,27 +46,26 @@ class CrudBdEventos:
                 except Exception as ex:
                     print(f"Erro ao processar evento: {ex}")
             return eventos
-        except sqlite3.Error as e:
-            print(f"Erro ao recuperar eventos: {e}")
-            return []
+        
+        result = self._executar_com_seguranca(_ler)
+        return result if result is not None else []
     
     def ler_evento_por_id(self, id_evento):
-        try:
+        def _ler():
             self.gerenciador_bd.cursor.execute("SELECT * FROM eventos WHERE id=?", (id_evento,))
             dados_evento = self.gerenciador_bd.cursor.fetchone()
             if dados_evento:
                 return Evento.de_tupla(dados_evento)
             return None
-        except sqlite3.Error as e:
-            print(f"Erro ao recuperar evento: {e}")
-            return None
+        
+        return self._executar_com_seguranca(_ler)
     
     def atualizar_evento(self, evento):
-        try:
+        def _atualizar():
             self.gerenciador_bd.cursor.execute('''
             UPDATE eventos
             SET nome=?, descricao=?, data_inicio=?, hora_inicio=?, data_fim=?, hora_fim=?, 
-                publico_alvo=?, tipo=?, endereco=?, capacidade=?
+                publico_alvo=?, local=?, endereco=?, capacidade=?
             WHERE id=?
             ''', (*evento.para_tupla(), evento.id))
             self.gerenciador_bd.conn.commit()
@@ -62,12 +74,12 @@ class CrudBdEventos:
                 return True
             print(f"Nenhum evento encontrado com ID {evento.id}")
             return False
-        except sqlite3.Error as e:
-            print(f"Erro ao atualizar evento: {e}")
-            return False
+        
+        result = self._executar_com_seguranca(_atualizar)
+        return result if result is not None else False
     
     def deletar_evento(self, id_evento):
-        try:
+        def _deletar():
             self.gerenciador_bd.cursor.execute("DELETE FROM eventos WHERE id=?", (id_evento,))
             self.gerenciador_bd.conn.commit()
             if self.gerenciador_bd.cursor.rowcount > 0:
@@ -75,16 +87,16 @@ class CrudBdEventos:
                 return True
             print(f"Nenhum evento encontrado com ID {id_evento}")
             return False
-        except sqlite3.Error as e:
-            print(f"Erro ao excluir evento: {e}")
-            return False
+        
+        result = self._executar_com_seguranca(_deletar)
+        return result if result is not None else False
     
     def buscar_eventos(self, termo_busca):
-        try:
+        def _buscar():
             padrao_busca = f"%{termo_busca}%"
             self.gerenciador_bd.cursor.execute("""
             SELECT * FROM eventos 
-            WHERE nome LIKE ? OR descricao LIKE ? OR tipo LIKE ? OR endereco LIKE ?
+            WHERE nome LIKE ? OR descricao LIKE ? OR local LIKE ? OR endereco LIKE ?
             """, (padrao_busca, padrao_busca, padrao_busca, padrao_busca))
             
             eventos = []
@@ -95,12 +107,12 @@ class CrudBdEventos:
                 except Exception as ex:
                     print(f"Erro ao processar evento na busca: {ex}")
             return eventos
-        except sqlite3.Error as e:
-            print(f"Erro ao buscar eventos: {e}")
-            return []
+        
+        result = self._executar_com_seguranca(_buscar)
+        return result if result is not None else []
     
     def buscar_eventos_por_data(self, data_inicio=None, data_fim=None):
-        try:
+        def _buscar_por_data():
             data_inicio_str = data_inicio.isoformat() if data_inicio else None
             data_fim_str = data_fim.isoformat() if data_fim else None
             
@@ -133,17 +145,17 @@ class CrudBdEventos:
                 except Exception as ex:
                     print(f"Erro ao processar evento na busca por data: {ex}")
             return eventos
-        except sqlite3.Error as e:
-            print(f"Erro ao buscar eventos por data: {e}")
-            return []
+        
+        result = self._executar_com_seguranca(_buscar_por_data)
+        return result if result is not None else []
     
-    def buscar_eventos_por_tipo(self, tipo):
-        try:
+    def buscar_eventos_por_local(self, local):
+        def _buscar_por_local():
             self.gerenciador_bd.cursor.execute("""
             SELECT * FROM eventos 
-            WHERE tipo LIKE ?
+            WHERE local LIKE ? OR endereco LIKE ?
             ORDER BY data_inicio
-            """, (f"%{tipo}%",))
+            """, (f"%{local}%", f"%{local}%"))
             
             eventos = []
             for dados_evento in self.gerenciador_bd.cursor.fetchall():
@@ -151,8 +163,8 @@ class CrudBdEventos:
                     evento = Evento.de_tupla(dados_evento)
                     eventos.append(evento)
                 except Exception as ex:
-                    print(f"Erro ao processar evento na busca por tipo: {ex}")
+                    print(f"Erro ao processar evento na busca por local: {ex}")
             return eventos
-        except sqlite3.Error as e:
-            print(f"Erro ao buscar eventos por tipo: {e}")
-            return []
+        
+        result = self._executar_com_seguranca(_buscar_por_local)
+        return result if result is not None else []
