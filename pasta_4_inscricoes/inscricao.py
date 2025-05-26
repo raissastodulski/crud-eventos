@@ -6,7 +6,6 @@ class Inscricao:
         self.id_participante = id_participante
         self.id_atividade = id_atividade
         
-        # Se data_inscricao não foi fornecida, usar data/hora atual formatada
         if not data_inscricao:
             self.data_inscricao = FormatadorData.data_hora_inscricao_agora()
         else:
@@ -28,7 +27,6 @@ class Inscricao:
         return f"[{self.id}] Participante ID: {self.id_participante} | Atividade ID: {self.id_atividade} | Data: {self.data_inscricao}"
     
     def dados_formatados(self):
-        """Retorna dados formatados para exibição"""
         return {
             'id': self.id,
             'id_participante': self.id_participante,

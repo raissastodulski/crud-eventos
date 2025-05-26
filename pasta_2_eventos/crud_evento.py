@@ -14,18 +14,15 @@ class CrudEvento:
         nome_evento = input("Informe Nome do Evento: ").strip()
         descricao_evento = input("\nDescreva o Evento que será realizado: ").strip()
 
-        # Usar FormatadorData para obter data de início com validação
         data_inicio = FormatadorData.solicitar_data_usuario(
             "Informe a DATA de INICIO do evento", 
             validar_futura=True
         )
         
-        # Usar FormatadorData para obter hora de início
         hora_inicio = FormatadorData.solicitar_hora_usuario(
             "Informe a HORA de INÍCIO do evento"
         )
 
-        # Usar FormatadorData para obter data de fim com validação
         while True:
             data_fim = FormatadorData.solicitar_data_usuario(
                 f"Informe a DATA de FIM do evento {nome_evento}"
@@ -136,7 +133,6 @@ class CrudEvento:
                 print(evento)
                 print("=" * 50)
                 
-                # Mostrar duração se disponível
                 if evento.duracao:
                     print(f"Duração: {evento.duracao:.1f} horas")
                     print("=" * 50)
@@ -168,7 +164,6 @@ class CrudEvento:
     def buscar_eventos_por_data(self):
         print("\n===== BUSCAR EVENTOS POR DATA =====")
         
-        # Usar FormatadorData para obter datas de busca
         data_inicio = FormatadorData.solicitar_data_usuario(
             "Data início da busca [Enter para pular]", 
             permitir_vazio=True
@@ -224,17 +219,14 @@ class CrudEvento:
         print(f"\n--- Atualizando evento: {evento.nome} ---")
         print("(Pressione Enter para manter o valor atual)")
 
-        # Nome
         novo_nome = input(f"Nome (atual: {evento.nome}): ").strip()
         if novo_nome:
             evento.nome = novo_nome
 
-        # Descrição
         nova_descricao = input(f"Descrição (atual: {evento.descricao}): ").strip()
         if nova_descricao:
             evento.descricao = nova_descricao
 
-        # Data início usando FormatadorData
         data_atual_str = FormatadorData.data_para_str(evento.data_inicio)
         nova_data_inicio = FormatadorData.solicitar_data_usuario(
             f"Data início (atual: {data_atual_str})", 
@@ -243,7 +235,6 @@ class CrudEvento:
         if nova_data_inicio:
             evento.data_inicio = nova_data_inicio
 
-        # Hora início usando FormatadorData
         hora_atual_str = FormatadorData.hora_para_str(evento.hora_inicio)
         nova_hora_inicio = FormatadorData.solicitar_hora_usuario(
             f"Hora início (atual: {hora_atual_str})", 
@@ -252,7 +243,6 @@ class CrudEvento:
         if nova_hora_inicio:
             evento.hora_inicio = nova_hora_inicio
 
-        # Data fim usando FormatadorData com validação
         data_atual_str = FormatadorData.data_para_str(evento.data_fim)
         while True:
             nova_data_fim = FormatadorData.solicitar_data_usuario(
@@ -267,7 +257,6 @@ class CrudEvento:
             else:
                 print("⚠️  A data fim não pode ser antes da data de início.")
 
-        # Hora fim usando FormatadorData
         hora_atual_str = FormatadorData.hora_para_str(evento.hora_fim)
         nova_hora_fim = FormatadorData.solicitar_hora_usuario(
             f"Hora fim (atual: {hora_atual_str})", 
@@ -276,7 +265,6 @@ class CrudEvento:
         if nova_hora_fim:
             evento.hora_fim = nova_hora_fim
 
-        # Público alvo
         while True:
             novo_publico = input(f"Público alvo (atual: {evento.publico_alvo}, opções: adulto/juvenil/infantil): ").strip().lower()
             if not novo_publico:
@@ -287,7 +275,6 @@ class CrudEvento:
             else:
                 print("⚠️  Opção inválida. Use: adulto, juvenil ou infantil.")
 
-        # Tipo
         while True:
             novo_tipo = input(f"Tipo (atual: {evento.tipo}, opções: presencial/online): ").strip().lower()
             if not novo_tipo:
@@ -298,7 +285,6 @@ class CrudEvento:
             else:
                 print("⚠️  Opção inválida. Use: presencial ou online.")
 
-        # Endereço
         if evento.tipo =="online":
             evento.endereco = "não se aplica"
             evento.capacidade = "Ilimitado"
@@ -307,7 +293,6 @@ class CrudEvento:
             if novo_endereco:
                 evento.endereco = novo_endereco
 
-            # Capacidade
             while True:
                 nova_capacidade = input(f"Capacidade (atual: {evento.capacidade}): ").strip()
                 if not nova_capacidade:
@@ -318,7 +303,6 @@ class CrudEvento:
                 except ValueError:
                     print("⚠️  Capacidade deve ser um número inteiro.")
 
-        # Salvar alterações
         if self.crudBd.atualizar_evento(evento):
             print("✅ Evento atualizado com sucesso!")
             print(f"📅 Novo período: {evento.periodo_formatado()}")

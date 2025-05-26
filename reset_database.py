@@ -1,14 +1,9 @@
 #!/usr/bin/env python3
-"""
-Script para resetar o banco de dados e inserir dados iniciais
-CRUD Eventos - Sistema de Gerenciamento de Eventos
-"""
 
 import os
 import sys
 from datetime import datetime, timedelta, date, time
 
-# Adicionar o diretório atual ao path para importar os módulos
 sys.path.append('.')
 
 from compartilhado.gerenciador_bd import GerenciadorBD
@@ -19,7 +14,6 @@ def main():
     print("=" * 50)
     print()
     
-    # Verificar se o banco existe e removê-lo
     db_path = "crud-eventos.db"
     if os.path.exists(db_path):
         print("Removendo banco de dados existente...")
@@ -31,24 +25,22 @@ def main():
     print()
     print("Criando novo banco de dados com dados iniciais...")
     
-    # Inicializar o gerenciador (isso criará as tabelas)
     gerenciador = GerenciadorBD(db_path)
     
     print("Inserindo dados iniciais...")
     
-    # Inserir eventos de exemplo com nova estrutura
     eventos_exemplo = [
         (
             'Conferência de Tecnologia 2025',
             'Grande evento sobre as últimas tendências em tecnologia',
-            '2025-06-15',  # data_inicio
-            '08:00',       # hora_inicio
-            '2025-06-15',  # data_fim
-            '18:00',       # hora_fim
-            'adulto',      # publico_alvo
-            'presencial',  # tipo
-            'Centro de Convenções Tech, Av. Tecnologia, 123 - São Paulo/SP',  # endereco
-            500            # capacidade
+            '2025-06-15',
+            '08:00',
+            '2025-06-15',
+            '18:00',
+            'adulto',
+            'presencial',
+            'Centro de Convenções Tech, Av. Tecnologia, 123 - São Paulo/SP',
+            500
         ),
         (
             'Workshop de Python',
@@ -108,7 +100,7 @@ def main():
             'adulto',
             'online',
             'Online',
-            None  # capacidade ilimitada para online
+            None
         ),
         (
             'Festival Infantil de Ciências',
@@ -167,7 +159,6 @@ def main():
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         ''', evento)
     
-    # Inserir participantes de exemplo
     participantes_exemplo = [
         ('João Silva Santos', '123.456.789-01', 'joao.silva@email.com', '(81) 99999-1111', '2025-05-20'),
         ('Maria Oliveira Costa', '234.567.890-12', 'maria.oliveira@email.com', '(81) 99999-2222', '2025-05-20'),
@@ -192,46 +183,26 @@ def main():
             VALUES (?, ?, ?, ?, ?)
         ''', participante)
     
-    # Inserir atividades de exemplo (ATUALIZADO COM CAMPO LOCAL)
     atividades_exemplo = [
-        # Atividades para Conferência de Tecnologia (id_evento = 1)
         ('Palestra: O Futuro da IA', 'Dr. João Tech', 'Auditório Principal', 1, '09:00', 100),
         ('Workshop: Machine Learning', 'Prof. Maria Data', 'Sala de Workshops A', 1, '14:00', 50),
         ('Mesa Redonda: Startups', 'Painel de CEOs', 'Sala de Conferências', 1, '16:00', 80),
-        
-        # Atividades para Workshop de Python (id_evento = 2)  
         ('Introdução ao Python', 'Prof. Carlos Code', 'Laboratório 1', 2, '09:00', 25),
         ('Python Avançado', 'Prof. Ana Script', 'Laboratório 2', 2, '14:00', 25),
-        
-        # Atividades para Seminário de Inovação (id_evento = 3)
         ('Apresentação de Startups', 'Empreendedores Locais', 'Auditório Central', 3, '14:00', 50),
         ('Networking', 'Organizadores', 'Hall de Entrada', 3, '17:00', 200),
-        
-        # Atividades para Hackathon (id_evento = 4)
         ('Desenvolvimento de Apps', 'Mentores Tech', 'Laboratório de Desenvolvimento', 4, '18:00', 50),
         ('Pitch Final', 'Banca Avaliadora', 'Auditório Principal', 4, '16:00', 100),
-        
-        # Atividades para Palestra IA (id_evento = 5)
         ('Palestra Principal', 'Dr. Roberto IA', 'Teatro Municipal', 5, '19:00', 300),
-        
-        # Atividades para Curso Online (id_evento = 6)
         ('Módulo 1: HTML Básico', 'Prof. Web Master', 'Plataforma Online', 6, '19:00', 0),
         ('Módulo 2: CSS Avançado', 'Prof. Style Expert', 'Plataforma Online', 6, '19:00', 0),
         ('Projeto Final', 'Mentores Online', 'Plataforma Online', 6, '20:00', 0),
-        
-        # Atividades para Festival Infantil (id_evento = 7)
         ('Experimentos Divertidos', 'Cientista Maluco', 'Laboratório Infantil', 7, '09:00', 30),
         ('Construindo Vulcões', 'Prof. Geologia Kids', 'Área Externa', 7, '11:00', 25),
         ('Show de Química', 'Dr. Reação', 'Anfiteatro', 7, '14:00', 80),
-        
-        # Atividades para Encontro Juvenil (id_evento = 8)
         ('Programação para Iniciantes', 'Coach Teen Tech', 'Sala de Computadores', 8, '14:00', 40),
         ('Criando Jogos', 'Game Master Jr', 'Laboratório de Jogos', 8, '09:00', 40),
-        
-        # Atividades para Webinar (id_evento = 9)
         ('Carreira em Desenvolvimento', 'Senior Developer', 'Plataforma Zoom', 9, '20:00', 0),
-        
-        # Atividades para Oficina de Robótica (id_evento = 10)
         ('Montagem de Robôs', 'Eng. Robô Silva', 'Laboratório de Robótica', 10, '09:00', 15),
         ('Programação Arduino', 'Tech Arduino Master', 'Sala de Eletrônica', 10, '14:00', 15)
     ]
@@ -242,32 +213,30 @@ def main():
             VALUES (?, ?, ?, ?, ?, ?)
         ''', atividade)
     
-    # Inserir inscrições de exemplo
     inscricoes_exemplo = [
-        # Inscrições para diferentes atividades
-        (1, 1, '2025-05-20 10:30:00'),   # João na Palestra IA
-        (1, 2, '2025-05-20 10:35:00'),   # João no Workshop ML
-        (2, 1, '2025-05-20 11:00:00'),   # Maria na Palestra IA
-        (2, 4, '2025-05-21 09:00:00'),   # Maria no Python Intro
-        (3, 4, '2025-05-21 09:15:00'),   # Pedro no Python Intro
-        (3, 5, '2025-05-21 09:20:00'),   # Pedro no Python Avançado
-        (4, 6, '2025-05-21 14:30:00'),   # Ana na apresentação de startups
-        (4, 7, '2025-05-21 14:35:00'),   # Ana no networking
-        (5, 8, '2025-05-22 08:00:00'),   # Carlos no desenvolvimento de apps
-        (6, 1, '2025-05-22 11:30:00'),   # Fernanda na Palestra IA
-        (7, 10, '2025-05-23 12:00:00'),  # Ricardo na Palestra Principal
-        (8, 2, '2025-05-23 15:30:00'),   # Juliana no Workshop ML
-        (9, 8, '2025-05-24 08:30:00'),   # Bruno no desenvolvimento de apps
-        (10, 9, '2025-05-24 09:00:00'),  # Camila no Pitch Final
-        (11, 11, '2025-05-25 19:30:00'), # Lucas no HTML Básico
-        (11, 12, '2025-05-25 19:35:00'), # Lucas no CSS Avançado
-        (12, 14, '2025-05-25 08:30:00'), # Isabella nos Experimentos
-        (12, 15, '2025-05-25 10:30:00'), # Isabella nos Vulcões
-        (13, 17, '2025-05-26 13:30:00'), # Gabriel na Programação Teen
-        (13, 18, '2025-05-26 08:30:00'), # Gabriel nos Jogos
-        (14, 19, '2025-05-26 19:45:00'), # Sophia no Webinar
-        (15, 20, '2025-05-27 08:30:00'), # Rafael na Montagem
-        (15, 21, '2025-05-27 13:30:00')  # Rafael no Arduino
+        (1, 1, '2025-05-20 10:30:00'),
+        (1, 2, '2025-05-20 10:35:00'),
+        (2, 1, '2025-05-20 11:00:00'),
+        (2, 4, '2025-05-21 09:00:00'),
+        (3, 4, '2025-05-21 09:15:00'),
+        (3, 5, '2025-05-21 09:20:00'),
+        (4, 6, '2025-05-21 14:30:00'),
+        (4, 7, '2025-05-21 14:35:00'),
+        (5, 8, '2025-05-22 08:00:00'),
+        (6, 1, '2025-05-22 11:30:00'),
+        (7, 10, '2025-05-23 12:00:00'),
+        (8, 2, '2025-05-23 15:30:00'),
+        (9, 8, '2025-05-24 08:30:00'),
+        (10, 9, '2025-05-24 09:00:00'),
+        (11, 11, '2025-05-25 19:30:00'),
+        (11, 12, '2025-05-25 19:35:00'),
+        (12, 14, '2025-05-25 08:30:00'),
+        (12, 15, '2025-05-25 10:30:00'),
+        (13, 17, '2025-05-26 13:30:00'),
+        (13, 18, '2025-05-26 08:30:00'),
+        (14, 19, '2025-05-26 19:45:00'),
+        (15, 20, '2025-05-27 08:30:00'),
+        (15, 21, '2025-05-27 13:30:00')
     ]
     
     for inscricao in inscricoes_exemplo:
@@ -276,12 +245,10 @@ def main():
             VALUES (?, ?, ?)
         ''', inscricao)
     
-    # Confirmar todas as alterações
     gerenciador.conn.commit()
     
     print("Dados iniciais inseridos com sucesso!")
     
-    # Exibir estatísticas
     gerenciador.cursor.execute('SELECT COUNT(*) FROM eventos')
     total_eventos = gerenciador.cursor.fetchone()[0]
     
@@ -300,7 +267,6 @@ def main():
     print(f'  - Atividades: {total_atividades}')
     print(f'  - Inscrições: {total_inscricoes}')
     
-    # Mostrar alguns exemplos de eventos criados
     print(f'\nExemplos de eventos criados:')
     gerenciador.cursor.execute('''
         SELECT id, nome, data_inicio, tipo, publico_alvo 
@@ -314,7 +280,6 @@ def main():
         id_evento, nome, data_inicio, tipo, publico_alvo = evento
         print(f'  {id_evento}. {nome} - {data_inicio} ({tipo}, {publico_alvo})')
     
-    # Mostrar estatísticas por tipo
     print(f'\nEventos por tipo:')
     gerenciador.cursor.execute('''
         SELECT tipo, COUNT(*) 
@@ -326,7 +291,6 @@ def main():
     for tipo, count in tipos_stats:
         print(f'  - {tipo.capitalize()}: {count} evento(s)')
     
-    # Mostrar estatísticas por público-alvo
     print(f'\nEventos por público-alvo:')
     gerenciador.cursor.execute('''
         SELECT publico_alvo, COUNT(*) 
@@ -338,7 +302,6 @@ def main():
     for publico, count in publico_stats:
         print(f'  - {publico.capitalize()}: {count} evento(s)')
     
-    # Mostrar estatísticas de atividades por local
     print(f'\nAtividades por local (top 5):')
     gerenciador.cursor.execute('''
         SELECT local, COUNT(*) as count

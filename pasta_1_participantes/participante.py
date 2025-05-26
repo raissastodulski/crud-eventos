@@ -8,7 +8,6 @@ class Participante:
         self.email = email
         self.telefone = telefone
         
-        # Se data não foi fornecida, usar data atual formatada
         if not data:
             self.data = FormatadorData.data_cadastro_hoje()
         else:
@@ -29,7 +28,6 @@ class Participante:
         return f"[{self.id}] {self.nome} | CPF: {self.cpf} | Email: {self.email} | Cadastrado em: {self.data}"
     
     def dados_formatados(self):
-        """Retorna dados formatados para exibição"""
         return {
             'id': self.id,
             'nome': self.nome,

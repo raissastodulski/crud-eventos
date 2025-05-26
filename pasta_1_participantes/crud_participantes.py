@@ -14,11 +14,9 @@ class CrudParticipantes:
         if cpf == cpf[0] * 11:
             return False
         
-        
         soma = sum(int(cpf[i]) * (10 - i) for i in range(9))
         digito1 = (soma * 10 % 11) % 10
-        
-     
+
         soma = sum(int(cpf[i]) * (11 - i) for i in range(10))
         digito2 = (soma * 10 % 11) % 10
         
@@ -30,7 +28,6 @@ class CrudParticipantes:
         self.crud_bd_participantes = CrudBDParticipantes(gerenciador_bd)
     
     def adicionar_participante(self):
-        """Adiciona um novo participante"""
         print("\n===== ADICIONAR NOVO PARTICIPANTE =====")
         
         nome = input("Digite o nome do participante: ")
@@ -123,7 +120,6 @@ class CrudParticipantes:
             if not nova_data:
                 break
             try:
-
                 datetime.datetime.strptime(nova_data, "%d-%m-%Y")
                 participante.data = nova_data
                 break
@@ -138,7 +134,6 @@ class CrudParticipantes:
 
     
     def excluir_participante(self, id_participante=None):
-        """Excluir um participante"""
         print("\n===== EXCLUIR PARTICIPANTE =====")
         
         if id_participante is None:
@@ -174,7 +169,6 @@ class CrudParticipantes:
             return False
     
     def buscar_participantes(self, termo_busca=None):
-        """Buscar participantes"""
         print("\n===== BUSCAR PARTICIPANTES =====")
         
         if termo_busca is None:

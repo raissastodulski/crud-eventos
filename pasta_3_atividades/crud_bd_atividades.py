@@ -95,7 +95,6 @@ class CrudBDAtividades:
             return False
 
     def buscar_atividades(self, termo_busca):
-        """Busca atividades por termo (nome, facilitador ou local)"""
         try:
             termo = f"%{termo_busca}%"
             self.gerenciador_bd.cursor.execute(
@@ -103,8 +102,9 @@ class CrudBDAtividades:
                 SELECT * FROM atividades 
                 WHERE nome LIKE ? OR facilitador LIKE ? OR local LIKE ?
                 """,
-                (termo, termo, termo)
+                (termo, termo, termo),
             )
+
             atividades = []
             for dados_atividade in self.gerenciador_bd.cursor.fetchall():
                 atividades.append(Atividade.de_tupla(dados_atividade))
@@ -112,79 +112,3 @@ class CrudBDAtividades:
         except sqlite3.Error as e:
             print(f"Erro ao buscar atividades: {e}")
             return []
-
-    def buscar_atividades_por_local(self, local):
-        """Busca atividades por local específico"""
-        try:
-            self.gerenciador_bd.cursor.execute(
-                "SELECT * FROM atividades WHERE local LIKE ?", (f"%{local}%",)
-            )
-            atividades = []
-            for dados_atividade in self.gerenciador_bd.cursor.fetchall():
-                atividades.append(Atividade.de_tupla(dados_atividade))
-            return atividades
-        except sqlite3.Error as e:
-            print(f"Erro ao buscar atividades por local: {e}")
-            return []
-
-    def buscar_atividades_por_facilitador(self, facilitador):
-        """Busca atividades por facilitador"""
-        try:
-            self.gerenciador_bd.cursor.execute(
-                "SELECT * FROM atividades WHERE facilitador LIKE ?", (f"%{facilitador}%",)
-            )
-            atividades = []
-            for dados_atividade in self.gerenciador_bd.cursor.fetchall():
-                atividades.append(Atividade.de_tupla(dados_atividade))
-            return atividades
-        except sqlite3.Error as e:
-            print(f"Erro ao buscar atividades por facilitador: {e}")
-            return []
-
-    def contar_atividades_por_evento(self, id_evento):
-        """Conta quantas atividades um evento possui"""
-        try:
-            self.gerenciador_bd.cursor.execute(
-                "SELECT COUNT(*) FROM atividades WHERE id_evento=?", (id_evento,)
-            )
-            return self.gerenciador_bd.cursor.fetchone()[0]
-        except sqlite3.Error as e:
-            print(f"Erro ao contar atividades do evento: {e}")
-            return 0
-
-    def obter_estatisticas_atividades(self):
-        """Obtém estatísticas gerais das atividades"""
-        try:
-            stats = {}
-            
-            # Total de atividades
-            self.gerenciador_bd.cursor.execute("SELECT COUNT(*) FROM atividades")
-            stats['total'] = self.gerenciador_bd.cursor.fetchone()[0]
-            
-            # Total de vagas disponíveis
-            self.gerenciador_bd.cursor.execute("SELECT SUM(vagas) FROM atividades WHERE vagas IS NOT NULL")
-            resultado = self.gerenciador_bd.cursor.fetchone()[0]
-            stats['total_vagas'] = resultado if resultado else 0
-            
-            # Atividades por facilitador
-            self.gerenciador_bd.cursor.execute("""
-                SELECT facilitador, COUNT(*) as count 
-                FROM atividades 
-                GROUP BY facilitador 
-                ORDER BY count DESC
-            """)
-            stats['por_facilitador'] = self.gerenciador_bd.cursor.fetchall()
-            
-            # Atividades por local
-            self.gerenciador_bd.cursor.execute("""
-                SELECT local, COUNT(*) as count 
-                FROM atividades 
-                GROUP BY local 
-                ORDER BY count DESC
-            """)
-            stats['por_local'] = self.gerenciador_bd.cursor.fetchall()
-            
-            return stats
-        except sqlite3.Error as e:
-            print(f"Erro ao obter estatísticas: {e}")
-            return {}

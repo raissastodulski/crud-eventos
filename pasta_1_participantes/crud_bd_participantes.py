@@ -6,7 +6,6 @@ class CrudBDParticipantes:
         self.gerenciador_bd = gerenciador_bd
     
     def criar_participante(self, participante):
-        """Adiciona um novo participante ao banco de dados"""
         try:
             self.gerenciador_bd.cursor.execute('''
             INSERT INTO participantes (nome, cpf, email, telefone, data)
@@ -20,7 +19,6 @@ class CrudBDParticipantes:
             return None
     
     def ler_todos_participantes(self):
-        """Recupera todos os participantes do banco de dados"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT * FROM participantes")
             participantes = []
@@ -32,7 +30,6 @@ class CrudBDParticipantes:
             return []
     
     def ler_participante_por_id(self, id_participante):
-        """Recupera um único participante pelo ID"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT * FROM participantes WHERE id=?", (id_participante,))
             dados_participante = self.gerenciador_bd.cursor.fetchone()
@@ -44,7 +41,6 @@ class CrudBDParticipantes:
             return None
     
     def atualizar_participante(self, participante):
-        """Atualiza um participante existente"""
         try:
             self.gerenciador_bd.cursor.execute('''
             UPDATE participantes
@@ -62,7 +58,6 @@ class CrudBDParticipantes:
             return False
     
     def deletar_participante(self, id_participante):
-        """Exclui um participante pelo ID"""
         try:
             self.gerenciador_bd.cursor.execute("DELETE FROM participantes WHERE id=?", (id_participante,))
             self.gerenciador_bd.conn.commit()
@@ -76,7 +71,6 @@ class CrudBDParticipantes:
             return False
     
     def buscar_participantes(self, termo_busca):
-        """Busca participantes contendo o termo de busca no nome, email ou CPF"""
         try:
             padrao_busca = f"%{termo_busca}%"
             self.gerenciador_bd.cursor.execute("""

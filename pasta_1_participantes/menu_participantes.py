@@ -7,11 +7,9 @@ class MenuParticipantes:
         self.crud_participantes = CrudParticipantes(gerenciador_bd)
     
     def limpar_tela(self):
-        """Limpa a tela do console"""
         os.system('cls' if os.name == 'nt' else 'clear')
     
     def exibir_menu(self):
-        """Exibe as opções do menu de gerenciamento de participantes"""
         self.limpar_tela()
         print("\n===== GERENCIAMENTO DE PARTICIPANTES =====")
         print("1. Adicionar Participante")
@@ -25,7 +23,6 @@ class MenuParticipantes:
         return input("Digite sua escolha: ")
     
     def executar(self):
-        """Executa o menu de participantes"""
         while True:
             escolha = self.exibir_menu()
             

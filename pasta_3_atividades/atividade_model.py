@@ -10,7 +10,6 @@ class Atividade:
         self.facilitador = facilitador
         self.local = local
         self.id_evento = id_evento
-        # Garantir que hora_inicio seja sempre string
         if isinstance(hora_inicio, time):
             self.hora_inicio = hora_inicio.strftime("%H:%M")
         else:
@@ -23,7 +22,7 @@ class Atividade:
             self.facilitador,
             self.local,
             self.id_evento,
-            self.hora_inicio,  # Sempre será string agora
+            self.hora_inicio,
             self.vagas,
         )
 
@@ -33,7 +32,7 @@ class Atividade:
             self.facilitador,
             self.local,
             self.id_evento,
-            self.hora_inicio,  # Sempre será string agora
+            self.hora_inicio,
             self.vagas,
             self.id,
         )
@@ -55,13 +54,11 @@ class Atividade:
         return f"[{self.id}] {self.nome} | Facilitador: {self.facilitador} | Local: {self.local} | Horário: {self.hora_inicio} | Vagas: {self.vagas}"
     
     def hora_inicio_formatada(self):
-        """Retorna hora de início formatada em hh:mm"""
         if isinstance(self.hora_inicio, str):
             return self.hora_inicio
         return FormatadorData.hora_para_str(self.hora_inicio)
     
     def dados_formatados(self):
-        """Retorna dados formatados para exibição"""
         return {
             'id': self.id,
             'nome': self.nome,

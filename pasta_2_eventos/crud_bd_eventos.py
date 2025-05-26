@@ -6,7 +6,6 @@ class CrudBDEventos:
         self.gerenciador_bd = gerenciador_bd
     
     def criar_evento(self, evento):
-        """Adiciona um novo evento ao banco de dados"""
         try:
             self.gerenciador_bd.cursor.execute('''
             INSERT INTO eventos (nome, descricao, data_inicio, hora_inicio, data_fim, hora_fim, 
@@ -21,13 +20,12 @@ class CrudBDEventos:
             return None
     
     def ler_todos_eventos(self):
-        """Recupera todos os eventos do banco de dados"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT * FROM eventos")
             eventos = []
             for dados_evento in self.gerenciador_bd.cursor.fetchall():
                 try:
-                    if len(dados_evento) >= 11:  # Verifica se tem todos os campos necessários
+                    if len(dados_evento) >= 11:
                         evento = Evento.de_tupla(dados_evento)
                         eventos.append(evento)
                     else:
@@ -40,7 +38,6 @@ class CrudBDEventos:
             return []
     
     def ler_evento_por_id(self, id_evento):
-        """Recupera um único evento pelo ID"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT * FROM eventos WHERE id=?", (id_evento,))
             dados_evento = self.gerenciador_bd.cursor.fetchone()
@@ -52,7 +49,6 @@ class CrudBDEventos:
             return None
     
     def atualizar_evento(self, evento):
-        """Atualiza um evento existente"""
         try:
             self.gerenciador_bd.cursor.execute('''
             UPDATE eventos
@@ -71,7 +67,6 @@ class CrudBDEventos:
             return False
     
     def deletar_evento(self, id_evento):
-        """Exclui um evento pelo ID"""
         try:
             self.gerenciador_bd.cursor.execute("DELETE FROM eventos WHERE id=?", (id_evento,))
             self.gerenciador_bd.conn.commit()
@@ -85,7 +80,6 @@ class CrudBDEventos:
             return False
     
     def buscar_eventos(self, termo_busca):
-        """Busca eventos contendo o termo de busca no nome, descrição, tipo ou endereço"""
         try:
             padrao_busca = f"%{termo_busca}%"
             self.gerenciador_bd.cursor.execute("""
@@ -106,9 +100,7 @@ class CrudBDEventos:
             return []
     
     def buscar_eventos_por_data(self, data_inicio=None, data_fim=None):
-        """Busca eventos por período de data"""
         try:
-            # Converter datas para string se necessário
             data_inicio_str = data_inicio.isoformat() if data_inicio else None
             data_fim_str = data_fim.isoformat() if data_fim else None
             
@@ -146,7 +138,6 @@ class CrudBDEventos:
             return []
     
     def buscar_eventos_por_tipo(self, tipo):
-        """Busca eventos por tipo"""
         try:
             self.gerenciador_bd.cursor.execute("""
             SELECT * FROM eventos 

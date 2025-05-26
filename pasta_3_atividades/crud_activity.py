@@ -10,7 +10,6 @@ class CrudActivity:
         self.crud_atividade = CrudBDAtividades(gerenciador_bd)
 
     def listar_eventos_disponiveis(self):
-        """Lista os eventos disponíveis para associar à atividade"""
         try:
             self.gerenciador_bd.cursor.execute("SELECT id, nome FROM eventos ORDER BY data_inicio")
             eventos = self.gerenciador_bd.cursor.fetchall()
@@ -20,10 +19,8 @@ class CrudActivity:
             return []
 
     def adicionar_atividade(self):
-        """Adiciona uma nova atividade"""
         print("\n===== ADICIONAR UMA NOVA ATIVIDADE =====")
 
-        # Listar eventos disponíveis
         eventos = self.listar_eventos_disponiveis()
         if not eventos:
             print("⚠️  Nenhum evento cadastrado. Cadastre um evento primeiro.")
@@ -33,7 +30,6 @@ class CrudActivity:
         for evento in eventos:
             print(f"{evento[0]} - {evento[1]}")
 
-        # Selecionar evento
         while True:
             try:
                 id_evento = int(input("\nDigite o ID do evento para esta atividade: "))
@@ -59,7 +55,6 @@ class CrudActivity:
             print("⚠️  Local da atividade é obrigatório.")
             return False
 
-        # Usar FormatadorData para hora
         hora_inicio = FormatadorData.solicitar_hora_usuario(
             "Digite a hora de início da atividade"
         )
@@ -93,9 +88,7 @@ class CrudActivity:
 
     def ver_todas_atividades(self):
         print("\n===== TODAS AS ATIVIDADES =====")
-
         atividades = self.crud_atividade.ler_todas_atividades()
-
         if not atividades:
             print("⚠️  Nenhuma atividade encontrada.")
             return []
@@ -107,9 +100,7 @@ class CrudActivity:
             return atividades
 
     def ver_detalhes_atividade(self, id_atividade=None):
-        """Ver detalhes de uma atividade específica"""
         print("\n===== DETALHES DA ATIVIDADE =====")
-
         if id_atividade is None:
             id_atividade = input("Digite o ID da atividade: ")
             if not id_atividade.isdigit():
@@ -118,7 +109,6 @@ class CrudActivity:
             id_atividade = int(id_atividade)
 
         atividade = self.crud_atividade.ler_atividade_por_id(id_atividade)
-
         if atividade:
             print(f"\n📋 Detalhes da Atividade (ID: {atividade.id})")
             print("=" * 50)
@@ -130,7 +120,6 @@ class CrudActivity:
             print(f"Vagas: {atividade.vagas if atividade.vagas > 0 else 'Ilimitado'}")
             print("=" * 50)
             
-            # Mostrar informações do evento relacionado
             try:
                 self.gerenciador_bd.cursor.execute(
                     "SELECT nome FROM eventos WHERE id=?", (atividade.id_evento,)
@@ -140,16 +129,13 @@ class CrudActivity:
                     print(f"Evento relacionado: {evento_nome[0]}")
             except Exception as e:
                 print(f"Erro ao buscar evento relacionado: {e}")
-                
             return atividade
         else:
             print(f"⚠️  Nenhuma atividade encontrada com ID {id_atividade}")
             return None
 
     def atualizar_atividade(self, id_atividade=None):
-        """Atualizar uma atividade existente"""
         print("\n===== ATUALIZAR ATIVIDADE =====")
-
         if id_atividade is None:
             id_atividade = input("Digite o ID da atividade para atualizar: ")
             if not id_atividade.isdigit():
@@ -158,22 +144,12 @@ class CrudActivity:
             id_atividade = int(id_atividade)
 
         atividade = self.crud_atividade.ler_atividade_por_id(id_atividade)
-
         if not atividade:
             print(f"⚠️  Nenhuma atividade encontrada com ID {id_atividade}")
             return False
 
         print(f"\n--- Atualizando atividade: {atividade.nome} ---")
         print("(Pressione Enter para manter o valor atual)")
-        print(f"\nDetalhes Atuais:")
-        print(f"Nome: {atividade.nome}")
-        print(f"Facilitador: {atividade.facilitador}")
-        print(f"Local: {atividade.local}")
-        print(f"ID do Evento: {atividade.id_evento}")
-        print(f"Horário: {atividade.hora_inicio_formatada()}")
-        print(f"Vagas: {atividade.vagas}")
-
-        print("\nDigite os novos detalhes:")
 
         novo_nome = input(f"Novo nome [{atividade.nome}]: ").strip()
         if novo_nome:
@@ -187,7 +163,6 @@ class CrudActivity:
         if novo_local:
             atividade.local = novo_local
 
-        # Opção para alterar evento
         alterar_evento = input(f"Alterar evento atual (ID: {atividade.id_evento})? (s/n): ").lower()
         if alterar_evento == 's':
             eventos = self.listar_eventos_disponiveis()
@@ -207,7 +182,6 @@ class CrudActivity:
                     except ValueError:
                         print("⚠️  Digite um número válido.")
 
-        # Alterar horário
         alterar_horario = input(f"Alterar horário atual ({atividade.hora_inicio_formatada()})? (s/n): ").lower()
         if alterar_horario == 's':
             nova_hora = FormatadorData.solicitar_hora_usuario(
@@ -217,7 +191,6 @@ class CrudActivity:
             if nova_hora:
                 atividade.hora_inicio = nova_hora
 
-        # Alterar vagas
         while True:
             nova_vagas = input(f"Novas vagas [{atividade.vagas}]: ").strip()
             if not nova_vagas:
@@ -241,9 +214,7 @@ class CrudActivity:
             return False
 
     def excluir_atividade(self, id_atividade=None):
-        """Excluir uma atividade"""
         print("\n===== EXCLUIR ATIVIDADE =====")
-
         if id_atividade is None:
             id_atividade = input("Digite o ID da atividade para excluir: ")
             if not id_atividade.isdigit():
@@ -252,7 +223,6 @@ class CrudActivity:
             id_atividade = int(id_atividade)
 
         atividade = self.crud_atividade.ler_atividade_por_id(id_atividade)
-
         if not atividade:
             print(f"⚠️  Nenhuma atividade encontrada com ID {id_atividade}")
             return False
@@ -268,7 +238,6 @@ class CrudActivity:
         print("=" * 40)
 
         confirmar = input("\nTem certeza de que deseja excluir esta atividade? (s/n): ")
-
         if confirmar.lower() == "s":
             sucesso = self.crud_atividade.deletar_atividade(id_atividade)
             if sucesso:
@@ -282,9 +251,7 @@ class CrudActivity:
             return False
 
     def buscar_atividade(self, termo_busca=None):
-        """Buscar atividades"""
         print("\n===== BUSCAR ATIVIDADES =====")
-
         if termo_busca is None:
             termo_busca = input("Digite o termo de busca (nome, facilitador ou local): ").strip()
 
@@ -293,7 +260,6 @@ class CrudActivity:
             return []
 
         atividades = self.crud_atividade.buscar_atividades(termo_busca)
-
         if not atividades:
             print(f"⚠️  Nenhuma atividade encontrada correspondente a '{termo_busca}'.")
             return []
@@ -304,5 +270,3 @@ class CrudActivity:
                 print(atividade)
                 print("-" * 70)
             return atividades
-
-
