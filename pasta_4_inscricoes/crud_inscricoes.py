@@ -33,7 +33,7 @@ class CrudInscricoes:
         print("\nAtividades disponíveis:")
         for atividade in atividades:
             evento = self.crud_bd_eventos.ler_evento_por_id(atividade.id_evento)
-            evento_nome = evento.titulo if evento else "Evento não encontrado"
+            evento_nome = evento.nome if evento else "Evento não encontrado"
             
             # Verificar vagas disponíveis
             participantes_inscritos = self.crud_bd_inscricoes.contar_participantes_por_atividade(atividade.id)
@@ -100,7 +100,7 @@ class CrudInscricoes:
                 # Verificar capacidade do evento considerando o novo participante
                 participantes_evento = self.crud_bd_inscricoes.contar_participantes_por_evento(evento.id)
                 if participantes_evento >= evento.capacidade and evento.capacidade is not None:
-                    print(f"O evento '{evento.titulo}' já atingiu sua capacidade máxima de {evento.capacidade} participantes.")
+                    print(f"O evento '{evento.nome}' já atingiu sua capacidade máxima de {evento.capacidade} participantes.")
                     print("Como você não está inscrito em nenhuma atividade deste evento, não é possível realizar a inscrição.")
                     return False
             
@@ -141,7 +141,7 @@ class CrudInscricoes:
                 if atividade:
                     evento = self.crud_bd_eventos.ler_evento_por_id(atividade.id_evento)
                 
-                nome_evento = evento.titulo if evento else "Evento não encontrado"
+                nome_evento = evento.nome if evento else "Evento não encontrado"
                 
                 print(f"[{inscricao.id}] {nome_participante} → Atividade: {nome_atividade} | Evento: {nome_evento} | Data: {inscricao.data_inscricao}")
             
@@ -161,7 +161,7 @@ class CrudInscricoes:
             print("\nAtividades disponíveis:")
             for atividade in atividades:
                 evento = self.crud_bd_eventos.ler_evento_por_id(atividade.id_evento)
-                nome_evento = evento.titulo if evento else "Evento não encontrado"
+                nome_evento = evento.nome if evento else "Evento não encontrado"
                 print(f"[{atividade.id}] {atividade.nome} | Evento: {nome_evento}")
             
             id_atividade = input("\nDigite o ID da atividade para listar suas inscrições: ")
@@ -204,7 +204,7 @@ class CrudInscricoes:
             print("\nEventos disponíveis:")
             for evento in eventos:
                 data_exibicao = evento.data if hasattr(evento, 'data') else None
-                print(f"[{evento.id}] {evento.titulo} ({data_exibicao})")
+                print(f"[{evento.id}] {evento.nome} ({data_exibicao})")
             
             id_evento = input("\nDigite o ID do evento para listar suas inscrições: ")
             if not id_evento.isdigit():
@@ -218,11 +218,11 @@ class CrudInscricoes:
             print(f"Nenhum evento encontrado com ID {id_evento}.")
             return []
         
-        print(f"\nInscrições para o evento: {evento.titulo}")
+        print(f"\nInscrições para o evento: {evento.nome}")
         participantes = self.crud_bd_inscricoes.listar_participantes_por_evento(id_evento)
         
         if not participantes:
-            print(f"Nenhuma inscrição encontrada para o evento '{evento.titulo}'.")
+            print(f"Nenhuma inscrição encontrada para o evento '{evento.nome}'.")
             return []
         
         # Verificar capacidade do evento
@@ -272,7 +272,7 @@ class CrudInscricoes:
         print("Atividades:")
         for atividade in atividades:
             evento = self.crud_bd_eventos.ler_evento_por_id(atividade.id_evento)
-            nome_evento = evento.titulo if evento else "Evento não encontrado"
+            nome_evento = evento.nome if evento else "Evento não encontrado"
             print(f"[{atividade.id}] {atividade.nome} | Evento: {nome_evento}")
         
         # Listar eventos em que o participante está inscrito (através das atividades)
@@ -282,7 +282,7 @@ class CrudInscricoes:
             print("\nEventos:")
             for evento in eventos:
                 data_exibicao = evento.data if hasattr(evento, 'data') else None
-                print(f"[{evento.id}] {evento.titulo} ({data_exibicao})")
+                print(f"[{evento.id}] {evento.nome} ({data_exibicao})")
         
         return atividades
     
@@ -321,7 +321,7 @@ class CrudInscricoes:
             if atividade:
                 evento = self.crud_bd_eventos.ler_evento_por_id(atividade.id_evento)
             
-            nome_evento = evento.titulo if evento else "Evento não encontrado"
+            nome_evento = evento.nome if evento else "Evento não encontrado"
             
             print(f"\nInscrição a ser cancelada:")
             print(f"ID: {inscricao.id}")
@@ -378,7 +378,7 @@ class CrudInscricoes:
             print(f"\nAtividades em que {participante.nome} está inscrito:")
             for atividade in atividades:
                 evento = self.crud_bd_eventos.ler_evento_por_id(atividade.id_evento)
-                nome_evento = evento.titulo if evento else "Evento não encontrado"
+                nome_evento = evento.nome if evento else "Evento não encontrado"
                 print(f"[{atividade.id}] {atividade.nome} | Evento: {nome_evento}")
             
             id_atividade = input("\nDigite o ID da atividade para cancelar a inscrição: ")
@@ -399,7 +399,7 @@ class CrudInscricoes:
                 return False
             
             evento = self.crud_bd_eventos.ler_evento_por_id(atividade.id_evento)
-            nome_evento = evento.titulo if evento else "Evento não encontrado"
+            nome_evento = evento.nome if evento else "Evento não encontrado"
             
             print(f"\nInscrição a ser cancelada:")
             print(f"Participante: {participante.nome}")
