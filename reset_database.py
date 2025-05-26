@@ -188,7 +188,7 @@ def main():
     
     for participante in participantes_exemplo:
         gerenciador.cursor.execute('''
-            INSERT INTO participantes (nome, cpf, email, telefone, data)
+            INSERT INTO participantes (nome, cpf, email, telefone, data_cadastro)
             VALUES (?, ?, ?, ?, ?)
         ''', participante)
     
