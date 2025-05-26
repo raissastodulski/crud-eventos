@@ -1,7 +1,7 @@
 from pasta_2_eventos import MenuEventos
 from pasta_1_participantes import MenuParticipantes
 from pasta_3_atividades import MenuActivity
-from pasta_4_inscricoes.menu_inscricoes import MenuInscricoes
+from pasta_4_inscricoes import MenuInscricoes
 import os
 
 class MenuPrincipal:

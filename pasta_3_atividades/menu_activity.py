@@ -13,7 +13,7 @@ class MenuActivity:
         os.system("cls" if os.name == "nt" else "clear")
 
     def exibir_menu(self):
-        """Exibe as opções do menu de gerenciamento de eventos"""
+        """Exibe as opções do menu de gerenciamento de atividades"""
         self.limpar_tela()
         print("\n===== GERENCIAMENTO DE ATIVIDADES =====")
         print("1. Adicionar Nova Atividade")
@@ -23,7 +23,7 @@ class MenuActivity:
         print("5. Excluir Atividade")
         print("6. Buscar Atividades")
         print("0. Voltar ao Menu Principal")
-        print("===================================")
+        print("======================================")
         return input("Digite sua escolha: ")
 
     def executar(self):
@@ -41,7 +41,7 @@ class MenuActivity:
                 input("\nPressione Enter para continuar...")
             elif escolha == "3":
                 self.limpar_tela()
-                self.crud_atividades.ver_detalhes_atividades()
+                self.crud_atividades.ver_detalhes_atividade()
                 input("\nPressione Enter para continuar...")
             elif escolha == "4":
                 self.limpar_tela()
@@ -53,7 +53,7 @@ class MenuActivity:
                 input("\nPressione Enter para continuar...")
             elif escolha == "6":
                 self.limpar_tela()
-                self.crud_atividades.excluir_atividade()
+                self.crud_atividades.buscar_atividade()
                 input("\nPressione Enter para continuar...")
             elif escolha == "0":
                 print("Voltando ao menu principal...")

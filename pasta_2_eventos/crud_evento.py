@@ -1,4 +1,5 @@
 from datetime import datetime, date, time
+from compartilhado.formatador_data import FormatadorData
 from .evento import Evento
 from .crud_bd_eventos import CrudBDEventos
 
@@ -7,51 +8,38 @@ class CrudEvento:
         self.gerenciador_bd = gerenciador_bd
         self.crudBd = CrudBDEventos(gerenciador_bd)
 
-
-
     def criar_evento(self):
         print("\n===== ADICIONAR UM NOVO EVENTO =====")
 
         nome_evento = input("Informe Nome do Evento: ").strip()
         descricao_evento = input("\nDescreva o Evento que será realizado: ").strip()
 
-        while True:
-            data_inicio_str = input("\nInforme a DATA de INICIO do evento (dd/mm/aaaa): ")
-            try: 
-                data_inicio = datetime.strptime(data_inicio_str, "%d/%m/%Y").date()
-                if data_inicio < date.today():
-                    print("⚠️  A data não pode estar no passado.")
-                else:
-                    break
-            except ValueError:
-                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
+        # Usar FormatadorData para obter data de início com validação
+        data_inicio = FormatadorData.solicitar_data_usuario(
+            "Informe a DATA de INICIO do evento", 
+            validar_futura=True
+        )
         
-        while True:
-            hora_inicio_str = input("\nInforme a HORA de INÍCIO do evento (hh:mm): ")
-            try:
-                hora_inicio = datetime.strptime(hora_inicio_str, "%H:%M").time()
-                break
-            except ValueError:
-                print("⚠️  Hora inválida. Use o formato hh:mm.")
+        # Usar FormatadorData para obter hora de início
+        hora_inicio = FormatadorData.solicitar_hora_usuario(
+            "Informe a HORA de INÍCIO do evento"
+        )
 
-        while True:    
-            data_fim_str = input(f"\nInforme a DATA de FIM do evento {nome_evento} (dd/mm/aaaa): ")
-            try:           
-                data_fim = datetime.strptime(data_fim_str, "%d/%m/%Y").date()
-                if data_fim < data_inicio:
-                    print("⚠️  A data fim não pode ser antes da data de início.")
-                else:
-                    break
-            except ValueError:
-                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
-
+        # Usar FormatadorData para obter data de fim com validação
         while True:
-            hora_fim_str = input("\nInforme a HORA de FIM do evento (hh:mm): ")
-            try:
-                hora_fim = datetime.strptime(hora_fim_str, "%H:%M").time()
+            data_fim = FormatadorData.solicitar_data_usuario(
+                f"Informe a DATA de FIM do evento {nome_evento}"
+            )
+            
+            if FormatadorData.validar_data_fim_posterior(data_inicio, data_fim):
                 break
-            except ValueError:
-                print("⚠️  Hora inválida. Use o formato hh:mm.")
+            else:
+                print("⚠️  A data fim não pode ser antes da data de início.")
+
+        # Usar FormatadorData para obter hora de fim
+        hora_fim = FormatadorData.solicitar_hora_usuario(
+            "Informe a HORA de FIM do evento"
+        )
 
         while True:
             publico_alvo = input("Qual será o Público Alvo? (Adulto/Juvenil/Infantil): ").strip().lower()
@@ -65,7 +53,7 @@ class CrudEvento:
             if tipo_evento == "online":
                 print("Evento do tipo Online")
                 endereco = "Online"
-                capacidadeMax = "Ilimitado"
+                capacidadeMax = None
                 break
             elif tipo_evento == "presencial":
                 print("Evento do tipo Presencial")
@@ -95,6 +83,11 @@ class CrudEvento:
         
         evento_id = self.crudBd.criar_evento(evento)
         
+        if evento_id:
+            print("✅ Evento criado com sucesso!")
+            print(f"📅 Período: {evento.periodo_formatado()}")
+        else:
+            print("❌ Erro ao criar evento.")
 
     def visualizar_eventos(self):
         print("\n===== TODOS OS EVENTOS =====")
@@ -109,8 +102,6 @@ class CrudEvento:
                 print(evento)
                 print("-" * 50)
             return eventos
-        
-
 
     def ver_detalhe_evento(self):
         print("\n===== DETALHES DO EVENTO =====")
@@ -138,9 +129,6 @@ class CrudEvento:
                 print("⚠️  Evento não encontrado.")
         except ValueError:
             print("⚠️  ID inválido. Digite um número.")
-            
-
-
 
     def buscar_evento(self, termo=None):
         print("\n===== BUSCAR EVENTOS =====")
@@ -162,6 +150,38 @@ class CrudEvento:
         else:
             print("⚠️  Nenhum evento encontrado.")
 
+    def buscar_eventos_por_data(self):
+        print("\n===== BUSCAR EVENTOS POR DATA =====")
+        
+        # Usar FormatadorData para obter datas de busca
+        data_inicio = FormatadorData.solicitar_data_usuario(
+            "Data início da busca [Enter para pular]", 
+            permitir_vazio=True
+        )
+        
+        data_fim = FormatadorData.solicitar_data_usuario(
+            "Data fim da busca [Enter para pular]", 
+            permitir_vazio=True
+        )
+        
+        eventos = self.crudBd.buscar_eventos_por_data(data_inicio, data_fim)
+        
+        if eventos:
+            periodo_str = ""
+            if data_inicio and data_fim:
+                periodo_str = f" de {FormatadorData.data_para_str(data_inicio)} a {FormatadorData.data_para_str(data_fim)}"
+            elif data_inicio:
+                periodo_str = f" a partir de {FormatadorData.data_para_str(data_inicio)}"
+            elif data_fim:
+                periodo_str = f" até {FormatadorData.data_para_str(data_fim)}"
+                
+            print(f"\n{len(eventos)} evento(s) encontrado(s){periodo_str}:")
+            for evento in eventos:
+                print("\n" + "=" * 30)
+                print(evento)
+                print("=" * 30)
+        else:
+            print("⚠️  Nenhum evento encontrado no período especificado.")
 
     def atualizar_evento(self):
         print("\n===== ATUALIZAR EVENTO =====")
@@ -199,53 +219,49 @@ class CrudEvento:
         if nova_descricao:
             evento.descricao = nova_descricao
 
-        # Data início
-        while True:
-            nova_data_inicio = input(f"Data início (atual: {evento.data_inicio}, formato: dd/mm/aaaa): ").strip()
-            if not nova_data_inicio:
-                break
-            try:
-                evento.data_inicio = datetime.strptime(nova_data_inicio, "%d/%m/%Y").date()
-                break
-            except ValueError:
-                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
+        # Data início usando FormatadorData
+        data_atual_str = FormatadorData.data_para_str(evento.data_inicio)
+        nova_data_inicio = FormatadorData.solicitar_data_usuario(
+            f"Data início (atual: {data_atual_str})", 
+            permitir_vazio=True
+        )
+        if nova_data_inicio:
+            evento.data_inicio = nova_data_inicio
 
-        # Hora início
-        while True:
-            nova_hora_inicio = input(f"Hora início (atual: {evento.hora_inicio}, formato: hh:mm): ").strip()
-            if not nova_hora_inicio:
-                break
-            try:
-                evento.hora_inicio = datetime.strptime(nova_hora_inicio, "%H:%M").time()
-                break
-            except ValueError:
-                print("⚠️  Hora inválida. Use o formato hh:mm.")
+        # Hora início usando FormatadorData
+        hora_atual_str = FormatadorData.hora_para_str(evento.hora_inicio)
+        nova_hora_inicio = FormatadorData.solicitar_hora_usuario(
+            f"Hora início (atual: {hora_atual_str})", 
+            permitir_vazio=True
+        )
+        if nova_hora_inicio:
+            evento.hora_inicio = nova_hora_inicio
 
-        # Data fim
+        # Data fim usando FormatadorData com validação
         while True:
-            nova_data_fim = input(f"Data fim (atual: {evento.data_fim}, formato: dd/mm/aaaa): ").strip()
-            if not nova_data_fim:
+            data_atual_str = FormatadorData.data_para_str(evento.data_fim)
+            nova_data_fim = FormatadorData.solicitar_data_usuario(
+                f"Data fim (atual: {data_atual_str})", 
+                permitir_vazio=True
+            )
+            
+            if nova_data_fim is None:
                 break
-            try:
-                data_fim_temp = datetime.strptime(nova_data_fim, "%d/%m/%Y").date()
-                if data_fim_temp < evento.data_inicio:
-                    print("⚠️  A data fim não pode ser antes da data de início.")
-                else:
-                    evento.data_fim = data_fim_temp
-                    break
-            except ValueError:
-                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
+                
+            if FormatadorData.validar_data_fim_posterior(evento.data_inicio, nova_data_fim):
+                evento.data_fim = nova_data_fim
+                break
+            else:
+                print("⚠️  A data fim não pode ser antes da data de início.")
 
-        # Hora fim
-        while True:
-            nova_hora_fim = input(f"Hora fim (atual: {evento.hora_fim}, formato: hh:mm): ").strip()
-            if not nova_hora_fim:
-                break
-            try:
-                evento.hora_fim = datetime.strptime(nova_hora_fim, "%H:%M").time()
-                break
-            except ValueError:
-                print("⚠️  Hora inválida. Use o formato hh:mm.")
+        # Hora fim usando FormatadorData
+        hora_atual_str = FormatadorData.hora_para_str(evento.hora_fim)
+        nova_hora_fim = FormatadorData.solicitar_hora_usuario(
+            f"Hora fim (atual: {hora_atual_str})", 
+            permitir_vazio=True
+        )
+        if nova_hora_fim:
+            evento.hora_fim = nova_hora_fim
 
         # Público alvo
         while True:
@@ -288,9 +304,9 @@ class CrudEvento:
         # Salvar alterações
         if self.crudBd.atualizar_evento(evento):
             print("✅ Evento atualizado com sucesso!")
+            print(f"📅 Novo período: {evento.periodo_formatado()}")
         else:
             print("❌ Erro ao atualizar evento.")
-
 
     def excluir_evento(self):
         print("\n===== EXCLUIR EVENTO =====")
@@ -302,7 +318,7 @@ class CrudEvento:
 
         print("\nEventos disponíveis:")
         for i, evento in enumerate(eventos):
-            print(f"{i+1} - {evento.nome} (ID: {evento.id})")
+            print(f"{i+1} - {evento.nome} (ID: {evento.id}) - {evento.data_inicio_formatada()}")
             
         while True:
             try:
@@ -324,3 +340,19 @@ class CrudEvento:
             except ValueError:
                 print("⚠️  Digite um número válido.")
 
+    def listar_eventos_por_tipo(self):
+        print("\n===== LISTAR EVENTOS POR TIPO =====")
+        
+        tipo = input("Digite o tipo de evento (presencial/online): ").strip().lower()
+        if not tipo:
+            print("⚠️  Digite um tipo válido.")
+            return
+            
+        eventos = self.crudBd.buscar_eventos_por_tipo(tipo)
+        
+        if eventos:
+            print(f"\n{len(eventos)} evento(s) do tipo '{tipo}':")
+            for evento in eventos:
+                print(f"• {evento.nome} - {evento.periodo_formatado()}")
+        else:
+            print(f"⚠️  Nenhum evento do tipo '{tipo}' encontrado.")

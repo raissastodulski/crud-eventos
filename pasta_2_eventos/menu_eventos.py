@@ -32,29 +32,44 @@ class MenuEventos:
             escolha = self.exibir_menu()
             
             if escolha == '1':
+                print("\n--- Adicionar Evento ---")
                 self.crud_evento.criar_evento()
                 input("\nPressione Enter para continuar...")
                 
             elif escolha == '2':
+                print("\n--- Ver Todos os Eventos ---")
                 self.crud_evento.visualizar_eventos()
                 input("\nPressione Enter para continuar...")
                 
             elif escolha == '3':
+                print("\n--- Ver Detalhes do Evento ---")
                 self.crud_evento.ver_detalhe_evento()
                 input("\nPressione Enter para continuar...")
                 
             elif escolha == '4':
+                print("\n--- Atualizar Evento ---")
                 self.crud_evento.atualizar_evento()
                 input("\nPressione Enter para continuar...")
                 
             elif escolha == '5':
+                print("\n--- Excluir Evento ---")
                 self.crud_evento.excluir_evento()
                 input("\nPressione Enter para continuar...")
                 
             elif escolha == '6':
+                print("\n--- Buscar Eventos ---")
                 self.crud_evento.buscar_evento()
                 input("\nPressione Enter para continuar...")
                 
+            elif escolha == '7':
+                print("\n--- Buscar Eventos por Data ---")
+                self.crud_evento.buscar_eventos_por_data()
+                input("\nPressione Enter para continuar...")
+                
+            elif escolha == '8':
+                print("\n--- Buscar Eventos por Tipo ---")
+                self.crud_evento.listar_eventos_por_tipo()
+                input("\nPressione Enter para continuar...")
                 
             elif escolha == '0':
                 print("Voltando ao menu principal...")

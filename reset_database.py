@@ -192,54 +192,54 @@ def main():
             VALUES (?, ?, ?, ?, ?)
         ''', participante)
     
-    # Inserir atividades de exemplo
+    # Inserir atividades de exemplo (ATUALIZADO COM CAMPO LOCAL)
     atividades_exemplo = [
         # Atividades para Conferência de Tecnologia (id_evento = 1)
-        ('Palestra: O Futuro da IA', 'Dr. João Tech', 1, '09:00', 100),
-        ('Workshop: Machine Learning', 'Prof. Maria Data', 1, '14:00', 50),
-        ('Mesa Redonda: Startups', 'Painel de CEOs', 1, '16:00', 80),
+        ('Palestra: O Futuro da IA', 'Dr. João Tech', 'Auditório Principal', 1, '09:00', 100),
+        ('Workshop: Machine Learning', 'Prof. Maria Data', 'Sala de Workshops A', 1, '14:00', 50),
+        ('Mesa Redonda: Startups', 'Painel de CEOs', 'Sala de Conferências', 1, '16:00', 80),
         
-        # Atividades para Workshop de Python (id_evento = 2)
-        ('Introdução ao Python', 'Prof. Carlos Code', 2, '09:00', 25),
-        ('Python Avançado', 'Prof. Ana Script', 2, '14:00', 25),
+        # Atividades para Workshop de Python (id_evento = 2)  
+        ('Introdução ao Python', 'Prof. Carlos Code', 'Laboratório 1', 2, '09:00', 25),
+        ('Python Avançado', 'Prof. Ana Script', 'Laboratório 2', 2, '14:00', 25),
         
         # Atividades para Seminário de Inovação (id_evento = 3)
-        ('Apresentação de Startups', 'Empreendedores Locais', 3, '14:00', 50),
-        ('Networking', 'Organizadores', 3, '17:00', 200),
+        ('Apresentação de Startups', 'Empreendedores Locais', 'Auditório Central', 3, '14:00', 50),
+        ('Networking', 'Organizadores', 'Hall de Entrada', 3, '17:00', 200),
         
         # Atividades para Hackathon (id_evento = 4)
-        ('Desenvolvimento de Apps', 'Mentores Tech', 4, '18:00', 50),
-        ('Pitch Final', 'Banca Avaliadora', 4, '16:00', 100),
+        ('Desenvolvimento de Apps', 'Mentores Tech', 'Laboratório de Desenvolvimento', 4, '18:00', 50),
+        ('Pitch Final', 'Banca Avaliadora', 'Auditório Principal', 4, '16:00', 100),
         
         # Atividades para Palestra IA (id_evento = 5)
-        ('Palestra Principal', 'Dr. Roberto IA', 5, '19:00', 300),
+        ('Palestra Principal', 'Dr. Roberto IA', 'Teatro Municipal', 5, '19:00', 300),
         
         # Atividades para Curso Online (id_evento = 6)
-        ('Módulo 1: HTML Básico', 'Prof. Web Master', 6, '19:00', None),
-        ('Módulo 2: CSS Avançado', 'Prof. Style Expert', 6, '19:00', None),
-        ('Projeto Final', 'Mentores Online', 6, '20:00', None),
+        ('Módulo 1: HTML Básico', 'Prof. Web Master', 'Plataforma Online', 6, '19:00', 0),
+        ('Módulo 2: CSS Avançado', 'Prof. Style Expert', 'Plataforma Online', 6, '19:00', 0),
+        ('Projeto Final', 'Mentores Online', 'Plataforma Online', 6, '20:00', 0),
         
         # Atividades para Festival Infantil (id_evento = 7)
-        ('Experimentos Divertidos', 'Cientista Maluco', 7, '09:00', 30),
-        ('Construindo Vulcões', 'Prof. Geologia Kids', 7, '11:00', 25),
-        ('Show de Química', 'Dr. Reação', 7, '14:00', 80),
+        ('Experimentos Divertidos', 'Cientista Maluco', 'Laboratório Infantil', 7, '09:00', 30),
+        ('Construindo Vulcões', 'Prof. Geologia Kids', 'Área Externa', 7, '11:00', 25),
+        ('Show de Química', 'Dr. Reação', 'Anfiteatro', 7, '14:00', 80),
         
         # Atividades para Encontro Juvenil (id_evento = 8)
-        ('Programação para Iniciantes', 'Coach Teen Tech', 8, '14:00', 40),
-        ('Criando Jogos', 'Game Master Jr', 8, '09:00', 40),
+        ('Programação para Iniciantes', 'Coach Teen Tech', 'Sala de Computadores', 8, '14:00', 40),
+        ('Criando Jogos', 'Game Master Jr', 'Laboratório de Jogos', 8, '09:00', 40),
         
         # Atividades para Webinar (id_evento = 9)
-        ('Carreira em Desenvolvimento', 'Senior Developer', 9, '20:00', None),
+        ('Carreira em Desenvolvimento', 'Senior Developer', 'Plataforma Zoom', 9, '20:00', 0),
         
         # Atividades para Oficina de Robótica (id_evento = 10)
-        ('Montagem de Robôs', 'Eng. Robô Silva', 10, '09:00', 15),
-        ('Programação Arduino', 'Tech Arduino Master', 10, '14:00', 15)
+        ('Montagem de Robôs', 'Eng. Robô Silva', 'Laboratório de Robótica', 10, '09:00', 15),
+        ('Programação Arduino', 'Tech Arduino Master', 'Sala de Eletrônica', 10, '14:00', 15)
     ]
     
     for atividade in atividades_exemplo:
         gerenciador.cursor.execute('''
-            INSERT INTO atividades (nome, facilitador, id_evento, hora_inicio, vagas)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO atividades (nome, facilitador, local, id_evento, hora_inicio, vagas)
+            VALUES (?, ?, ?, ?, ?, ?)
         ''', atividade)
     
     # Inserir inscrições de exemplo
@@ -338,6 +338,20 @@ def main():
     for publico, count in publico_stats:
         print(f'  - {publico.capitalize()}: {count} evento(s)')
     
+    # Mostrar estatísticas de atividades por local
+    print(f'\nAtividades por local (top 5):')
+    gerenciador.cursor.execute('''
+        SELECT local, COUNT(*) as count
+        FROM atividades 
+        GROUP BY local
+        ORDER BY count DESC
+        LIMIT 5
+    ''')
+    local_stats = gerenciador.cursor.fetchall()
+    
+    for local, count in local_stats:
+        print(f'  - {local}: {count} atividade(s)')
+    
     gerenciador.fechar()
     
     print("\n" + "=" * 50)
@@ -347,12 +361,16 @@ def main():
     print("Dados incluídos:")
     print("  ✅ 10 eventos diversos (presenciais e online)")
     print("  ✅ 15 participantes")
-    print("  ✅ 21 atividades")
+    print("  ✅ 21 atividades com locais específicos")
     print("  ✅ 23 inscrições")
     print("\nTipos de eventos:")
     print("  🏢 Presenciais: conferências, workshops, seminários")
     print("  💻 Online: cursos e webinars")
     print("  👥 Públicos: adulto, juvenil, infantil")
+    print("\nNova estrutura de atividades:")
+    print("  📍 Campo 'local' adicionado a todas as atividades")
+    print("  🎯 Locais específicos para cada tipo de atividade")
+    print("  🔗 Relacionamento com eventos mantido via id_evento")
     print("\nVocê pode agora executar o programa principal com: python main.py")
 
 if __name__ == "__main__":

@@ -1,4 +1,5 @@
 from datetime import datetime, date, time
+from compartilhado.formatador_data import FormatadorData
 
 class Evento:
     def __init__(self, id=None, nome=None, descricao=None, data_inicio=None, hora_inicio=None,
@@ -16,12 +17,18 @@ class Evento:
         self.capacidade = capacidade
 
     def __str__(self):
+        # Usar FormatadorData para exibir datas no formato brasileiro
+        data_inicio_str = FormatadorData.data_para_str(self.data_inicio)
+        data_fim_str = FormatadorData.data_para_str(self.data_fim)
+        hora_inicio_str = FormatadorData.hora_para_str(self.hora_inicio)
+        hora_fim_str = FormatadorData.hora_para_str(self.hora_fim)
+        
         return (
             f"Evento: {self.nome}\n"
             f"ID: {self.id}\n"
             f"Descrição: {self.descricao}\n"
-            f"Inicio: {self.data_inicio} às {self.hora_inicio}\n"
-            f"Término: {self.data_fim} às {self.hora_fim}\n"
+            f"Inicio: {data_inicio_str} às {hora_inicio_str}\n"
+            f"Término: {data_fim_str} às {hora_fim_str}\n"
             f"Público-Alvo: {self.publico_alvo}\n"
             f"Tipo: {self.tipo}\n"
             f"Endereço: {self.endereco}\n"
@@ -33,10 +40,10 @@ class Evento:
         return (
             self.nome, 
             self.descricao, 
-            self.data_inicio.isoformat() if self.data_inicio else None, 
-            self.hora_inicio.strftime('%H:%M') if self.hora_inicio else None,
-            self.data_fim.isoformat() if self.data_fim else None, 
-            self.hora_fim.strftime('%H:%M') if self.hora_fim else None, 
+            FormatadorData.data_para_iso(self.data_inicio), 
+            FormatadorData.hora_para_str(self.hora_inicio),
+            FormatadorData.data_para_iso(self.data_fim), 
+            FormatadorData.hora_para_str(self.hora_fim), 
             self.publico_alvo, 
             self.tipo,
             self.endereco, 
@@ -48,10 +55,10 @@ class Evento:
             self.id,
             self.nome, 
             self.descricao, 
-            self.data_inicio.isoformat() if self.data_inicio else None, 
-            self.hora_inicio.strftime('%H:%M') if self.hora_inicio else None,
-            self.data_fim.isoformat() if self.data_fim else None, 
-            self.hora_fim.strftime('%H:%M') if self.hora_fim else None, 
+            FormatadorData.data_para_iso(self.data_inicio), 
+            FormatadorData.hora_para_str(self.hora_inicio),
+            FormatadorData.data_para_iso(self.data_fim), 
+            FormatadorData.hora_para_str(self.hora_fim), 
             self.publico_alvo, 
             self.tipo,
             self.endereco, 
@@ -63,42 +70,11 @@ class Evento:
         """Cria um evento a partir de tupla do banco (convertendo strings para objetos date/time)"""
         id, nome, descricao, data_inicio_str, hora_inicio_str, data_fim_str, hora_fim_str, publico_alvo, tipo, endereco, capacidade = dados
         
-        # Converter strings para objetos date/time
-        data_inicio = None
-        if data_inicio_str:
-            try:
-                data_inicio = datetime.fromisoformat(data_inicio_str).date()
-            except (ValueError, TypeError):
-                # Tentar formato alternativo
-                try:
-                    data_inicio = datetime.strptime(data_inicio_str, '%Y-%m-%d').date()
-                except (ValueError, TypeError):
-                    data_inicio = None
-        
-        hora_inicio = None
-        if hora_inicio_str:
-            try:
-                hora_inicio = datetime.strptime(hora_inicio_str, '%H:%M').time()
-            except (ValueError, TypeError):
-                hora_inicio = None
-        
-        data_fim = None
-        if data_fim_str:
-            try:
-                data_fim = datetime.fromisoformat(data_fim_str).date()
-            except (ValueError, TypeError):
-                # Tentar formato alternativo
-                try:
-                    data_fim = datetime.strptime(data_fim_str, '%Y-%m-%d').date()
-                except (ValueError, TypeError):
-                    data_fim = None
-        
-        hora_fim = None
-        if hora_fim_str:
-            try:
-                hora_fim = datetime.strptime(hora_fim_str, '%H:%M').time()
-            except (ValueError, TypeError):
-                hora_fim = None
+        # Usar FormatadorData para converter strings do banco para objetos date/time
+        data_inicio = FormatadorData.iso_para_data(data_inicio_str)
+        hora_inicio = FormatadorData.str_para_hora(hora_inicio_str)
+        data_fim = FormatadorData.iso_para_data(data_fim_str)
+        hora_fim = FormatadorData.str_para_hora(hora_fim_str)
         
         return cls(
             id=id,
@@ -125,3 +101,27 @@ class Evento:
             except (TypeError, ValueError):
                 return None
         return None
+    
+    # Métodos de formatação convenientes
+    def data_inicio_formatada(self):
+        """Retorna data de início formatada em dd/mm/yyyy"""
+        return FormatadorData.data_para_str(self.data_inicio)
+    
+    def data_fim_formatada(self):
+        """Retorna data de fim formatada em dd/mm/yyyy"""
+        return FormatadorData.data_para_str(self.data_fim)
+    
+    def hora_inicio_formatada(self):
+        """Retorna hora de início formatada em hh:mm"""
+        return FormatadorData.hora_para_str(self.hora_inicio)
+    
+    def hora_fim_formatada(self):
+        """Retorna hora de fim formatada em hh:mm"""
+        return FormatadorData.hora_para_str(self.hora_fim)
+    
+    def periodo_formatado(self):
+        """Retorna período completo formatado"""
+        if self.data_inicio == self.data_fim:
+            return f"{self.data_inicio_formatada()} das {self.hora_inicio_formatada()} às {self.hora_fim_formatada()}"
+        else:
+            return f"De {self.data_inicio_formatada()} às {self.hora_inicio_formatada()} até {self.data_fim_formatada()} às {self.hora_fim_formatada()}"

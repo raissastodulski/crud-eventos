@@ -31,16 +31,16 @@ class GerenciadorBD:
                 print("Migrando tabela eventos para nova estrutura...")
                 self._migrar_tabela_eventos()
         
-        # Criar/atualizar tabela eventos com nova estrutura
+        # Criar/atualizar tabela eventos com DATETIME
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS eventos (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT NOT NULL,
             descricao TEXT,
-            data_inicio TEXT,
-            hora_inicio TEXT,
-            data_fim TEXT,
-            hora_fim TEXT,
+            data_inicio DATE,
+            hora_inicio TIME,
+            data_fim DATE,
+            hora_fim TIME,
             publico_alvo TEXT,
             tipo TEXT,
             endereco TEXT,
@@ -48,7 +48,7 @@ class GerenciadorBD:
         )
         ''')
         
-        # Tabela participantes
+        # Tabela participantes com data de cadastro DATETIME
         self.cursor.execute('''
         CREATE TABLE IF NOT EXISTS participantes (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -56,7 +56,7 @@ class GerenciadorBD:
             cpf TEXT,
             email TEXT,
             telefone TEXT,
-            data TEXT
+            data_cadastro DATETIME
         )
         ''')
         
@@ -66,8 +66,9 @@ class GerenciadorBD:
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             nome TEXT,
             facilitador TEXT,
+            local TEXT,
             id_evento INTEGER,
-            hora_inicio TEXT,
+            hora_inicio TIME,
             vagas INTEGER,
             FOREIGN KEY (id_evento) REFERENCES eventos (id)
         )
@@ -87,7 +88,7 @@ class GerenciadorBD:
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 id_participante INTEGER,
                 id_atividade INTEGER,
-                data_inscricao TEXT,
+                data_inscricao DATETIME,
                 FOREIGN KEY (id_participante) REFERENCES participantes (id),
                 FOREIGN KEY (id_atividade) REFERENCES atividades (id)
             )
@@ -100,7 +101,7 @@ class GerenciadorBD:
                 INSERT INTO inscricoes_temp (id_participante, id_atividade, data_inscricao)
                 SELECT i.id_participante, 
                        (SELECT MIN(a.id) FROM atividades a WHERE a.id_evento = i.id_evento), 
-                       datetime('now')
+                       datetime('now', 'localtime')
                 FROM inscricoes i
                 WHERE EXISTS (SELECT 1 FROM atividades a WHERE a.id_evento = i.id_evento)
                 ''')
@@ -119,36 +120,36 @@ class GerenciadorBD:
                 # Se houver erro, manter a tabela antiga
                 self.cursor.execute("DROP TABLE IF EXISTS inscricoes_temp")
         elif not colunas:
-            # Se a tabela não existir, criar no novo formato
+            # Se a tabela não existir, criar no novo formato com DATETIME
             self.cursor.execute('''
             CREATE TABLE IF NOT EXISTS inscricoes (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 id_participante INTEGER,
                 id_atividade INTEGER,
-                data_inscricao TEXT,
+                data_inscricao DATETIME,
                 FOREIGN KEY (id_participante) REFERENCES participantes (id),
                 FOREIGN KEY (id_atividade) REFERENCES atividades (id)
             )
             ''')
         elif 'id_atividade' in colunas and 'data_inscricao' not in colunas:
             # Se a tabela já tiver id_atividade mas não tiver data_inscricao, adicionar a coluna
-            self.cursor.execute("ALTER TABLE inscricoes ADD COLUMN data_inscricao TEXT")
+            self.cursor.execute("ALTER TABLE inscricoes ADD COLUMN data_inscricao DATETIME")
         
         self.conn.commit()
     
     def _migrar_tabela_eventos(self):
-        """Migra a tabela eventos da estrutura antiga para a nova"""
+        """Migra a tabela eventos da estrutura antiga para a nova com DATETIME"""
         try:
-            # Criar tabela temporária com nova estrutura
+            # Criar tabela temporária com nova estrutura usando DATE e TIME
             self.cursor.execute('''
             CREATE TABLE eventos_temp (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nome TEXT NOT NULL,
                 descricao TEXT,
-                data_inicio TEXT,
-                hora_inicio TEXT,
-                data_fim TEXT,
-                hora_fim TEXT,
+                data_inicio DATE,
+                hora_inicio TIME,
+                data_fim DATE,
+                hora_fim TIME,
                 publico_alvo TEXT,
                 tipo TEXT,
                 endereco TEXT,
