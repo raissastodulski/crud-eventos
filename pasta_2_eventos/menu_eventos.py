@@ -20,7 +20,7 @@ class MenuEventos:
         print("4. Atualizar evento")
         print("5. Excluir evento")
         print("6. Buscar eventos")
-        print("0. Voltar ao Menu Principal")
+        print("0. Voltar ao menu principal")
         print("===================================")
         return input("Digite sua escolha: ")   
     
@@ -29,32 +29,32 @@ class MenuEventos:
             escolha = self.exibir_menu()
             
             if escolha == '1':
-                print("\n--- Adicionar Evento ---")
+                print("\n--- Adicionar evento ---")
                 self.crud_evento.criar_evento()
                 input("\nPressione Enter para continuar...")
                 
             elif escolha == '2':
-                print("\n--- Ver Todos os Eventos ---")
+                print("\n--- Ver todos os eventos ---")
                 self.crud_evento.visualizar_eventos()
                 input("\nPressione Enter para continuar...")
                 
             elif escolha == '3':
-                print("\n--- Ver Detalhes do Evento ---")
+                print("\n--- Ver detalhes do evento ---")
                 self.crud_evento.ver_detalhe_evento()
                 input("\nPressione Enter para continuar...")
                 
             elif escolha == '4':
-                print("\n--- Atualizar Evento ---")
+                print("\n--- Atualizar evento ---")
                 self.crud_evento.atualizar_evento()
                 input("\nPressione Enter para continuar...")
                 
             elif escolha == '5':
-                print("\n--- Excluir Evento ---")
+                print("\n--- Excluir evento ---")
                 self.crud_evento.excluir_evento()
                 input("\nPressione Enter para continuar...")
                 
             elif escolha == '6':
-                print("\n--- Buscar Eventos ---")
+                print("\n--- Buscar eventos ---")
                 self.crud_evento.buscar_evento()
                 input("\nPressione Enter para continuar...")
                 
