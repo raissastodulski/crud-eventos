@@ -33,8 +33,6 @@ class CrudEvento:
             
             if FormatadorData.validar_data_fim_posterior(data_inicio, data_fim):
                 break
-            except ValueError:
-                print("⚠️  Hora inválida. Use o formato hh:mm.")
 
         while True:    
             data_fim_str = input(f"\nInforme a DATA de FIM do evento {nome_evento} (dd/mm/aaaa): ")
@@ -255,29 +253,14 @@ class CrudEvento:
             evento.hora_inicio = nova_hora_inicio
 
         # Data fim usando FormatadorData com validação
+        data_atual_str = FormatadorData.data_para_str(evento.data_fim)
         while True:
-            nova_data_inicio = input(f"Data início (atual: {evento.data_inicio}, formato: dd/mm/aaaa): ").strip()
-            if not nova_data_inicio:
+            nova_data_fim = FormatadorData.solicitar_data_usuario(
+                f"Data fim (atual: {data_atual_str})", 
+                permitir_vazio=True
+            )
+            if not nova_data_fim:
                 break
-            try:
-                data_convertida = datetime.strptime(nova_data_inicio, "%d/%m/%Y").date()
-                if data_convertida<date.today():
-                    print("⚠️  A data não pode ser no passado. Tente novamente")
-                else:    
-                    evento.data_inicio = data_convertida
-                    break
-            except ValueError:
-                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
-
-        # Hora início
-        while True:
-            nova_hora_inicio = input(f"Hora início (atual: {evento.hora_inicio}, formato: hh:mm): ").strip()
-            if not nova_hora_inicio:
-                break
-            try:
-                evento.hora_inicio = datetime.strptime(nova_hora_inicio, "%H:%M").time()
-                break
-                
             if FormatadorData.validar_data_fim_posterior(evento.data_inicio, nova_data_fim):
                 evento.data_fim = nova_data_fim
                 break
@@ -292,30 +275,6 @@ class CrudEvento:
         )
         if nova_hora_fim:
             evento.hora_fim = nova_hora_fim
-            try:
-                data_fim_temp = datetime.strptime(nova_data_fim, "%d/%m/%Y").date()
-                if data_fim_temp < evento.data_inicio:
-                    print("⚠️  A data fim não pode ser antes da data de início.")
-                else:
-                    evento.data_fim = data_fim_temp
-                    break
-            except ValueError:
-                print("⚠️  Data inválida. Use o formato dd/mm/aaaa.")
-
-        # Hora fim
-        while True:
-            nova_hora_fim = input(f"Hora fim (atual: {evento.hora_fim}, formato: hh:mm): ").strip()
-            if not nova_hora_fim:
-                break
-            try:
-                hora_convertida = datetime.strptime(nova_hora_fim, "%H:%M").time()
-                if hora_convertida< evento.hora_inicio:
-                    print("⚠️  A hora final não pode ser anterior à hora de início do evento.")
-                else:
-                    evento.hora_fim = hora_convertida
-                    break
-            except ValueError:
-                print("⚠️  Hora inválida. Use o formato hh:mm.")
 
         # Público alvo
         while True:
