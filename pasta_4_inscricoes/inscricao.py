@@ -1,4 +1,4 @@
-from compartilhado import FormatadorData
+from utils import FormatadorData
 
 class Inscricao:
     def __init__(self, id_participante=None, id_atividade=None, id=None, data_inscricao=None):

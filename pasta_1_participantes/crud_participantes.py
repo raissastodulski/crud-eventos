@@ -1,7 +1,7 @@
 from .participante import Participante
 from .crud_bd_participantes import CrudBdParticipantes
 from datetime import datetime
-from compartilhado import FormatadorTabela
+from utils import FormatadorTabela
 
 
 class CrudParticipantes:

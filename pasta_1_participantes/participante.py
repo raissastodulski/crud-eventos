@@ -1,5 +1,5 @@
 from datetime import datetime
-from compartilhado.formatador_data import FormatadorData
+from utils import FormatadorData
 
 class Participante:
     def __init__(self, nome="", cpf="", email="", telefone="", data_nascimento=None, id=None):

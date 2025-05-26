@@ -1,5 +1,5 @@
 from datetime import datetime
-from compartilhado import FormatadorData, FormatadorTabela
+from utils import FormatadorData, FormatadorTabela
 from .evento import Evento
 from .crud_bd_eventos import CrudBdEventos
 

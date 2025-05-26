@@ -1,6 +1,6 @@
 from .atividade import Atividade
 from .crud_bd_atividades import CrudBdAtividades
-from compartilhado import FormatadorData, FormatadorTabela
+from utils import FormatadorData, FormatadorTabela
 
 
 class CrudAtividades:

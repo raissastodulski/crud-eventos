@@ -4,7 +4,7 @@ from .crud_bd_inscricoes import CrudBdInscricoes
 from pasta_2_eventos import CrudBdEventos
 from pasta_1_participantes import CrudBdParticipantes
 from pasta_3_atividades import CrudBdAtividades
-from compartilhado import FormatadorTabela
+from utils import FormatadorTabela
 
 class CrudInscricoes:
     def __init__(self, gerenciador_bd):

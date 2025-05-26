@@ -1,5 +1,5 @@
 from datetime import datetime
-from compartilhado.formatador_data import FormatadorData
+from utils import FormatadorData
 
 class Evento:
     def __init__(self, id=None, nome=None, descricao=None, data_inicio=None, hora_inicio=None,

@@ -1,4 +1,4 @@
-from compartilhado import FormatadorData
+from utils import FormatadorData
 from datetime import time, datetime
 
 class Atividade:
