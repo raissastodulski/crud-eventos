@@ -158,27 +158,27 @@ def main():
         ''', evento)
     
     participantes_exemplo = [
-        ('João Silva Santos', '123.456.789-01', 'joao.silva@email.com', '(81) 99999-1111', '2025-05-20'),
-        ('Maria Oliveira Costa', '234.567.890-12', 'maria.oliveira@email.com', '(81) 99999-2222', '2025-05-20'),
-        ('Pedro Santos Lima', '345.678.901-23', 'pedro.santos@email.com', '(81) 99999-3333', '2025-05-21'),
-        ('Ana Carolina Souza', '456.789.012-34', 'ana.souza@email.com', '(81) 99999-4444', '2025-05-21'),
-        ('Carlos Eduardo Pereira', '567.890.123-45', 'carlos.pereira@email.com', '(81) 99999-5555', '2025-05-22'),
-        ('Fernanda Lima Ribeiro', '678.901.234-56', 'fernanda.lima@email.com', '(81) 99999-6666', '2025-05-22'),
-        ('Ricardo Alves Nunes', '789.012.345-67', 'ricardo.alves@email.com', '(81) 99999-7777', '2025-05-23'),
-        ('Juliana Ferreira Costa', '890.123.456-78', 'juliana.ferreira@email.com', '(81) 99999-8888', '2025-05-23'),
-        ('Bruno Henrique Silva', '901.234.567-89', 'bruno.henrique@email.com', '(81) 99999-9999', '2025-05-24'),
-        ('Camila Santos Rodrigues', '012.345.678-90', 'camila.santos@email.com', '(81) 99999-0000', '2025-05-24'),
-        ('Lucas Martins Pereira', '111.222.333-44', 'lucas.martins@email.com', '(81) 98888-1111', '2025-05-25'),
-        ('Isabella Costa Lima', '222.333.444-55', 'isabella.costa@email.com', '(81) 98888-2222', '2025-05-25'),
-        ('Gabriel Santos Nunes', '333.444.555-66', 'gabriel.santos@email.com', '(81) 98888-3333', '2025-05-26'),
-        ('Sophia Oliveira Silva', '444.555.666-77', 'sophia.oliveira@email.com', '(81) 98888-4444', '2025-05-26'),
-        ('Rafael Lima Costa', '555.666.777-88', 'rafael.lima@email.com', '(81) 98888-5555', '2025-05-27')
+        ('João Silva Santos', '123.456.789-01', 'joao.silva@email.com', '(81) 99999-1111'),
+        ('Maria Oliveira Costa', '234.567.890-12', 'maria.oliveira@email.com', '(81) 99999-2222'),
+        ('Pedro Santos Lima', '345.678.901-23', 'pedro.santos@email.com', '(81) 99999-3333'),
+        ('Ana Carolina Souza', '456.789.012-34', 'ana.souza@email.com', '(81) 99999-4444'),
+        ('Carlos Eduardo Pereira', '567.890.123-45', 'carlos.pereira@email.com', '(81) 99999-5555'),
+        ('Fernanda Lima Ribeiro', '678.901.234-56', 'fernanda.lima@email.com', '(81) 99999-6666'),
+        ('Ricardo Alves Nunes', '789.012.345-67', 'ricardo.alves@email.com', '(81) 99999-7777'),
+        ('Juliana Ferreira Costa', '890.123.456-78', 'juliana.ferreira@email.com', '(81) 99999-8888'),
+        ('Bruno Henrique Silva', '901.234.567-89', 'bruno.henrique@email.com', '(81) 99999-9999'),
+        ('Camila Santos Rodrigues', '012.345.678-90', 'camila.santos@email.com', '(81) 99999-0000'),
+        ('Lucas Martins Pereira', '111.222.333-44', 'lucas.martins@email.com', '(81) 98888-1111'),
+        ('Isabella Costa Lima', '222.333.444-55', 'isabella.costa@email.com', '(81) 98888-2222'),
+        ('Gabriel Santos Nunes', '333.444.555-66', 'gabriel.santos@email.com', '(81) 98888-3333'),
+        ('Sophia Oliveira Silva', '444.555.666-77', 'sophia.oliveira@email.com', '(81) 98888-4444'),
+        ('Rafael Lima Costa', '555.666.777-88', 'rafael.lima@email.com', '(81) 98888-5555')
     ]
     
     for participante in participantes_exemplo:
         gerenciador.cursor.execute('''
-            INSERT INTO participantes (nome, cpf, email, telefone, data_cadastro)
-            VALUES (?, ?, ?, ?, ?)
+            INSERT INTO participantes (nome, cpf, email, telefone)
+            VALUES (?, ?, ?, ?)
         ''', participante)
     
     atividades_exemplo = [

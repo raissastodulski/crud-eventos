@@ -50,8 +50,7 @@ class GerenciadorBD:
             nome TEXT,
             cpf TEXT,
             email TEXT,
-            telefone TEXT,
-            data_cadastro DATETIME
+            telefone TEXT
         )
         ''')
         

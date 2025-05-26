@@ -136,9 +136,5 @@ class FormatadorData:
             return hora_obj
     
     @staticmethod
-    def data_cadastro_hoje():
-        return date.today().strftime(FormatadorData.FORMATO_DATA_BRASILEIRA)
-    
-    @staticmethod
     def data_hora_inscricao_agora():
         return datetime.now().strftime(FormatadorData.FORMATO_DATA_HORA_BRASILEIRA)
